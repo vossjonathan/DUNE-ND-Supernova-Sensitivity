@@ -1,0 +1,51 @@
+# Python virtual environments
+.venv/
+venv/
+env/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Environment variables / secrets
+.env
+*.env
+
+# Temporary files
+*.log
+*.tmp
+*~
+test.txt
+
+# Generated plotting outputs
+plotting/helper_plots/
+
+# Generated plots
+TMS_smearing_calc/*.png
+garching_flux/*.png
+xcns_calculations/*.png
+
+# Geant4 / CMake build files
+build/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+
+# Compiled files
+*.o
+*.so
+*.a
+
+# ROOT output
+*.root
+
+# OS files
+.DS_Store
+Thumbs.db
