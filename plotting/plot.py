@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from pathlib  import Path
+import uproot
 
 SNOWGLOBES = Path.home()/"software"/"snowglobes"
 
@@ -421,3 +422,57 @@ def plot_threshold_comparison_scatter():
 
 
 #plot_threshold_comparison_scatter()
+
+
+def findPeakFe():
+    TMS = Path.home() / "software/geant4/geant4-work/TMS"
+    DATA16 = TMS / "build" / "explain_peak_data"
+    DATA32 = TMS / "build" / "explain_peak_data32scint"
+
+
+    energies = np.array([30,70])
+
+    for E_nu in energies:
+
+        file16 = DATA16 / f"TMS_{E_nu:.5f}_nuebar_Fe56_MeV.root"
+
+        with uproot.open(file16) as f:
+            hist = f["Escint"]
+
+            counts16, edges16 = hist.to_numpy()
+
+    # relative Häufigkeit pro erzeugtem Eveng
+    #counts = counts / 100000
+
+        plt.stairs(
+        counts16,
+        edges16,
+        label=fr"$E_e={E_nu:.0f}$ MeV, d = 16 mm",
+        baseline=None,)
+        file32 = DATA32 / f"TMS_{E_nu:.5f}_nuebar_Fe56_MeV.root"
+
+        with uproot.open(file32) as f:
+            hist = f["Escint"]
+
+            counts32, edges32 = hist.to_numpy()
+
+    # relative Häufigkeit pro erzeugtem Eveng
+    #counts = counts / 100000
+
+        plt.stairs(
+        counts32,
+        edges32,
+        label=fr"$E_e={E_nu:.0f}$ MeV, d = 32 mm",
+        baseline=None,
+        linestyle = "--")
+
+    plt.xlabel(r"Deposited scintillator energy $E_{\mathrm{scint}}$ [MeV]")
+    plt.ylabel("Events per 0.5 MeV bin")
+    plt.xlim(1, 15)
+    plt.ylim(0,5000)
+    plt.grid(True, alpha = 0.3)
+    plt.legend()
+    #plt.title("100,000 events per electron energy generated, uniformly and isotropically in Fe layers")
+    plt.savefig("plotting/compare_peak_structure_16_32.png")
+
+findPeakFe()
