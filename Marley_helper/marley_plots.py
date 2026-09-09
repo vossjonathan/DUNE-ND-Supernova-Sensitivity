@@ -12,7 +12,7 @@ def plot_electron_kinetic_energy():
     colors = ["blue", "red", "green", "orange"]
     for j,(i, color) in enumerate(zip(energies, colors)):
         Q = 4.567 #in MeV
-        file = uproot.open(OUT/f"Fe_{i}MeV_summary.root")
+        file = uproot.open(MARLEY/"out_SAM"/f"Fe_SAM_{i}MeV_summary.root")
 
         tree = file["mst"]
 
@@ -24,9 +24,9 @@ def plot_electron_kinetic_energy():
         plt.xlabel("Electron Kinetic Energy [MeV]")
         plt.ylabel("Events")
         plt.legend(loc="upper left", bbox_to_anchor=(1.02, 1))
-        plt.title(r"Electron Kinetic Energy Distribution for MARLEY 56Fe, Rapaport 1983")
+        plt.title(r"Electron Kinetic Energy Distribution for MARLEY 56Fe, SAM .react file")
 
-    plt.savefig("Marley_helper/electron_energy_comparison_incltheo.png",bbox_inches="tight")
+    plt.savefig("Marley_helper/electron_energy_comparison_SAM.png",bbox_inches="tight")
     plt.close()
 
 def plot_excited_energy():
@@ -35,7 +35,7 @@ def plot_excited_energy():
     data = {}
 
     for E_nu in energies:
-        file = uproot.open(OUT / f"Fe_{E_nu}MeV_summary.root")
+        file = uproot.open(MARLEY/"out_SAM"/f"Fe_SAM_{E_nu}MeV_summary.root")
         Ex = file["mst"]["Ex"].array(library="np")
         Ex = np.round(Ex, 2)
 
@@ -54,16 +54,16 @@ def plot_excited_energy():
 
     plt.xlabel(r"Excitation Energy $E_x$ [MeV]")
     plt.ylabel("Fraction of Events")
-    plt.xlim(1, 16.5)
+    plt.xlim(1, 26)
     plt.legend()
     plt.grid(True, alpha = 0.3)
-    plt.title(r"MARLEY $^{56}$Fe Excitation Energy Distribution")
-    plt.savefig("Marley_helper/Ex_comparison_incltheo.png")
+    plt.title(r"MARLEY $^{56}$Fe Excitation Energy Distribution SAM .react file")
+    plt.savefig("Marley_helper/Ex_comparison_SAM.png")
     plt.close()
 
 def plot_xsection():
 
-    file = MARLEY/f"Fe_xsec.txt"
+    file = MARLEY/f"Fe_NC_xsec.txt"
 
     data = np.loadtxt(file)
     
@@ -75,14 +75,56 @@ def plot_xsection():
     #plt.axvline(x = i - Q,  linestyle='--', color= color , label=r"$T_e = E_\nu-Q$" if j == 0 else "_nolegend_")
     plt.plot(energy, xsec)
     plt.xlim(0, 100)
-    plt.xlabel(r"Neutrino energy $E_\nu$")
+    plt.xlabel(r"Neutrino energy $E_\nu$ [MeV]")
     plt.ylabel(r"cross section $10^{-42}$ cm$^2$")
     
     plt.grid(True, alpha = 0.3)
-    plt.title(r"Fe cross section for MARLEY 56Fe, Rapaport 1983")
+    plt.title(r"208Pb cross section for MARLEY, Wakasa 2012")
 
-    plt.savefig("Marley_helper/xsection_comparison_incltheo.png")
+    plt.savefig("Marley_helper/Fe_NC_xsec.png")
     plt.close()
+
+    
+def compare_xsection():
+
+    
+    file1 = MARLEY/f"Pb_NONE.txt"
+    file2 = MARLEY/f"Pb_FERMI.txt"
+    file3 = MARLEY/f"Pb_MEMA.txt"
+    file4 = MARLEY/f"Pb_Fermi-MEMA.txt"
+
+    data1 = np.loadtxt(file1)
+    data2 = np.loadtxt(file2)
+    data3 = np.loadtxt(file3)
+    data4 = np.loadtxt(file4)
+
+    energy = data1[:, 0]
+
+    xsec1 = data1[:, 1]
+    xsec2 = data2[:, 1]
+    xsec3 = data3[:, 1]
+    xsec4 = data4[:, 1]
+
+
+  
+
+    #plt.axvline(x = i - Q,  linestyle='--', color= color , label=r"$T_e = E_\nu-Q$" if j == 0 else "_nolegend_")
+    plt.plot(energy, xsec1, label = "NONE")
+    plt.plot(energy, xsec2, label = "FERMI")
+    plt.plot(energy, xsec3, label = "MEMA")
+    plt.plot(energy, xsec4, label = "FERMI-MEMA")
+
+    plt.xlim(0, 100)
+    plt.xlabel(r"Neutrino energy $E_\nu$ [MeV]")
+    plt.ylabel(r"cross section $10^{-42}$ cm$^2$")
+    
+    plt.grid(True, alpha = 0.3)
+    plt.title(r"NC Fe cross section, Shizuma 2013")
+    plt.legend()
+    plt.savefig("Marley_helper/comparexsec.png")
+    plt.close()
+
+
 def plot_other_primaries():
     energies = [10, 20, 30, 40]
 
@@ -119,7 +161,9 @@ def plot_other_primaries():
     plt.savefig("Marley_helper/particle_emission_probability_incltheo.png", dpi=300, bbox_inches="tight")
     plt.show()
     plt.close()
-plot_electron_kinetic_energy()
-plot_excited_energy()
+
+#plot_electron_kinetic_energy()
+#plot_excited_energy()
 plot_xsection()
-plot_other_primaries()
+#plot_other_primaries()
+#compare_xsection()

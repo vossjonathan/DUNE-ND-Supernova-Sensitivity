@@ -608,4 +608,24 @@ def compare_detectors_bar_plot(flux):
     plt.savefig(f"plotting/{flux}_unsmeared_detector_comparison.png")
     plt.close()
 
-compare_detectors_bar_plot("garching")
+#compare_detectors_bar_plot("garching")
+
+def plot_all_NC_channels_iron():
+    channels = ['nc_nue_Fe56', 'nc_nuebar_Fe56', 'nc_numu_Fe56']
+    total_nc_events_smeared = np.zeros(200)
+    energy_smeared = np.linspace(0.5, 100, 201)
+    for channel in channels:
+        u, e = helper.get_channel_out_smeared_unsmeared("TMS_iron", "iron", channel, "garching")
+        plt.stairs(e, energy_smeared, label=channel)
+        plt.stairs(u, energy_smeared, label=channel + " unsmeared")
+
+    plt.xlabel(r" Detected $E_{det}$ [MeV]")
+    plt.ylabel("Number of Events per 0.5 MeV energy bin")
+    plt.xlim(0,50)
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    plt.title("TMS iron NC channels comparison")
+    plt.savefig(f"plotting/NC_channels_comparison.png")
+    plt.close()
+
+plot_all_NC_channels_iron()

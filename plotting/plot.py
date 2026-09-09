@@ -2,14 +2,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 from pathlib  import Path
 import uproot
+import helper
 
 SNOWGLOBES = Path.home()/"software"/"snowglobes"
 
 #weights not considered, basic plot
 def plot_one_channel_smeared_unsmeared():
 
-    file_smeared = SNOWGLOBES/"out"/"garching_nue_Fe56_TMS_iron_events_smeared_unweighted.dat"
-    file_unsmeared = SNOWGLOBES/"out"/"garching_nue_Fe56_TMS_iron_events_unweighted.dat"
+    file_smeared = SNOWGLOBES/"out"/"garching_nc_nue_Fe56_TMS_iron_events_smeared_unweighted.dat"
+    file_unsmeared = SNOWGLOBES/"out"/"garching_nc_nue_Fe56_TMS_iron_events_unweighted.dat"
 
     data_smeared = np.loadtxt(file_smeared, max_rows=200)
     data_unsmeared = np.loadtxt(file_unsmeared, max_rows=200)
@@ -28,8 +29,8 @@ def plot_one_channel_smeared_unsmeared():
     plt.ylabel("Number of Events per bin")
     plt.legend()
     plt.grid(True, alpha=0.3)
-    plt.title(r"CC $\nu_e$ TMS (only iron), garching, $E_{th}$ = 0.5 MeV, 100k smear")#0% efficiency $\leq$ 5 MeV")
-    plt.savefig("plotting/garching_TMS_iron_nue_Fe56_smeared_unsmeared_100k.png")
+    plt.title(r"NC nue Fe 56 smeared unsmeared")#0% efficiency $\leq$ 5 MeV")
+    plt.savefig("plotting/garching_TMS_iron_NC_nue_smeared_unsmeared.png")
 
 #plot_one_channel_smeared_unsmeared()
 
@@ -75,11 +76,11 @@ def plot_one_channel_iron_smeared_unsmeared(channel):
     plt.ylabel("Number of Events per bin")
     plt.legend()
     plt.grid(True, alpha=0.3)
-    plt.title(r"ES $\nu_e$ TMS (only iron), garching, $E_{th}$ = 0.5 MeV")
-    plt.savefig("plotting/garching_TMS_iron_nue_e_unsmeared_smeared_weighted.png")
+    plt.title(r"NC nue channel TMS iron, unsmeared smeared")
+    plt.savefig("plotting/garching_TMS_iron_nc_nue_unsmeared_smeared_weighted.png")
 
 
-#plot_one_channel_iron_smeared_unsmeared("nue_e")
+#plot_one_channel_iron_smeared_unsmeared("nc_nue_Fe56")
 
 
 def plot_one_channel_scint_smeared_unsmeared(channel):
@@ -157,6 +158,12 @@ def plot_all_TMS_iron_scint():
         "nutaubar_e" : 26,
         "nue_Fe56" : 1,
         "nuebar_Fe56" : 1,
+        "nc_nue_Fe56" : 1,
+        "nc_nuebar_Fe56" : 1,
+        "nc_numu_Fe56" : 1,
+        "nc_numubar_Fe56" : 1,
+        "nc_nutau_Fe56" : 1,
+        "nc_nutaubar_Fe56" : 1,
     }
 
     total_iron_ES = np.zeros(200)
@@ -192,7 +199,7 @@ def plot_all_TMS_iron_scint():
     total_events += events_smeared_IBD_w
     
     energy = np.linspace(0.5, 100, 201)#data_smeared_IBD[:, 0] * 1000 #using this for all channels as energy binning is same for all
-    print(energy)
+    #print(energy)
     #iron CC nue
     file_nue = SNOWGLOBES/"out"/f"garching_nue_Fe56_TMS_iron_events_smeared_unweighted.dat"
     data_smeared_nue = np.loadtxt(file_nue, max_rows= 200)
@@ -207,7 +214,16 @@ def plot_all_TMS_iron_scint():
     events_smeared_nuebar = data_smeared_nuebar[:, 1]
     events_smeared_nuebar_w = events_smeared_nuebar * channels_iron["nuebar_Fe56"]
     total_events += events_smeared_nuebar_w
+    #iron NC all channels
+    NC_channels = ["nc_nue_Fe56", "nc_nuebar_Fe56", "nc_numu_Fe56", "nc_numubar_Fe56", "nc_nutau_Fe56", "nc_nutaubar_Fe56"]
+    NC_events_total = np.zeros(200)
+    for channel in NC_channels:
+        u, e = helper.get_channel_out_smeared_unsmeared("TMS_iron", "iron", channel, "garching")
+        NC_events_total += e
 
+    total_events += NC_events_total
+
+    plt.stairs(NC_events_total, energy, baseline = None, label="NC on Fe", color="cyan", linestyle = "-")
     plt.stairs(total_iron_ES, energy, baseline = None, label=r"$\nu, e^-$ scattering in Fe", color="blue", linestyle = "-")
     plt.stairs(total_scint_ES,energy, baseline = None,label=r"$\nu, e^-$ scattering in scint", color="red", linestyle = "-")
     plt.stairs(events_smeared_IBD_w,energy, baseline = None,label="IBD on scint", color="orange", linestyle = "-")
@@ -218,14 +234,14 @@ def plot_all_TMS_iron_scint():
     plt.legend()
     plt.grid(True, alpha = 0.3)
     plt.xlim(0, 30)
-    plt.text(0.55, 0.58, f"Total events smeared: {total_events.sum():.2f}", transform=plt.gca().transAxes)
+    plt.text(0.56, 0.51, f"Total events smeared: {total_events.sum():.2f}", transform=plt.gca().transAxes)
     plt.xlabel("Deposited E in scint [MeV]")
     plt.ylabel("Number of events per 0.5 MeV bin")
     plt.title("Supernova Signal in TMS Detector (without NC channels)\n Garching flux, no additional Threshold ")
-    plt.savefig("plotting/TMS_signal100kCC.png")
+    plt.savefig("plotting/TMS_signal_with_NC.png")
     
 
-#plot_all_TMS_iron_scint()
+plot_all_TMS_iron_scint()
 
 def plot_threshold_comparison():
 
@@ -475,4 +491,29 @@ def findPeakFe():
     #plt.title("100,000 events per electron energy generated, uniformly and isotropically in Fe layers")
     plt.savefig("plotting/compare_peak_structure_16_32.png")
 
-findPeakFe()
+#findPeakFe()
+def compare_MARLEY_NOMARLEY():
+
+    file_MARLEY = SNOWGLOBES/"out"/"MARLEY100k_garching_nue_Fe56_TMS_iron_events_smeared_unweighted.dat"
+    file_NOMARLEY = SNOWGLOBES/"out"/"NOMARLEY_garching_nue_Fe56_TMS_iron_events_smeared_unweighted.dat"
+
+    data_MARLEY = np.loadtxt(file_MARLEY, max_rows=200)
+    data_NOMARLEY = np.loadtxt(file_NOMARLEY, max_rows=200)
+
+    energy = np.linspace(0.5, 100, 201)
+    events_MARLEY = data_MARLEY[:, 1]
+    events_NOMARLEY = data_NOMARLEY[:, 1]
+
+    plt.stairs(events_MARLEY, energy, baseline = None, label="MARLEY + G4", color="blue")
+    plt.stairs(events_NOMARLEY, energy, baseline = None, label=r"Only G4: T$_e$ = E$_\nu$ - Q ", color="red")
+    plt.text(0.595, 0.75,f"MARLEY + G4 events: {events_MARLEY.sum():.2f}\nOnly G4 events: {events_NOMARLEY.sum():.2f}",transform=plt.gca().transAxes)#,ha="right",va="top")
+    #plt.text(0.84, 0.77,f"Total events unsmeared: {events_unsmeared.sum():.2f}",transform=plt.gca().transAxes,ha="right",va="top")
+    plt.xlabel(r" Deposited E in scint [MeV]")
+    plt.xlim(0,20)
+    plt.ylabel("Number of Events per bin")
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    plt.title(r"CC $\nu_e$ on $^{56}$Fe in TMS, MARLEY + G4 vs only G4 smearing matrx")#0% efficiency $\leq$ 5 MeV")
+    plt.savefig("plotting/MARLEY100k_NOMARLEY_COMPARISON.png")
+
+#compare_MARLEY_NOMARLEY()

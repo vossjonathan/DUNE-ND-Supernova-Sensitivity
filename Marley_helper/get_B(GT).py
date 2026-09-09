@@ -24,8 +24,9 @@ def get_theoretical():
 
     E = data[:, 0]
     B = data[:, 1]
-
+    print("was das", np.where(np.diff(E) > 0.2))
     gap_indices = np.where(np.diff(E) > 0.2)[0] + 1
+    print("gap indices:", gap_indices)
     E_segments = np.split(E, gap_indices)
     B_segments = np.split(B, gap_indices)
 
@@ -38,24 +39,30 @@ def get_theoretical():
         B_integral = 0
 
         for E_seg, B_seg in zip(E_segments, B_segments):
+            #print(f"E_seg: {E_seg}, B_seg: {B_seg}")
             if E_seg[-1] < E_low or E_seg[0] > E_high:
                 continue
+            print(f"len(E_seg): {len(E_seg)}")
 
             mask = (E_seg >= E_low) & (E_seg <= E_high)
             E_bin = E_seg[mask]
             B_bin = B_seg[mask]
+            #print(f"E_bin: {E_bin}, B_bin: {B_bin}")
 
             if E_seg[0] < E_low < E_seg[-1]:
                 E_bin = np.insert(E_bin, 0, E_low)
-                B_bin = np.insert(B_bin, 0, np.interp(E_low, E_seg, B_seg))
-
+                B_border = np.interp(E_low, E_seg, B_seg)#get value at bin border
+                B_bin = np.insert(B_bin, 0, B_border) 
+            #print(f"Adjusted E_bin: {E_bin}, B_bin: {B_bin}")
             if E_seg[0] < E_high < E_seg[-1]:
                 E_bin = np.append(E_bin, E_high)
-                B_bin = np.append(B_bin, np.interp(E_high, E_seg, B_seg))
-
+                B_border = np.interp(E_high, E_seg, B_seg)#get value at bin border
+                B_bin = np.append(B_bin,B_border) 
+            #print(f"Final E_bin: {E_bin}, B_bin: {B_bin}")
+            #print(f"B_integral before adding: {B_integral}")
             if len(E_bin) >= 2:
                 B_integral += np.trapezoid(B_bin, E_bin)
-
+            print(f"B_integral after adding: {B_integral}")
         if B_integral > 0:
             Ex_bins.append((E_low + E_high) / 2)
             BGT_bins.append(B_integral)
@@ -69,7 +76,7 @@ def get_theoretical():
     plt.bar(Ex_bins, BGT_bins, width=0.8)
     plt.xlabel(r"Excitation Energy $E_x$ [MeV]")
     plt.ylabel(r"Integrated $B(GT)$ per 1 MeV bin")
-    plt.savefig("Marley_helper/theoretical_BGT_binned.png", dpi=300)
+    plt.savefig("Marley_helper/theoretical_BGT_binnedfff.png", dpi=300)
   
 
 get_theoretical()

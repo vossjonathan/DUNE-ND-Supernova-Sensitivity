@@ -2,33 +2,13 @@ import uproot
 from pathlib import Path
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.colors import LogNorm
+from matplotlib.colors import LogNorm, TwoSlopeNorm, SymLogNorm
 
 TMS = Path.home()/"software"/"geant4"/"geant4-work"/"TMS"
 
-
-'''nu_energy = 0
-for i in range(1, 11):
-
-    nu_energy = i * 10
-    file = uproot.open(TMS/"build"/f"TMS_Enu_{nu_energy}.0MeV.root")
-    tree = file["TMS"]
-
-    Escint = tree["Escint"].array(library="np")
-
-
-print(Escint)
-print(len(Escint))
-'''
-
-
-
-#printMacro()
-
-
 def get_smearing_column(filename):
 
-    file = uproot.open(TMS/"build"/"CC_nuebar_56Fe_correct_grid_100k"/filename)
+    file = uproot.open(TMS/"build"/filename)
 
     tree = file["TMS"]
     Escint= tree["Escint"].array(library = "np")
@@ -36,13 +16,11 @@ def get_smearing_column(filename):
 
 
     bin_edges = np.linspace(0.5, 100, 201)
-    bin_centers = 0.5 * (bin_edges[:-1] + bin_edges[1:])
 
 
     counts, edges = np.histogram(Escint, bins = bin_edges)
 
     column = counts / n_generated
-    Escint = file["TMS"]["Escint"].array(library="np")
 
 
     return column
@@ -53,10 +31,10 @@ def build_smearing_matrix():
     columns = []
     bin_edges = np.linspace(0.5, 100, 201)
     bin_centers = 0.5 * (bin_edges[:-1] + bin_edges[1:])
-    bin_centers = bin_centers[bin_centers >= 4.71]
+    bin_centers = bin_centers[bin_centers >= 6.31]
 
     for i in bin_centers:
-        column = get_smearing_column(f"TMS_{i:.5f}_nuebar_Fe56_MeV.root")
+        column = get_smearing_column(f"data_marley/MARLEY_NC_nue100k/MARLEY_TMS_{i:.5f}_NC_nue_Fe56_MeV.root")
         columns.append(column)
     matrix = np.column_stack(columns) #191 columns
     smearing_matrix = np.zeros((200, 200))
@@ -94,8 +72,7 @@ def write_snowglobes_matrix(smearing_matrix, filename):
                 f.write(line + ":\n")
 
         f.write(">\n")
-matrix = build_smearing_matrix()
-write_snowglobes_matrix(matrix, "../../software/snowglobes/smear/TMS_iron/calc100k_smear_nuebar_Fe56_TMS_iron.dat")
+
 
 def create_ES_smearing_matrix():
     response_matrix = build_smearing_matrix()
@@ -113,18 +90,18 @@ def create_ES_smearing_matrix():
 
 #create_ES_smearing_matrix()
 
-def plot_smearing_matrix():
-    matrix = build_smearing_matrix()
+def plot_smearing_matrix(matrix):
+    #matrix = build_smearing_matrix()
     #matrix = create_ES_smearing_matrix()
     
     print(matrix.sum(axis = 0))
 
     plt.imshow(matrix, origin = "lower", aspect = "auto", extent=[0.5, 100.0, 0.5, 100.0], norm=LogNorm(vmin=1e-5, vmax=matrix.max()))
-    plt.xlabel(r"$T_e$ [MeV]")#(r"true neutrino energy $E_\nu$ [MeV]")
+    plt.xlabel(r"True neutrino energy E$_\nu$ [MeV]")#(r"true neutrino energy $E_\nu$ [MeV]")
     plt.ylabel(r"Scintillator energy $E_{Sc}$ [MeV]")
     plt.colorbar(label = "Probability")
-    plt.title(r"Smearing Matrix CC $\bar\nu_e$, 100,000 runs / bin")#(r"ES smearing matrix $\bar\nu_e$, TMS (only scintillator)")
-    plt.savefig("TMS_smearing_calc/TMS_nuebar_Fe56_response_matrix100k.png")
+    plt.title(r"MARLEY Smearing Matrix NC channels, 100,000 runs / bin")#(r"ES smearing matrix $\bar\nu_e$, TMS (only scintillator)")
+    plt.savefig("TMS_smearing_calc/MARLEY_smear_NC_channels.png")
 
 
 #plot_smearing_matrix()
@@ -154,16 +131,81 @@ def plot_E_L():
 #bin_edges = np.linspace(0.5, 100.0, 201)
 #bin_centers = 0.5 * (bin_edges[:-1] + bin_edges[1:])
 
-'''matrix = build_smearing_matrix()
+#matrix = build_smearing_matrix()
+#plot_smearing_matrix(matrix)
+#write_snowglobes_matrix(matrix, "../../software/snowglobes/smear/TMS_iron/MARLEY100k_smear_NC_Fe56_TMS_iron.dat")
+
+def plot_effiency():
+    matrix = build_smearing_matrix()
+    efficiency = matrix.sum(axis=0)
+
+    bin_edges = np.linspace(0.5, 100, 201)
+    bin_centers = 0.5 * (bin_edges[:-1] + bin_edges[1:])
+
+    plt.plot(bin_centers, efficiency)
+    plt.xlabel(r"$E_\nu$ [MeV]")
+    plt.ylabel("Detection efficiency")
+    plt.title("MARLEY smearing matrix effiency 100k")
+    plt.ylim(0, 1)
+    plt.savefig("TMS_smearing_calc/NC_smear_efficiency.png")
+
+plot_effiency()
+
+def plot_difference_matrix():
+    columns = []
+    bin_edges = np.linspace(0.5, 100, 201)
+    bin_centers = 0.5 * (bin_edges[:-1] + bin_edges[1:])
+    bin_centers = bin_centers[bin_centers >= 6.31]
+
+    for i in bin_centers:
+        column = get_smearing_column(f"data_marley/MARLEY_CC_nue100k/MARLEY_TMS_{i:.5f}_CC_nue_Fe56_MeV.root")
+        columns.append(column)
+    matrix = np.column_stack(columns) #191 columns
+    smearing_matrix_MARLEY = np.zeros((200, 200))
+    a, b = matrix.shape
+    smearing_matrix_MARLEY[:, (200 - b):] = matrix
 
 
-acceptance = matrix.sum(axis=0)
+    columns = []
+    bin_edges = np.linspace(0.5, 100, 201)
+    bin_centers = 0.5 * (bin_edges[:-1] + bin_edges[1:])
+    bin_centers = bin_centers[bin_centers >= 6.31]
 
-bin_edges = np.linspace(0.5, 100.0, 201)
-bin_centers = 0.5 * (bin_edges[:-1] + bin_edges[1:])
+    for i in bin_centers:
+        column = get_smearing_column(f"data_without_marley/CC_nue_56Fe_correct_grid_100k/TMS_{i:.5f}_nue_Fe56_MeV.root")
+        columns.append(column)
+    matrix = np.column_stack(columns) #191 columns
+    smearing_matrix_NOMARLEY = np.zeros((200, 200))
+    a, b = matrix.shape
+    smearing_matrix_NOMARLEY[:, (200 - b):] = matrix
 
-for E, A in zip(bin_centers, acceptance):
-    if 5 <= E <= 30:
-        print(E, A)'''
+    diff = smearing_matrix_MARLEY  - smearing_matrix_NOMARLEY
+
+    max_abs = np.max(np.abs(diff))
+
+    norm = SymLogNorm(
+        linthresh=1e-5,
+        linscale=1,
+        vmin=-max_abs,
+        vmax=max_abs,
+        base=10
+    )
+
+    plt.figure()
+
+    plt.imshow(diff,origin="lower",aspect="auto",extent=[0.5, 100.0, 0.5, 100.0],norm=norm,cmap="RdBu_r")
+
+    plt.xlabel(r"True neutrino energy $E_\nu$ [MeV]")
+    plt.ylabel(r"Scintillator energy $E_{\rm Sc}$ [MeV]")
+
+    plt.colorbar(label="Difference")
+
+    plt.title(r"M$_{MARLEY}$ - M$_{G4}$, CC $\nu_e$ on $^{56}$Fe")
+    plt.savefig("TMS_smearing_calc/diff_matrix_plot.png",dpi=200,bbox_inches="tight")
+    plt.close()
 
 
+
+#plot_difference_matrix()
+
+    

@@ -13,10 +13,17 @@ XSCNS = SNOWGLOBES/"xscns"
 def calc_iron_nue_Fe56():
 
 
-    energies_paper = np.arange(10,105,5) #in MeV
+    
 
-    #cross sections in 10^-42 cm^2, source: 1, 23, column 1
-    cross_section_paper = np.array([0.661, 6.45, 29.3, 73.3, 140, 236, 371, 555, 798, 1100, 1480, 1920, 2420, 2990, 3600, 4270, 4980, 5730, 6520])
+    # KOLBE:
+    # cross sections in 10^-42 cm^2, source: 1, 23, column 1
+    # energies_paper = np.arange(10,105,5) #in MeV
+    # cross_section_paper = np.array([0.661, 6.45, 29.3, 73.3, 140, 236, 371, 555, 798, 1100, 1480, 1920, 2420, 2990, 3600, 4270, 4980, 5730, 6520])
+
+    # LAZAUSKAS:
+    # cross sections in 10^-42 cm^2, source 4
+    energies_paper = np.array([7.5, 10, 12.5, 15, 20, 25, 30, 40, 50, 60, 70, 80, 90, 100])
+    cross_section_paper = np.array([0.877, 3.63, 8.94, 17.3, 52.6, 125, 233, 544, 983, 1670, 2590, 3730, 5070, 6600])
 
     template = np.loadtxt(XSCNS / "xs_nue_Ar40.dat")
     logE = template[:,0] #in log10(energy in GeV)
@@ -149,16 +156,57 @@ def calc_iron_nc_nux_Fe56():
     np.savetxt(outfile6, output, fmt = "%.6e", header=header, comments="# ")
 
 
-calc_iron_nc_nux_Fe56()
+#calc_iron_nc_nux_Fe56()
 
+def calc_Pb_CC_nue():
+
+    energies_paper = np.array([7.5, 10, 12.5, 15, 20, 25, 30, 40, 50, 60, 70, 80, 90, 100])
+    #cross sections in 10^-42cm^2
+    #Source 4, LAZAUSKAS, Table 1
+    cross_section_paper = np.array([0.000247, 8.49, 46.8, 175, 853, 2860, 4900, 7130, 11300, 16300, 22000, 28300, 35000, 41600])
+
+    template = np.loadtxt(XSCNS / "xs_nue_Ar40.dat")
+    logE = template[:,0] #in log(energy in GeV)
+    energies_GeV = 10**logE #in GeV
+    energies_MeV = 10**logE * 1000 #in MeV
+
+    #func = interp1d(energies_paper, cross_section_paper, kind = 'cubic', fill_value= 'extrapolate')
+
+    linear = interp1d(energies_paper,cross_section_paper,kind="linear",fill_value="extrapolate")
+    func = PchipInterpolator(energies_paper, cross_section_paper, extrapolate= False)
+
+    inside = ((energies_MeV >= energies_paper[0]) & (energies_MeV <= energies_paper[-1]))
+    cross_sections_interp_extrap = np.where(inside, func(energies_MeV), linear(energies_MeV))
+
+    cross_sections_interp_extrap = np.maximum(cross_sections_interp_extrap, 0)
+    #cross_sections_interp_extrap = np.maximum(0, cross_sections_interp_extrap) #cut of negative values
+
+    cross_sections_globes = cross_sections_interp_extrap* 1e-4 / energies_GeV #in 10^-38cm^2 /GeV
+    zeros = np.zeros(len(energies_MeV))
+
+    output = np.column_stack((logE, zeros, zeros, zeros, cross_sections_globes, zeros, zeros))
+
+    outfile = XSCNS / "CALC_xs_nue_Pb208.dat"
+
+    header = ("Neutrino-208Pb cc cross section (10^-38 cm^2/GeV)\n"
+              "log(energy in GeV) nu_e nu_mu nu_tau nu_e_bar nu_mu_bar nu_tau_bar\n")
+
+    np.savetxt(outfile, output, fmt = "%.6e", header=header, comments="# ")
+
+#calc_Pb_CC_nue()
 
 def plot_iron_cross():
+
+    marley_file = Path.home()/"software"/"marley"/"Fe_Fermi-MEMA.txt"
+    data_marley = np.loadtxt(marley_file)
+    energies_marley = data_marley[:, 0]
+    xsec_marley = data_marley[:, 1]
 
 
     energies_paper = np.arange(10,105,5) #in MeV
 
     #cross sections in 10^-42 cm^2, source: 1, 23, column 1
-    cross_section_paper = np.array([0.661, 6.45, 29.3, 73.3, 140, 236, 371, 555, 798, 1100, 1480, 1920, 2420, 2990, 3600, 4270, 4980, 5730, 6520])
+    cross_section_paper_KOLBE = np.array([0.661, 6.45, 29.3, 73.3, 140, 236, 371, 555, 798, 1100, 1480, 1920, 2420, 2990, 3600, 4270, 4980, 5730, 6520])
 
     template = np.loadtxt(XSCNS / "xs_nue_Ar40.dat")
     logE = template[:,0] #in log10(energy in GeV)
@@ -169,7 +217,7 @@ def plot_iron_cross():
 
     cross_sections_interp_extrap = np.zeros(len(energies_MeV))
     #func = interp1d(energies_paper, cross_section_paper, kind = 'linear', fill_value= 'extrapolate')
-    func = PchipInterpolator(energies_paper, cross_section_paper, extrapolate= False)
+    func = PchipInterpolator(energies_paper, cross_section_paper_KOLBE, extrapolate= False)
     cross_sections_interp_extrap += func(energies_MeV)
     #print("only interp ", cross_sections_interp[700:800])
     #print('interp, extrap ', cross_sections_interp_extrap[700:800])
@@ -185,8 +233,12 @@ def plot_iron_cross():
     #cross sections in 10^-42 cm^2, source: 1, 23, column 2
     cross_section_paper3 = np.array([0.191, 2.19, 6.90, 15.1, 28.5, 48.9, 78.6, 119, 172, 239, 320, 415, 525, 650, 789, 942, 1110, 1290, 1490])
 
+    cross_section_paper_LAZAUSKAS = np.array([0.877, 3.63, 8.94, 17.3, 52.6, 125, 233, 544, 983, 1670, 2590, 3730, 5070, 6600])
+
+    plt.plot(energies_marley, xsec_marley, label = "MARLEY", color = "purple")
     plt.scatter(energies_MeV, cross_sections_interp_extrap, label = "Inter/Extrapolatoin")
-    plt.scatter(energies_paper, cross_section_paper, label = r"CC $\nu_e$ ")
+    plt.scatter(energies_paper, cross_section_paper_KOLBE, label = r"KOLBE: CC $\nu_e$ ")
+    plt.scatter(energies_paper2, cross_section_paper_LAZAUSKAS, label = r"LAZAUSKAS: CC $\nu_e$ ")
     plt.scatter(energies_paper2, cross_section_paper2, label = r"CC $\bar\nu_e$")
     plt.scatter(energies_paper3, cross_section_paper3, label = "NC all flavors")
     plt.legend()
@@ -194,7 +246,97 @@ def plot_iron_cross():
     plt.ylabel(r"$\sigma$ in $10^{-42} cm^2$")
     plt.title("linear inter- and extrapolation")
     
-    plt.savefig("xcns_calculations/iron.png")
+    plt.savefig("xcns_calculations/iron_with_marley.png")
 
 
 #plot_iron_cross()
+
+def compare_CC_nue_xsec():
+
+    marley_file_SAM = Path.home()/"software"/"marley"/f"Fe_xsec_SAM.txt"
+    marley_data_SAM = np.loadtxt(marley_file_SAM)
+    marley_energy_SAM = marley_data_SAM[:, 0]
+    marley_xsec_SAM = marley_data_SAM[:, 1]
+
+    marley_file_default = Path.home()/"software"/"marley"/f"Fe_DEFAULT.txt"
+    marley_data_default = np.loadtxt(marley_file_default)
+    marley_energy_default = marley_data_default[:, 0]
+    marley_xsec_default = marley_data_default[:, 1]
+
+
+    energies_KOLBE = np.arange(10,105,5) #in MeV
+    cross_section_KOLBE = np.array([0.661, 6.45, 29.3, 73.3, 140, 236, 371, 555, 798, 1100, 1480, 1920, 2420, 2990, 3600, 4270, 4980, 5730, 6520])
+
+    energies_LAZAUSKAS = np.array([7.5, 10, 12.5, 15, 20, 25, 30, 40, 50, 60, 70, 80, 90, 100])
+    cross_section_LAZAUSKAS = np.array([0.877, 3.63, 8.94, 17.3, 52.6, 125, 233, 544, 983, 1670, 2590, 3730, 5070, 6600])
+
+    x = np.arange(0, 100, 0.5)
+
+    KOLBE_interp = np.zeros(len(x))
+    func = PchipInterpolator(energies_KOLBE, cross_section_KOLBE, extrapolate= False)
+    KOLBE_interp += func(x)
+
+    LAZAUSKAS_interp = np.zeros(len(x))
+    #func = interp1d(energies_paper, cross_section_paper, kind = 'linear', fill_value= 'extrapolate')
+    func = PchipInterpolator(energies_LAZAUSKAS, cross_section_LAZAUSKAS, extrapolate= False)
+    LAZAUSKAS_interp += func(x)
+
+
+    #plt.plot(marley_energy_allowed, marley_xsec_allowed, label = "MARLEY: allowed", color = "red")
+    plt.plot(marley_energy_default, marley_xsec_default, label = "MARLEY v2 (My)", color = "green")
+    plt.plot(marley_energy_SAM, marley_xsec_SAM, label = "MARLEY v2 (Sam)", color = "red")
+    #plt.plot(x, KOLBE_interp, color = "tab:blue")
+    #plt.plot(x, LAZAUSKAS_interp, color = "tab:orange")
+    #plt.scatter(energies_KOLBE, cross_section_KOLBE, label = "Kolbe, 2001")
+    #plt.scatter(energies_LAZAUSKAS, cross_section_LAZAUSKAS, label = "Lazauskas, 2007")
+
+
+    plt.legend()
+    plt.grid(True, alpha = 0.3)
+    plt.xlabel(r"Neutrino energy E$_\nu$ [MeV]")
+    plt.ylabel(r"$\sigma$ in $10^{-42} cm^2$")
+    plt.title(r"CC $\nu_e$ cross section on 56Fe comparison")
+    
+    plt.savefig("xcns_calculations/xsections_CC_nue_comparison_plus_SAM.png")
+
+compare_CC_nue_xsec()
+
+def compare_xsec_Fe_Pb():
+
+    marley_file_default = Path.home()/"software"/"marley"/"Fe_DEFAULT.txt"
+    marley_data_default = np.loadtxt(marley_file_default)
+    marley_energy_default = marley_data_default[:, 0]
+    marley_xsec_default = marley_data_default[:, 1]
+
+    Pb_file = Path.home()/"software"/"marley"/"Pb_xsec_data.txt"
+    Pb_data = np.loadtxt(Pb_file)
+    Pb_energy = Pb_data[:, 0]
+    Pb_xsec = Pb_data[:, 1]
+
+    x = np.arange(0, 100, 0.5)
+
+    energies_Pb = np.array([7.5, 10, 12.5, 15, 20, 25, 30, 40, 50, 60, 70, 80, 90, 100])
+    #cross sections in 10^-42cm^2
+    #Source 4, LAZAUSKAS, Table 1
+    cross_section_Pb = np.array([0.000247, 8.49, 46.8, 175, 853, 2860, 4900, 7130, 11300, 16300, 22000, 28300, 35000, 41600])
+    CC_nue_Pb_interp = np.zeros(len(x))
+    func = PchipInterpolator(energies_Pb, cross_section_Pb, extrapolate= False)
+    CC_nue_Pb_interp += func(x)
+
+    #plt.plot(marley_energy_allowed, marley_xsec_allowed, label = "MARLEY: allowed", color = "red")
+    plt.plot(marley_energy_default, marley_xsec_default, label = "MARLEY v2 Fe", color = "green")
+    plt.scatter(energies_Pb, cross_section_Pb, label = "LAZAUSKAS Pb", color = "tab:orange")
+    plt.plot(x, CC_nue_Pb_interp, label = "LAZAUSKAS Pb interpolation", color = "tab:orange")
+    plt.plot(Pb_energy, Pb_xsec, label = "MARLEY v2 Pb", color = "red")
+
+
+
+    plt.legend()
+    plt.grid(True, alpha = 0.3)
+    plt.xlabel(r"Neutrino energy E$_\nu$ [MeV]")
+    plt.ylabel(r"$\sigma$ in $10^{-42} cm^2$")
+    plt.title(r"CC $\nu_e$ cross section on 56Fe vs 208Pb")
+    
+    plt.savefig("xcns_calculations/comparison_Pb_paper.png")
+
+#compare_xsec_Fe_Pb()
