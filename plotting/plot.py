@@ -223,6 +223,12 @@ def plot_all_TMS_iron_scint():
 
     total_events += NC_events_total
 
+    #background
+    background_file = SNOWGLOBES/"out"/f"garching_bg_chan_TMS_iron_events_unweighted.dat"
+    background_data = np.loadtxt(background_file, max_rows = 200)
+    background_events = background_data[:, 1]
+
+
     plt.stairs(NC_events_total, energy, baseline = None, label="NC on Fe", color="cyan", linestyle = "-")
     plt.stairs(total_iron_ES, energy, baseline = None, label=r"$\nu, e^-$ scattering in Fe", color="blue", linestyle = "-")
     plt.stairs(total_scint_ES,energy, baseline = None,label=r"$\nu, e^-$ scattering in scint", color="red", linestyle = "-")
@@ -230,6 +236,7 @@ def plot_all_TMS_iron_scint():
     plt.stairs(events_smeared_nue_w,energy, baseline = None,label=r"CC $\nu_e$ on Fe ", color="green", linestyle = "-")
     plt.stairs(events_smeared_nuebar_w,energy, baseline = None,label=r"CC $\bar\nu_e$ on Fe ", color="purple", linestyle = "-")
     plt.stairs(total_events, energy, baseline = None,label="Total", color="black", linestyle = "-")
+    #plt.stairs(background_events, energy, baseline = None, label = "Background 800ft", color = "grey", linestyle = "-")
     #plt.plot(energy, total_events,  label="Total", color="red", linestyle = "-")
     plt.legend()
     plt.grid(True, alpha = 0.3)
@@ -238,7 +245,7 @@ def plot_all_TMS_iron_scint():
     plt.xlabel("Deposited E in scint [MeV]")
     plt.ylabel("Number of events per 0.5 MeV bin")
     plt.title("Supernova Signal in TMS Detector (without NC channels)\n Garching flux, no additional Threshold ")
-    plt.savefig("plotting/TMS_signal_with_NC.png")
+    plt.savefig("plotting/TMS_signal_preliminary.png")
     
 
 plot_all_TMS_iron_scint()

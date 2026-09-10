@@ -31,10 +31,10 @@ def build_smearing_matrix():
     columns = []
     bin_edges = np.linspace(0.5, 100, 201)
     bin_centers = 0.5 * (bin_edges[:-1] + bin_edges[1:])
-    bin_centers = bin_centers[bin_centers >= 6.31]
+    #bin_centers = bin_centers[bin_centers >= 6.31]
 
     for i in bin_centers:
-        column = get_smearing_column(f"data_marley/MARLEY_NC_nue100k/MARLEY_TMS_{i:.5f}_NC_nue_Fe56_MeV.root")
+        column = get_smearing_column(f"data_marley/MARLEY_ES_100k/MARLEY_TMS_{i:.5f}_ES_Fe56_MeV.root")
         columns.append(column)
     matrix = np.column_stack(columns) #191 columns
     smearing_matrix = np.zeros((200, 200))
@@ -74,14 +74,14 @@ def write_snowglobes_matrix(smearing_matrix, filename):
         f.write(">\n")
 
 
-def create_ES_smearing_matrix():
+def create_ES_smearing_matrix(flavor):
     response_matrix = build_smearing_matrix()
     #print(type(response_matrix))
     SNOWGLOBES = Path.home()/"software"/"snowglobes"
 
     INTERACTION = SNOWGLOBES / "smearing_code" /"interaction"
 
-    nue_e_file = INTERACTION/ "interaction_nutaubar_e.ssv"
+    nue_e_file = INTERACTION/ f"interaction_{flavor}_e.ssv"
 
     matrix_nue_e = np.loadtxt(nue_e_file)
     smearing_matrix = response_matrix @ matrix_nue_e
@@ -100,8 +100,8 @@ def plot_smearing_matrix(matrix):
     plt.xlabel(r"True neutrino energy E$_\nu$ [MeV]")#(r"true neutrino energy $E_\nu$ [MeV]")
     plt.ylabel(r"Scintillator energy $E_{Sc}$ [MeV]")
     plt.colorbar(label = "Probability")
-    plt.title(r"MARLEY Smearing Matrix NC channels, 100,000 runs / bin")#(r"ES smearing matrix $\bar\nu_e$, TMS (only scintillator)")
-    plt.savefig("TMS_smearing_calc/MARLEY_smear_NC_channels.png")
+    plt.title(r"MARLEY Smearing Matrix ES response matrix, 100,000 runs / bin")#(r"ES smearing matrix $\bar\nu_e$, TMS (only scintillator)")
+    plt.savefig("TMS_smearing_calc/MARLEY_smear_ES_response_matrix.png")
 
 
 #plot_smearing_matrix()
@@ -131,8 +131,8 @@ def plot_E_L():
 #bin_edges = np.linspace(0.5, 100.0, 201)
 #bin_centers = 0.5 * (bin_edges[:-1] + bin_edges[1:])
 
-#matrix = build_smearing_matrix()
-#plot_smearing_matrix(matrix)
+matrix = build_smearing_matrix()
+plot_smearing_matrix(matrix)
 #write_snowglobes_matrix(matrix, "../../software/snowglobes/smear/TMS_iron/MARLEY100k_smear_NC_Fe56_TMS_iron.dat")
 
 def plot_effiency():
@@ -149,7 +149,7 @@ def plot_effiency():
     plt.ylim(0, 1)
     plt.savefig("TMS_smearing_calc/NC_smear_efficiency.png")
 
-plot_effiency()
+#plot_effiency()
 
 def plot_difference_matrix():
     columns = []

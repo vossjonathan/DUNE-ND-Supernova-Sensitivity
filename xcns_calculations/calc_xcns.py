@@ -253,16 +253,23 @@ def plot_iron_cross():
 
 def compare_CC_nue_xsec():
 
-    marley_file_SAM = Path.home()/"software"/"marley"/f"Fe_xsec_SAM.txt"
-    marley_data_SAM = np.loadtxt(marley_file_SAM)
-    marley_energy_SAM = marley_data_SAM[:, 0]
-    marley_xsec_SAM = marley_data_SAM[:, 1]
+    #includes dummy Ar continuum react file
+    marley_file_continuum = Path.home()/"software"/"marley"/"data_xsec"/f"Fe_Ar_continuum.txt"
+    marley_data_continuum = np.loadtxt(marley_file_continuum)
+    marley_energy_continuum = marley_data_continuum[:, 0]
+    marley_xsec_continuum = marley_data_continuum[:, 1]
 
-    marley_file_default = Path.home()/"software"/"marley"/f"Fe_DEFAULT.txt"
+    #only discrete react file
+    marley_file_default = Path.home()/"software"/"marley"/"data_xsec"/f"Fe_Ar_discrete.txt"
     marley_data_default = np.loadtxt(marley_file_default)
     marley_energy_default = marley_data_default[:, 0]
     marley_xsec_default = marley_data_default[:, 1]
 
+    #form_factors: allowed, coulomb_mode: Fermi-MEMA
+    marley_file_3 = Path.home()/"software"/"marley"/"data_xsec"/f"Fe_Fermi_Mema_and_allowed.txt"
+    marley_data_3 = np.loadtxt(marley_file_3)
+    marley_energy_3 = marley_data_3[:, 0]
+    marley_xsec_3 = marley_data_3[:, 1]
 
     energies_KOLBE = np.arange(10,105,5) #in MeV
     cross_section_KOLBE = np.array([0.661, 6.45, 29.3, 73.3, 140, 236, 371, 555, 798, 1100, 1480, 1920, 2420, 2990, 3600, 4270, 4980, 5730, 6520])
@@ -283,12 +290,13 @@ def compare_CC_nue_xsec():
 
 
     #plt.plot(marley_energy_allowed, marley_xsec_allowed, label = "MARLEY: allowed", color = "red")
-    plt.plot(marley_energy_default, marley_xsec_default, label = "MARLEY v2 (My)", color = "green")
-    plt.plot(marley_energy_SAM, marley_xsec_SAM, label = "MARLEY v2 (Sam)", color = "red")
-    #plt.plot(x, KOLBE_interp, color = "tab:blue")
-    #plt.plot(x, LAZAUSKAS_interp, color = "tab:orange")
-    #plt.scatter(energies_KOLBE, cross_section_KOLBE, label = "Kolbe, 2001")
-    #plt.scatter(energies_LAZAUSKAS, cross_section_LAZAUSKAS, label = "Lazauskas, 2007")
+    plt.plot(marley_energy_default, marley_xsec_default, label = "MARLEY only discrete", color = "green")
+    plt.plot(marley_energy_continuum, marley_xsec_continuum, label = "MARLEY continuum 40Ar Files", color = "red")
+    plt.plot(marley_energy_3, marley_xsec_3, label = "form factor: allowed", color = "purple")
+    plt.plot(x, KOLBE_interp, color = "tab:blue")
+    plt.plot(x, LAZAUSKAS_interp, color = "tab:orange")
+    plt.scatter(energies_KOLBE, cross_section_KOLBE, label = "Kolbe, 2001")
+    plt.scatter(energies_LAZAUSKAS, cross_section_LAZAUSKAS, label = "Lazauskas, 2007")
 
 
     plt.legend()
@@ -297,7 +305,7 @@ def compare_CC_nue_xsec():
     plt.ylabel(r"$\sigma$ in $10^{-42} cm^2$")
     plt.title(r"CC $\nu_e$ cross section on 56Fe comparison")
     
-    plt.savefig("xcns_calculations/xsections_CC_nue_comparison_plus_SAM.png")
+    plt.savefig("xcns_calculations/test.png")
 
 compare_CC_nue_xsec()
 

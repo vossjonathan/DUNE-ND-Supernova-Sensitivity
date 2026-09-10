@@ -113,7 +113,7 @@ def printMacroMarley100k(n_events, n_jobs):
 
     bin_edges = np.linspace(0.5, 100, 201)
     bin_centers = 0.5 * (bin_edges[:-1] + bin_edges[1:])
-    bin_centers = bin_centers[bin_centers >= 6.31]
+    #bin_centers = bin_centers[bin_centers >= 6.31]
 
     build_dir = TMS / "build"
 
@@ -121,7 +121,7 @@ def printMacroMarley100k(n_events, n_jobs):
 
         energies = bin_centers[job::n_jobs]
 
-        with open(build_dir / "marley100kscanNC"/ f"marleyScan100k{job+1}.mac", "w") as f:
+        with open(build_dir / "marley100kscanES"/ f"marleyScan100k{job+1}.mac", "w") as f:
 
             print("/run/numberOfThreads 1", file=f)
             print("/run/initialize", file=f)
@@ -134,26 +134,26 @@ def printMacroMarley100k(n_events, n_jobs):
 
                 print(
                     f"/analysis/setFileName "
-                    f"data_marley/MARLEY_NC_nue100k/"
-                    f"MARLEY_TMS_{E:.5f}_NC_nue_Fe56_MeV.root",
+                    f"data_marley/MARLEY_ES_100k/"
+                    f"MARLEY_TMS_{E:.5f}_ES_Fe56_MeV.root",
                     file=f
                 )
 
                 print(f"/run/beamOn {n_events}\n", file=f)
 
 
-#printMacroMarley100k(100000, 8)
+printMacroMarley100k(100000, 8)
 
 def printMacroMissing(n_events):
     bin_edges = np.linspace(0.5, 100, 201)
     bin_centers = 0.5 * (bin_edges[:-1] + bin_edges[1:])
-    bin_centers = bin_centers[(bin_centers < 6.31) & (bin_centers > 3.4)]
+    bin_centers = [10,20,30,40]
 
     build_dir = TMS / "build"
 
 
 
-    with open(build_dir / "marley100kscanNC"/ f"marleyScan100kMissing.mac", "w") as f:
+    with open(build_dir / f"marleyScanCompareXsec.mac", "w") as f:
 
         print("/run/numberOfThreads 1", file=f)
         print("/run/initialize", file=f)
@@ -166,11 +166,11 @@ def printMacroMissing(n_events):
 
             print(
                 f"/analysis/setFileName "
-                f"data_marley/MARLEY_NC_nue100k/"
-                f"MARLEY_TMS_{E:.5f}_NC_nue_Fe56_MeV.root",
+                f"data_marley/MARLEY_compare_xsec_effect_CC/"
+                f"MARLEY_TMS_{E:.5f}_Ar_dummy_continuum.root",
                 file=f
             )
 
             print(f"/run/beamOn {n_events}\n", file=f)
 
-printMacroMissing(100000)
+#printMacroMissing(100000)
