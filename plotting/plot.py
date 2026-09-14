@@ -16,8 +16,6 @@ def plot_one_channel_smeared_unsmeared():
     data_unsmeared = np.loadtxt(file_unsmeared, max_rows=200)
 
     energy = np.linspace(0.5, 100, 201)
-    energy_smeared = data_smeared[:, 0] * 1000 #now in MeV
-    energy_unsmeared = data_unsmeared[:, 0] * 1000 #now in MeV
 
     events_smeared = data_smeared[:, 1]
     events_unsmeared = data_unsmeared[:, 1]
@@ -44,31 +42,48 @@ def plot_two_channel_smeared_unsmeared():
     data_unsmeared = np.loadtxt(file_unsmeared, max_rows=200)
     events_unsmeared = data_unsmeared[:, 1]
 
-    file_smeared_ALLOWED = SNOWGLOBES/"out"/"ALLOWED_garching_nue_Fe56_TMS_iron_events_smeared_unweighted.dat"
-    file_smeared_NOTALLOWED = SNOWGLOBES/"out"/"NOTALLOWED_garching_nue_Fe56_TMS_iron_events_smeared_unweighted.dat"
+    file_smeared1 = SNOWGLOBES/"out"/"ONLYG4REAL_garching_nue_Fe56_TMS_iron_events_smeared_unweighted.dat"
+    file_smeared2= SNOWGLOBES/"out"/"MARLEY_garching_nue_Fe56_TMS_iron_events_smeared_unweighted.dat"
 
-    data_smeared_ALLOWED = np.loadtxt(file_smeared_ALLOWED, max_rows=200)
-    data_smeared_NOTALLOWED = np.loadtxt(file_smeared_NOTALLOWED, max_rows=200)
+    data_smeared1 = np.loadtxt(file_smeared1, max_rows=200)
+    data_smeared2 = np.loadtxt(file_smeared2, max_rows=200)
 
-    events_smeared_ALLOWED = data_smeared_ALLOWED[:, 1]
-    events_smeared_NOTALLOWED = data_smeared_NOTALLOWED[:, 1]
+    events_smeared1 = data_smeared1[:, 1]
+    events_smeared2 = data_smeared2[:, 1]
 
     
+    old = np.loadtxt(
+    SNOWGLOBES/"out"/
+    "NOMARLEY_garching_nue_Fe56_TMS_iron_events_smeared_unweighted.dat",
+    max_rows=200
+    )[:,1]
 
-    plt.stairs(events_smeared_ALLOWED, energy, label="MARLEY AA", color="blue")
-    plt.stairs(events_smeared_NOTALLOWED, energy, label="MARLEY Default", color="red")
+    new = np.loadtxt(
+        SNOWGLOBES/"out"/
+        "ONLYG4REAL_garching_nue_Fe56_TMS_iron_events_smeared_unweighted.dat",
+        max_rows=200
+    )[:,1]
+
+    print("old total:", old.sum())
+    print("new total:", new.sum())
+    print("max abs diff:", np.max(np.abs(old-new)))
+    print("largest difference bin:", np.argmax(np.abs(old-new)))
+
+    print(np.column_stack((old[:20], new[:20], new[:20]-old[:20])))
+    plt.stairs(events_smeared1, energy, label="Only Geant4", color="blue", baseline = None)
+    plt.stairs(events_smeared2, energy, label="MARLEY + Geant4", color="red", baseline = None)
     plt.stairs(events_unsmeared, energy, label="Unsmeared Signal", color="black")
-    plt.xlim(0,50)
+    plt.xlim(0,20)
     #plt.text(0.42, 0.75,f"Total events unsmeared: {events_unsmeared.sum():.2f}\nTotal events smeared: {events_smeared.sum():.2f}",transform=plt.gca().transAxes)#,ha="right",va="top")
     #plt.text(0.84, 0.77,f"Total events unsmeared: {events_unsmeared.sum():.2f}",transform=plt.gca().transAxes,ha="right",va="top")
     plt.xlabel(r" E [MeV]")
     plt.ylabel("Number of Events per bin")
     plt.legend()
     plt.grid(True, alpha=0.3)
-    plt.title(r"CC $\nu_e$ MARLEY AA/Default comparison")#0% efficiency $\leq$ 5 MeV")
-    plt.savefig("plotting/MARLEY_AA_Default_comparison.png")
+    plt.title(r"CC $\nu_e$ G4 vs. MARLEY + G4 comparison")#0% efficiency $\leq$ 5 MeV")
+    plt.savefig("plotting/MARLEY_Geant4REAL_CC_nue_comparison.png")
 
-plot_two_channel_smeared_unsmeared()
+#plot_two_channel_smeared_unsmeared()
 
 def plot_one_channel_iron_smeared_unsmeared(channel):
     channels = {
@@ -280,10 +295,10 @@ def plot_all_TMS_iron_scint():
     plt.xlabel("Deposited E in scint [MeV]")
     plt.ylabel("Number of events per 0.5 MeV bin")
     plt.title("Supernova Signal in TMS Detector\n Garching flux, no additional Threshold ")
-    plt.savefig("plotting/TMS_signal_preliminary.png")
+    plt.savefig("plotting/TMS_signal_preliminary_CCnuebarmarley.png")
     
 
-#plot_all_TMS_iron_scint()
+plot_all_TMS_iron_scint()
 
 def plot_threshold_comparison():
 

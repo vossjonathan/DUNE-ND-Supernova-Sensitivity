@@ -1,8 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def print_experimental():
-    file = "Marley_helper/56Fe_B(GT)_digitized.csv"
+def print_experimental(filename):
+    file = f"Marley_helper/{filename}"
 
     data = np.loadtxt(file, delimiter = ",")
 
@@ -13,7 +13,7 @@ def print_experimental():
     B_GT = B_GT * g_A**2
 
     for E, B in zip(data[:, 0], B_GT):
-        print(f"{E:.2f}   {B:.2f}   1")
+        print(f"{E:.2f}   {(E - 0.125):.2f}   {(E + 0.125):.2f}  {B:.2f}   1")
 
 def get_theoretical():
     file = "Marley_helper/56Fe_theo_B(GT).csv"
@@ -79,4 +79,5 @@ def get_theoretical():
     plt.savefig("Marley_helper/theoretical_BGT_binnedfff.png", dpi=300)
   
 
-get_theoretical()
+print_experimental("CCnuebarAnantaraman1991.csv")
+#get_theoretical()

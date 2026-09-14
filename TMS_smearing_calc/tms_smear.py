@@ -31,10 +31,11 @@ def build_smearing_matrix():
     columns = []
     bin_edges = np.linspace(0.5, 100, 201)
     bin_centers = 0.5 * (bin_edges[:-1] + bin_edges[1:])
-    bin_centers = bin_centers[(bin_centers >= 7)]
+    bin_centers = bin_centers[(bin_centers >= 4.8)]# & (bin_centers <= 69)]
 
     for E in bin_centers:
-        file = Path(TMS/"build"/f"data_marley/MARLEY_CC_nue100k_ALLOWED/MARLEY_TMS_{E:.5f}_CC_ALLOWED_Fe56_MeV.root")
+        #file = Path(TMS/"build"/f"data_marley/MARLEY_CC_nuebar_100k_ALLOWED/MARLEY_TMS_{E:.5f}_CC_nuebar_ALLOWED_Fe56_MeV.root")
+        file = Path(TMS/"build"/f"data_without_marley/CC_nue_56Fe_correct_grid_100k/TMS_{E:.5f}_nue_Fe56_MeV.root")
         column = get_smearing_column(file)
         columns.append(column)
 
@@ -102,8 +103,8 @@ def plot_smearing_matrix(matrix):
     plt.xlabel(r"True neutrino energy E$_\nu$ [MeV]")#(r"true neutrino energy $E_\nu$ [MeV]")
     plt.ylabel(r"Scintillator energy $E_{Sc}$ [MeV]")
     plt.colorbar(label = "Probability")
-    plt.title(r"MARLEY Smearing Matrix nue CC ALLOWED, 100,000 runs / bin")#(r"ES smearing matrix $\bar\nu_e$, TMS (only scintillator)")
-    plt.savefig("TMS_smearing_calc/MARLEY_CC_nue_ALLOWED_100k.png")
+    plt.title(r"MARLEY Smearing Matrix $\bar\nu_e$ CC ALLOWED, 100,000 runs / bin")#(r"ES smearing matrix $\bar\nu_e$, TMS (only scintillator)")
+    plt.savefig("TMS_smearing_calc/MARLEY_CC_nuebar_ALLOWED_100k.png")
 
 
 #plot_smearing_matrix()
@@ -133,9 +134,9 @@ def plot_E_L():
 #bin_edges = np.linspace(0.5, 100.0, 201)
 #bin_centers = 0.5 * (bin_edges[:-1] + bin_edges[1:])
 
-matrix = build_smearing_matrix()
+#matrix = build_smearing_matrix()
 #plot_smearing_matrix(matrix)
-write_snowglobes_matrix(matrix, "../../software/snowglobes/smear/TMS_iron/MARLEY100kALLOWED_smear_NC_Fe56_TMS_iron.dat")
+#write_snowglobes_matrix(matrix, "../../software/snowglobes/smear/TMS_iron/ONLYG4REAL_smear_nuebar_Fe56_TMS_iron.dat")
 
 def plot_effiency():
     matrix = build_smearing_matrix()
@@ -157,31 +158,31 @@ def plot_difference_matrix():
     columns = []
     bin_edges = np.linspace(0.5, 100, 201)
     bin_centers = 0.5 * (bin_edges[:-1] + bin_edges[1:])
-    bin_centers = bin_centers[bin_centers >= 6.31]
+    bin_centers = bin_centers[bin_centers >= 4.8]
 
     for i in bin_centers:
-        column = get_smearing_column(TMS/"build"/f"data_marley/MARLEY_CC_nue100k/MARLEY_TMS_{i:.5f}_CC_nue_Fe56_MeV.root")
+        column = get_smearing_column(TMS/"build"/f"data_marley/MARLEY_CC_nuebar_100k_ALLOWED/MARLEY_TMS_{i:.5f}_CC_nuebar_ALLOWED_Fe56_MeV.root")
         columns.append(column)
     matrix = np.column_stack(columns) #191 columns
-    smearing_matrix_DEFAULT = np.zeros((200, 200))
+    smearing_matrix1 = np.zeros((200, 200))
     a, b = matrix.shape
-    smearing_matrix_DEFAULT[:, (200 - b):] = matrix
+    smearing_matrix1[:, (200 - b):] = matrix
 
 
     columns = []
     bin_edges = np.linspace(0.5, 100, 201)
     bin_centers = 0.5 * (bin_edges[:-1] + bin_edges[1:])
-    bin_centers = bin_centers[bin_centers >= 6.31]
+    bin_centers = bin_centers[bin_centers >= 4.8]
 
     for i in bin_centers:
-        column = get_smearing_column(TMS/"build"/f"data_marley/MARLEY_CC_nue100k_ALLOWED/MARLEY_TMS_{i:.5f}_CC_ALLOWED_Fe56_MeV.root")
+        column = get_smearing_column(TMS/"build"/f"data_without_marley/CC_nuebar_56Fe_correct_grid_100k/TMS_{i:.5f}_nuebar_Fe56_MeV.root")
         columns.append(column)
     matrix = np.column_stack(columns) #191 columns
-    smearing_matrix_ALLOWED = np.zeros((200, 200))
+    smearing_matrix2 = np.zeros((200, 200))
     a, b = matrix.shape
-    smearing_matrix_ALLOWED[:, (200 - b):] = matrix
+    smearing_matrix2[:, (200 - b):] = matrix
 
-    diff = smearing_matrix_DEFAULT - smearing_matrix_ALLOWED
+    diff = smearing_matrix1 - smearing_matrix2
 
     max_abs = np.max(np.abs(diff))
 
@@ -202,12 +203,12 @@ def plot_difference_matrix():
 
     plt.colorbar(label="Difference")
 
-    plt.title(r"M$_{DEFAULT}$ - M$_{ALLOWED}$, CC $\nu_e$ on $^{56}$Fe")
-    plt.savefig("TMS_smearing_calc/diff_matrix_DEFAULT_ALLOWED_plot.png",dpi=200,bbox_inches="tight")
+    plt.title(r"M$_{marley}$ - M$_{g4}$, CC $\bar\nu_e$ on $^{56}$Fe")
+    plt.savefig("TMS_smearing_calc/diff_matrix_MARLEY_G4_CC_nuebar.png",dpi=200,bbox_inches="tight")
     plt.close()
 
 
 
-#plot_difference_matrix()
+plot_difference_matrix()
 
     
