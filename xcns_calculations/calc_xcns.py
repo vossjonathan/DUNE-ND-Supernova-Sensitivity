@@ -278,12 +278,13 @@ def compare_CC_nue_xsec():
     marley_energy_4 = marley_data_4[:, 0]
     marley_xsec_4 = marley_data_4[:, 1]
 
+    #CC nue Data
     energies_KOLBE = np.arange(10,105,5) #in MeV
     cross_section_KOLBE = np.array([0.661, 6.45, 29.3, 73.3, 140, 236, 371, 555, 798, 1100, 1480, 1920, 2420, 2990, 3600, 4270, 4980, 5730, 6520])
 
     energies_LAZAUSKAS = np.array([7.5, 10, 12.5, 15, 20, 25, 30, 40, 50, 60, 70, 80, 90, 100])
     cross_section_LAZAUSKAS = np.array([0.877, 3.63, 8.94, 17.3, 52.6, 125, 233, 544, 983, 1670, 2590, 3730, 5070, 6600])
-
+    #CC nuebar Data
     x = np.arange(0, 100, 0.5)
 
     KOLBE_interp = np.zeros(len(x))
@@ -366,22 +367,22 @@ def flux_averaged_xsec_CC_nue():
     file_flux = SNOWGLOBES/"fluxes"/"garching.dat"
     data_flux = np.loadtxt(file_flux)
     energy_flux = data_flux[:, 0] * 1000
-    flux = data_flux[:, 1]
+    flux = data_flux[:, 4]
     flux_common = np.interp(energy_common, energy_flux, flux, left = 0.0, right = 0.0)
     flux_integral = np.trapezoid(flux_common, energy_common)
 
-    file_snowglobes = XSCNS/ "xs_nue_Fe56.dat"
+    file_snowglobes = XSCNS/ "xs_nuebar_Fe56.dat"
     data_snowglobes = np.loadtxt(file_snowglobes)
     logGeV = data_snowglobes[:, 0]
     energy_snowglobes_GeV = 10 ** logGeV
     energy_snowglobes = energy_snowglobes_GeV * 1000
 
-    xsec_snowglobes = data_snowglobes[:, 1] * energy_snowglobes_GeV * 1e4
+    xsec_snowglobes = data_snowglobes[:, 4] * energy_snowglobes_GeV * 1e4
     snowglobes_common = np.interp(energy_common, energy_snowglobes, xsec_snowglobes, left = 0.0, right = 0.0)
     snowglobes_intergal = np.trapezoid(flux_common * snowglobes_common, energy_common)
     snowglobes_avg = snowglobes_intergal / flux_integral
 
-    file_marley = MARLEY/"data_xsec"/"Fe_discrete_allowed.txt"
+    file_marley = MARLEY/"data_xsec"/"Fe_CCnuebar.txt"
     data_marley = np.loadtxt(file_marley)
     energy_marley = data_marley[:, 0]
     xsec_marley = data_marley[:, 1]
@@ -410,19 +411,21 @@ def flux_averaged_xsec_CC_nue():
 
     plt.plot(energy_common, snowglobes_common, label = "SNOwGLoBES, Lazauskas 2007")
     plt.plot(energy_common, marley_common, label = "MARLEY, discrete + allowed form factors")
-    plt.plot(energy_common, marley_discrete_common, label = "MARLEY, discrete", color = "green", linestyle = "--")
-    plt.text(0.02, 0.64, rf"""MARLEY AA $\langle\sigma\rangle = $ {marley_avg:.2f} $\times$ 10$^{{-42}}$ cm$^2$
-MARLEY Default $\langle\sigma\rangle = $ {marley_discrete_avg:.2f}  $\times$ 10$^{{-42}}$ cm$^2$
-SNOwGLoBES $\langle\sigma\rangle = $ {snowglobes_avg:.2f}  $\times$ 10$^{{-42}}$ cm$^2$"""
+    #plt.plot(energy_common, marley_discrete_common, label = "MARLEY, discrete", color = "green", linestyle = "--")
+    plt.text(0.02, 0.74, rf"""SNOwGLoBES $\langle\sigma\rangle = $ {snowglobes_avg:.2f}  $\times$ 10$^{{-42}}$ cm$^2$
+MARLEY AA $\langle\sigma\rangle = $ {marley_avg:.2f} $\times$ 10$^{{-42}}$ cm$^2$"""
+#MARLEY Default $\langle\sigma\rangle = $ {marley_discrete_avg:.2f}  $\times$ 10$^{{-42}}$ cm$^2$"""
+
+
 , transform=plt.gca().transAxes)
     #plt.xlim(10, 30)
     #plt.ylim(0,200)
     plt.grid(True, alpha = 0.3)
     plt.legend()
-    plt.title(r"MARLEY / SNOwGLoBES cross section comparison for CC $\nu_e$")
+    plt.title(r"MARLEY / SNOwGLoBES cross section comparison for CC $\bar\nu_e$")
     plt.xlabel(r"Neutrino energy E$_\nu$ [MeV]")
     plt.ylabel(r"cross section $\sigma$ in 10$^{-42}$ cm$^2$")
-    plt.savefig("xcns_calculations/xsec_model_effects.png")
+    plt.savefig("xcns_calculations/xsec_CCnuebar_comparison.png")
 
     
 

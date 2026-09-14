@@ -1,0 +1,87 @@
+# MARLEY reaction data for charged current ve on 208Pb
+# Revised 17 May 2023 by Sam Hedges
+#
+# Particle IDs conform to the 2017 revision of the
+# Particle Data Group Monte Carlo Particle Numbering Scheme
+# (see http://pdg.lbl.gov/2018/reviews/rpp2018-rev-monte-carlo-numbering.pdf)
+#
+# B(GT) values were provided in tabular form by T. Wakasa, et. al, Phys. Rev. C
+# 85, 6 (2012). These values were given in terms of energy transfer with respect
+# to the ground state of 208Pb. To correct for excitation energy with respect to
+# the ground state of 208Bi, 2.367 MeV was subtracted from each energy bin. It is
+# assumed these energies are the bin-centers of 1 MeV bins. The maximum energy
+# transfer bin used was the provided value at 62.85 MeV energy transfer. Because
+# this data was in 1 MeV bins, no care was taken to align provided energy values
+# with excitations in 208Bi. This isn't a major concern presently since the alpha
+# emission threshold for 208Bi is negative, i.e. all data is treated as though
+# above the unbound threshold, for which discrete state B(GT) values do not apply.
+# The B(GT) values were multiplied by g_A^2 = (1.26)^2 to account for their differing
+# definition of B(GT), which did not include that weak axial-vector coupling constant.
+#
+# The B(F) value was taken as the sum-rule value g_V^2*(N_i - Z_i) with g_V=1,
+# located at the isobaric analog state.
+#
+# Particle IDs and final ion charge
+0 1000822080
+#
+1.483   0.420   1
+2.483   0.686   1
+3.483   0.959   1
+4.483   1.102   1
+5.483   0.996   1
+6.483   1.172   1
+7.483   1.972   1
+8.483   3.215   1
+9.483   4.059   1
+10.483  4.552   1
+11.483  5.332   1
+12.483  6.867   1
+13.483  10.173  1
+14.483  14.499  1
+15.165  44      0
+15.483  18.163  1
+16.483  16.861  1
+17.483  12.896  1
+18.483  8.902   1
+19.483  6.012   1
+20.483  4.080   1
+21.483  3.173   1
+22.483  2.586   1
+23.483  1.901   1
+24.483  1.540   1
+25.483  1.014   1
+26.483  0.938   1
+27.483  0.888   1
+28.483  0.763   1
+29.483  0.586   1
+30.483  0.582   1
+31.483  0.647   1
+32.483  0.776   1
+33.483  0.742   1
+34.483  0.690   1
+35.483  0.646   1
+36.483  0.681   1
+37.483  0.633   1
+38.483  0.542   1
+39.483  0.527   1
+40.483  0.573   1
+41.483  0.589   1
+42.483  0.511   1
+43.483  0.598   1
+44.483  0.467   1
+45.483  0.514   1
+46.483  0.542   1
+47.483  0.555   1
+48.483  0.509   1
+49.483  0.571   1
+50.483  0.652   1
+51.483  0.530   1
+52.483  0.566   1
+53.483  0.620   1
+54.483  0.429   1
+55.483  0.636   1
+56.483  0.617   1
+57.483  0.661   1
+58.483  0.869   1
+59.483  0.650   1
+60.483  0.382   1

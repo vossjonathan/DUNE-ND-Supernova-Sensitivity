@@ -1,0 +1,21 @@
+/run/numberOfThreads 1
+/run/initialize
+/tracking/storeTrajectory 0
+/run/printProgress 10000
+
+/marley/nuEnergy 10.00000 MeV
+/analysis/setFileName data_marley/MARLEY_compare_xsec_effect_CC/MARLEY_TMS_10.00000_Ar_dummy_continuum.root
+/run/beamOn 100000
+
+/marley/nuEnergy 20.00000 MeV
+/analysis/setFileName data_marley/MARLEY_compare_xsec_effect_CC/MARLEY_TMS_20.00000_Ar_dummy_continuum.root
+/run/beamOn 100000
+
+/marley/nuEnergy 30.00000 MeV
+/analysis/setFileName data_marley/MARLEY_compare_xsec_effect_CC/MARLEY_TMS_30.00000_Ar_dummy_continuum.root
+/run/beamOn 100000
+
+/marley/nuEnergy 40.00000 MeV
+/analysis/setFileName data_marley/MARLEY_compare_xsec_effect_CC/MARLEY_TMS_40.00000_Ar_dummy_continuum.root
+/run/beamOn 100000
+

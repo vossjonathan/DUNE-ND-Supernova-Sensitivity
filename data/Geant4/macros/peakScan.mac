@@ -1,0 +1,45 @@
+/run/initialize
+/tracking/storeTrajectory 0
+/run/printProgress 1000
+
+/tms/channel ESiron
+/tms/nuEnergy 10.00000 MeV
+/analysis/setFileName explain_peak_data32scint/TMS_10.00000_nuebar_Fe56_MeV.root
+/run/beamOn 100000 
+
+/tms/nuEnergy 20.00000 MeV
+/analysis/setFileName explain_peak_data32scint/TMS_20.00000_nuebar_Fe56_MeV.root
+/run/beamOn 100000 
+
+/tms/nuEnergy 30.00000 MeV
+/analysis/setFileName explain_peak_data32scint/TMS_30.00000_nuebar_Fe56_MeV.root
+/run/beamOn 100000 
+
+/tms/nuEnergy 40.00000 MeV
+/analysis/setFileName explain_peak_data32scint/TMS_40.00000_nuebar_Fe56_MeV.root
+/run/beamOn 100000 
+
+/tms/nuEnergy 50.00000 MeV
+/analysis/setFileName explain_peak_data32scint/TMS_50.00000_nuebar_Fe56_MeV.root
+/run/beamOn 100000 
+
+/tms/nuEnergy 60.00000 MeV
+/analysis/setFileName explain_peak_data32scint/TMS_60.00000_nuebar_Fe56_MeV.root
+/run/beamOn 100000 
+
+/tms/nuEnergy 70.00000 MeV
+/analysis/setFileName explain_peak_data32scint/TMS_70.00000_nuebar_Fe56_MeV.root
+/run/beamOn 100000 
+
+/tms/nuEnergy 80.00000 MeV
+/analysis/setFileName explain_peak_data32scint/TMS_80.00000_nuebar_Fe56_MeV.root
+/run/beamOn 100000 
+
+/tms/nuEnergy 90.00000 MeV
+/analysis/setFileName explain_peak_data32scint/TMS_90.00000_nuebar_Fe56_MeV.root
+/run/beamOn 100000 
+
+/tms/nuEnergy 100.00000 MeV
+/analysis/setFileName explain_peak_data32scint/TMS_100.00000_nuebar_Fe56_MeV.root
+/run/beamOn 100000 
+

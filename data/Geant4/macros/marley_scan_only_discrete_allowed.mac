@@ -1,0 +1,9 @@
+/run/numberOfThreads 1
+/run/initialize
+/tracking/storeTrajectory 0
+/run/printProgress 10000
+
+/marley/nuEnergy 40.00000 MeV
+/analysis/setFileName data_marley/MARLEY_compare_seetings/MARLEY_TMS_40.00000_only_discrete_allowed.root
+/run/beamOn 100000
+

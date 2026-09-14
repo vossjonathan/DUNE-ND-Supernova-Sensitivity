@@ -1,0 +1,44 @@
+# MARLEY reaction data for neutral current vx on 56Fe
+#
+# B(M1) scattering data was taken from T. Shizuma, et al., Phys. Rev. C87 (2013)
+# gamma,gamma' scattering data to 10 MeV. Above 10 MeV, the shell model calculations
+# in that paper using the GXPF1J interaction were used. These values were then
+# converted to B(GT_0) following the procedure in O. G. Ryazhskaya and S. V. Semenov,
+# Physics of Atomic Nuclei, 81 (2018),
+# B(GT_0) = ( 4 pi (g_A)^2 B(M1) ) / ( 3 (mu_v)^2 (mu_N)^2 ),
+# assuming g_A=1.26, mu_v = 4.706.
+#
+# Particle IDs and final ion charge
+# 10LZZZAAAI
+2 1000260560
+#
+# T. Shizuma, et al., Phys. Rev. C87 B(M1)->B(GT_0) experimental
+3.489    0.147    1
+7.166    0.037    1
+7.211    0.128    1
+7.249    0.045    1
+7.468    0.049    1
+7.888    0.063    1
+8.120    0.057    1
+8.653    0.049    1
+8.879    0.045    1
+8.909    0.072    1
+8.964    0.049    1
+8.989    0.069    1
+9.108    0.086    1
+9.312    0.084    1
+9.402    0.123    1
+9.435    0.029    1
+9.555    0.061    1
+9.623    0.041    1
+9.665    0.037    1
+9.768    0.028    1
+# T. Shizuma, et al., Phys. Rev. C87 B(M1)->B(GT_0) Shell GXPF1J
+10.200   0.098    1
+10.340   0.041    1
+10.659   0.029    1
+11.336   0.081    1
+12.482   0.094    1
+13.210   0.049    1
+13.372   0.032    1
+13.779   0.061    1
