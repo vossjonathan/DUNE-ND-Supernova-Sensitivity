@@ -15,14 +15,16 @@ def plot_one_channel_smeared_unsmeared():
     data_smeared = np.loadtxt(file_smeared, max_rows=200)
     data_unsmeared = np.loadtxt(file_unsmeared, max_rows=200)
 
+    energy = np.linspace(0.5, 100, 201)
     energy_smeared = data_smeared[:, 0] * 1000 #now in MeV
     energy_unsmeared = data_unsmeared[:, 0] * 1000 #now in MeV
 
     events_smeared = data_smeared[:, 1]
     events_unsmeared = data_unsmeared[:, 1]
 
-    plt.plot(energy_smeared, events_smeared, label="Smeared: scintillator deposited E", color="blue")
-    plt.plot(energy_unsmeared, events_unsmeared, label="Unsmeared: true E", color="red")
+    plt.stairs(events_smeared, energy, label="Smeared: scintillator deposited E", color="blue")
+    plt.stairs(events_unsmeared, energy, label="Unsmeared: true E", color="red")
+    plt.xlim(0,50)
     plt.text(0.42, 0.75,f"Total events unsmeared: {events_unsmeared.sum():.2f}\nTotal events smeared: {events_smeared.sum():.2f}",transform=plt.gca().transAxes)#,ha="right",va="top")
     #plt.text(0.84, 0.77,f"Total events unsmeared: {events_unsmeared.sum():.2f}",transform=plt.gca().transAxes,ha="right",va="top")
     plt.xlabel(r" E [MeV]")
@@ -34,7 +36,39 @@ def plot_one_channel_smeared_unsmeared():
 
 #plot_one_channel_smeared_unsmeared()
 
+def plot_two_channel_smeared_unsmeared():
 
+    energy = np.linspace(0.5, 100, 201)
+
+    file_unsmeared = SNOWGLOBES/"out"/"garching_nue_Fe56_TMS_iron_events_unweighted.dat"
+    data_unsmeared = np.loadtxt(file_unsmeared, max_rows=200)
+    events_unsmeared = data_unsmeared[:, 1]
+
+    file_smeared_ALLOWED = SNOWGLOBES/"out"/"ALLOWED_garching_nue_Fe56_TMS_iron_events_smeared_unweighted.dat"
+    file_smeared_NOTALLOWED = SNOWGLOBES/"out"/"NOTALLOWED_garching_nue_Fe56_TMS_iron_events_smeared_unweighted.dat"
+
+    data_smeared_ALLOWED = np.loadtxt(file_smeared_ALLOWED, max_rows=200)
+    data_smeared_NOTALLOWED = np.loadtxt(file_smeared_NOTALLOWED, max_rows=200)
+
+    events_smeared_ALLOWED = data_smeared_ALLOWED[:, 1]
+    events_smeared_NOTALLOWED = data_smeared_NOTALLOWED[:, 1]
+
+    
+
+    plt.stairs(events_smeared_ALLOWED, energy, label="MARLEY AA", color="blue")
+    plt.stairs(events_smeared_NOTALLOWED, energy, label="MARLEY Default", color="red")
+    plt.stairs(events_unsmeared, energy, label="Unsmeared Signal", color="black")
+    plt.xlim(0,50)
+    #plt.text(0.42, 0.75,f"Total events unsmeared: {events_unsmeared.sum():.2f}\nTotal events smeared: {events_smeared.sum():.2f}",transform=plt.gca().transAxes)#,ha="right",va="top")
+    #plt.text(0.84, 0.77,f"Total events unsmeared: {events_unsmeared.sum():.2f}",transform=plt.gca().transAxes,ha="right",va="top")
+    plt.xlabel(r" E [MeV]")
+    plt.ylabel("Number of Events per bin")
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    plt.title(r"CC $\nu_e$ MARLEY AA/Default comparison")#0% efficiency $\leq$ 5 MeV")
+    plt.savefig("plotting/MARLEY_AA_Default_comparison.png")
+
+plot_two_channel_smeared_unsmeared()
 
 def plot_one_channel_iron_smeared_unsmeared(channel):
     channels = {
@@ -238,17 +272,18 @@ def plot_all_TMS_iron_scint():
     plt.stairs(total_events, energy, baseline = None,label="Total", color="black", linestyle = "-")
     #plt.stairs(background_events, energy, baseline = None, label = "Background 800ft", color = "grey", linestyle = "-")
     #plt.plot(energy, total_events,  label="Total", color="red", linestyle = "-")
+    print("NC total:", sum(NC_events_total))
     plt.legend()
     plt.grid(True, alpha = 0.3)
-    plt.xlim(0, 30)
+    plt.xlim(0, 20)
     plt.text(0.56, 0.51, f"Total events smeared: {total_events.sum():.2f}", transform=plt.gca().transAxes)
     plt.xlabel("Deposited E in scint [MeV]")
     plt.ylabel("Number of events per 0.5 MeV bin")
-    plt.title("Supernova Signal in TMS Detector (without NC channels)\n Garching flux, no additional Threshold ")
+    plt.title("Supernova Signal in TMS Detector\n Garching flux, no additional Threshold ")
     plt.savefig("plotting/TMS_signal_preliminary.png")
     
 
-plot_all_TMS_iron_scint()
+#plot_all_TMS_iron_scint()
 
 def plot_threshold_comparison():
 
@@ -524,3 +559,66 @@ def compare_MARLEY_NOMARLEY():
     plt.savefig("plotting/MARLEY100k_NOMARLEY_COMPARISON.png")
 
 #compare_MARLEY_NOMARLEY()
+
+def compare_settings_effects(
+    tree_name="TMS",
+    pdg_branch="PDG",
+    kinetic_energy_branch="Ekin",
+    bins=np.linspace(0, 40, 81)):
+
+    plt.figure(figsize=(8, 5))
+
+    folder = Path.home()/"software"/"geant4"/"geant4-work"/"TMS"/"build"/"data_marley"/"MARLEY_compare_settings"
+    files = {
+        "discrete": 
+            "MARLEY_TMS_40.00000_only_discrete.root",
+
+        "discrete + continuum":
+            "MARLEY_TMS_40.00000_discrete_continuum.root",
+
+        "discrete + allowed":
+            "MARLEY_TMS_40.00000_only_discrete_allowed.root",
+
+        "discrete + continuum + allowed":
+            "MARLEY_TMS_40.00000_discrete_continuum_allowed.root",
+    }
+
+    for label, filename in files.items():
+
+        path = Path(folder) / filename
+
+        with uproot.open(path) as f:
+            tree = f[tree_name]
+
+            pdg = tree[pdg_branch].array(library="np")
+            Ekin = tree[kinetic_energy_branch].array(library="np")
+
+        # select electrons
+        electron_Ekin = Ekin[pdg == 11]
+
+        print(
+            f"{label:35s}: "
+            f"N_e = {len(electron_Ekin):7d}, "
+            f"mean = {np.mean(electron_Ekin):6.3f} MeV, "
+            f"median = {np.median(electron_Ekin):6.3f} MeV"
+        )
+
+        plt.hist(
+            electron_Ekin,
+            bins=bins,
+            histtype="step",
+            density=True,
+            linewidth=1.8,
+            label=label
+        )
+
+    plt.xlabel(r"Electron kinetic energy $T_e$ [MeV]")
+    plt.ylabel("Probability density [1/MeV]")
+    plt.title(r"$\nu_e + {}^{56}\mathrm{Fe}$ at $E_\nu = 40$ MeV")
+    plt.legend()
+    plt.grid(alpha=0.25)
+
+    plt.tight_layout()
+    plt.savefig("plotting/test.png")
+
+#compare_settings_effects()

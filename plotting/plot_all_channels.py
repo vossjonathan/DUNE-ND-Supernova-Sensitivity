@@ -461,7 +461,7 @@ def plot_different_smeared_signals_iron(detector, flux):
         total_nc_events_smeared += events_smeared_w
 
 
-
+    energy = np.linspace(0.5, 100, 201)
     total_events = total_nu_e_events_smeared + total_nc_events_smeared + events_smeared_nue_Fe56_w + events_smeared_nuebar_Fe56_w
 
     
@@ -470,16 +470,18 @@ def plot_different_smeared_signals_iron(detector, flux):
     print("nue_Fe56:", np.sum(events_smeared_nue_Fe56_w))
     print("nuebar_Fe56:", np.sum(events_smeared_nuebar_Fe56_w))
     print("Total:", np.sum(total_events))
+    
     plt.figure()
-    plt.stairs(energy_smeared, total_nu_e_events_smeared, label=r"$\nu, e^-$ scattering", color="blue", linestyle = "--")
-    plt.stairs(energy_smeared, total_nc_events_smeared, label="NC Interactions", color="red", linestyle = "--")
-    plt.stairs(energy_smeared, events_smeared_nue_Fe56_w, label=r"CC $\nu_e$", color="yellow", linestyle = "--")
-    plt.stairs(energy_smeared, events_smeared_nuebar_Fe56_w, label=r"CC $\bar\nu_e$", color="green", linestyle = "--")
-    plt.stairs(energy_smeared, total_events, label="Total", color="black", linestyle = "-")
+    plt.stairs(total_nu_e_events_smeared, energy , label=r"$\nu, e^-$ scattering", color="blue", linestyle = "--")
+    plt.stairs(total_nc_events_smeared,energy , label="NC Interactions", color="red", linestyle = "--")
+    plt.stairs(events_smeared_nue_Fe56_w,energy , label=r"CC $\nu_e$", color="yellow", linestyle = "--")
+    plt.stairs(events_smeared_nuebar_Fe56_w,energy , label=r"CC $\bar\nu_e$", color="green", linestyle = "--")
+    plt.stairs(total_events,energy , label="Total", color="black", linestyle = "-")
 
     plt.xlabel(r" E [MeV]")
     plt.ylabel("Number of Events")
     plt.legend()
+    plt.xlim(0,20)
     plt.grid(True, alpha=0.3)
     total_count = np.sum(total_events)
     plt.title(f"{flux} {detector} smeared signal for different channels")
@@ -491,7 +493,7 @@ def plot_different_smeared_signals_iron(detector, flux):
     return total_count
 
 
-#plot_different_smeared_signals_iron("TMS_iron", "livermore")
+plot_different_smeared_signals_iron("TMS_iron", "garching")
 
 
 

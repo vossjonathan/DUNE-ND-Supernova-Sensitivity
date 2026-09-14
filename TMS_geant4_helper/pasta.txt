@@ -1,0 +1,4 @@
+for i in {1..8}; do
+    ./exampleB4c -m marley100kscanCCALLOWED/marleyScan100k${i}.mac \
+        > marley100kscanCCALLOWED/scan${i}.log 2>&1 &
+done
