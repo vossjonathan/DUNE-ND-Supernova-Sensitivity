@@ -8,7 +8,7 @@ import helper
 SNOWGLOBES = Path.home()/"software"/"snowglobes"
 OUT = Path.home()/"software"/"snowglobes"/"out"
 
-def plot_all_channels_unsmeared_smeared(detector, flux):
+def plot_total_and_unsmeared_argon(detector, flux):
     #enter detector and flux as strings, e.g. detector = "ar40kt", flux = "livermore"
 
 
@@ -64,10 +64,6 @@ def plot_all_channels_unsmeared_smeared(detector, flux):
     plt.grid(True, alpha=0.3)
     plt.title(f"{flux} {detector} smeared/unsmeared across all channels")
     plt.savefig(f"plotting/{flux}_{detector}_smeared_unsmeared_all_channels.png")
-
-
-#plot_all_channels_unsmeared_smeared("NDLAr", "garching")
-
 
 
 
@@ -153,8 +149,6 @@ def plot_different_smeared_signals_argon(detector, flux):
     plt.close()
     return total_count
 
-
-#plot_different_smeared_signals_argon("NDLAr", "livermore")
 
 
 def plot_different_smeared_signals_scint(detector, flux):
@@ -270,8 +264,6 @@ def plot_different_smeared_signals_scint(detector, flux):
     plt.close()
     return total_count
 
-
-#plot_different_smeared_signals_scint("STT", "garching")
 
 
 def plot_different_smeared_signals_lead(detector, flux):
@@ -392,9 +384,6 @@ def plot_different_smeared_signals_lead(detector, flux):
     plt.close()
     return total_count
 
-#plot_different_smeared_signals_lead("ECAL_lead", "garching")
-
-
 def plot_different_smeared_signals_iron(detector, flux):
     #enter detector and flux as strings, e.g. detector = "ar40kt", flux = "livermore"
 
@@ -491,11 +480,6 @@ def plot_different_smeared_signals_iron(detector, flux):
     plt.close()
     total_count = np.sum(total_events)
     return total_count
-
-
-plot_different_smeared_signals_iron("TMS_iron", "garching")
-
-
 
 
 def compare_detectors_bar_plot(flux):
@@ -610,7 +594,6 @@ def compare_detectors_bar_plot(flux):
     plt.savefig(f"plotting/{flux}_unsmeared_detector_comparison.png")
     plt.close()
 
-#compare_detectors_bar_plot("garching")
 
 def plot_all_NC_channels_iron():
     channels = ['nc_nue_Fe56', 'nc_nuebar_Fe56', 'nc_numu_Fe56']
@@ -630,4 +613,12 @@ def plot_all_NC_channels_iron():
     plt.savefig(f"plotting/NC_channels_comparison.png")
     plt.close()
 
-plot_all_NC_channels_iron()
+
+if __name__ == "__main__":
+    #plot_total_and_unsmeared_argon("NDLAr", "garching")
+    #plot_different_smeared_signals_argon("NDLAr", "garching")
+    #plot_different_smeared_signals_scint("TMS_scint", "garching")
+    #plot_different_smeared_signals_lead("ECAL_lead", "garching")
+    #plot_different_smeared_signals_iron("TMS_iron", "garching")
+    #compare_detectors_bar_plot("garching")
+    plot_all_NC_channels_iron()
