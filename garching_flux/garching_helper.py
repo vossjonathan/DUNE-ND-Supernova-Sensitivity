@@ -71,5 +71,5 @@ def plot_livermore_garching():
     plt.savefig("garching_flux/test.png")
 
 
-
-plot_livermore_garching()
+if __name__ == "__main__":
+    plot_livermore_garching()

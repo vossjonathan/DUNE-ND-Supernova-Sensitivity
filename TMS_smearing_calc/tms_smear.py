@@ -43,12 +43,9 @@ def build_smearing_matrix():
     smearing_matrix = np.zeros((200, 200))
     a, b = matrix.shape
     smearing_matrix[:, (200 - b):] = matrix
-    
+    print("sum across columns: ", matrix.sum(axis = 0))
     return smearing_matrix
 
-#build_smearing_matrix()
-#atrix = build_smearing_matrix()
-#print(matrix.sum(axis = 0))
 
 def write_snowglobes_matrix(smearing_matrix, filename):
     print(type(smearing_matrix))
@@ -91,7 +88,6 @@ def create_ES_smearing_matrix(flavor):
 
     return smearing_matrix
 
-#create_ES_smearing_matrix()
 
 def plot_smearing_matrix(matrix):
     #matrix = build_smearing_matrix()
@@ -107,7 +103,6 @@ def plot_smearing_matrix(matrix):
     plt.savefig("TMS_smearing_calc/MARLEY_CC_nuebar_ALLOWED_100k.png")
 
 
-#plot_smearing_matrix()
 
 
 def plot_E_L():
@@ -125,18 +120,6 @@ def plot_E_L():
     plt.colorbar(label="Events")
     plt.savefig("E_L.png")
 
-#plot_E_L()
-#bin_edges = np.linspace(0.5, 100, 201)
-#bin_centers = 0.5 * (bin_edges[:-1] + bin_edges[1:])
-
-
-#print(bin_centers)
-#bin_edges = np.linspace(0.5, 100.0, 201)
-#bin_centers = 0.5 * (bin_edges[:-1] + bin_edges[1:])
-
-#matrix = build_smearing_matrix()
-#plot_smearing_matrix(matrix)
-#write_snowglobes_matrix(matrix, "../../software/snowglobes/smear/TMS_iron/ONLYG4REAL_smear_nuebar_Fe56_TMS_iron.dat")
 
 def plot_effiency():
     matrix = build_smearing_matrix()
@@ -152,7 +135,7 @@ def plot_effiency():
     plt.ylim(0, 1)
     plt.savefig("TMS_smearing_calc/NC_smear_efficiency.png")
 
-#plot_effiency()
+
 
 def plot_difference_matrix():
     columns = []
@@ -208,7 +191,12 @@ def plot_difference_matrix():
     plt.close()
 
 
-
-plot_difference_matrix()
-
+if __name__ == "__main__":
+    matrix = build_smearing_matrix() 
     
+    #write_snowglobes_matrix(matrix, "../../software/snowglobes/smear/TMS_iron/ONLYG4REAL_smear_nuebar_Fe56_TMS_iron.dat")   
+    #matrix = create_ES_smearing_matrix()
+    #plot_smearing_matrix()
+    #plot_E_L()
+    #plot_effiency()
+    #plot_difference_matrix()

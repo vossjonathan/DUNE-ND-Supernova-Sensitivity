@@ -31,8 +31,9 @@ def plot_one_channel_smeared_unsmeared():
     plt.grid(True, alpha=0.3)
     plt.title(r"NC nue Fe 56 smeared unsmeared")#0% efficiency $\leq$ 5 MeV")
     plt.savefig("plotting/garching_TMS_iron_NC_nue_smeared_unsmeared.png")
+    plt.close()
 
-#plot_one_channel_smeared_unsmeared()
+
 
 def plot_two_channel_smeared_unsmeared():
 
@@ -83,7 +84,6 @@ def plot_two_channel_smeared_unsmeared():
     plt.title(r"CC $\nu_e$ G4 vs. MARLEY + G4 comparison")#0% efficiency $\leq$ 5 MeV")
     plt.savefig("plotting/MARLEY_Geant4REAL_CC_nue_comparison.png")
 
-#plot_two_channel_smeared_unsmeared()
 
 def plot_one_channel_iron_smeared_unsmeared(channel):
     channels = {
@@ -127,9 +127,6 @@ def plot_one_channel_iron_smeared_unsmeared(channel):
     plt.grid(True, alpha=0.3)
     plt.title(r"NC nue channel TMS iron, unsmeared smeared")
     plt.savefig("plotting/garching_TMS_iron_nc_nue_unsmeared_smeared_weighted.png")
-
-
-#plot_one_channel_iron_smeared_unsmeared("nc_nue_Fe56")
 
 
 def plot_one_channel_scint_smeared_unsmeared(channel):
@@ -185,7 +182,6 @@ def plot_one_channel_scint_smeared_unsmeared(channel):
     plt.savefig("plotting/garching_TMS_scint_nue_e_unsmeared_smeared_weighted.png")
 
 
-#plot_one_channel_scint_smeared_unsmeared("nue_e")
 
 def plot_all_TMS_iron_scint():
     #channels with geant4 smearing matrix
@@ -298,7 +294,6 @@ def plot_all_TMS_iron_scint():
     plt.savefig("plotting/TMS_signal_preliminary_CCnuebarmarley.png")
     
 
-plot_all_TMS_iron_scint()
 
 def plot_threshold_comparison():
 
@@ -362,7 +357,6 @@ def plot_threshold_comparison():
     plt.savefig("plotting/garching_TMS_iron_nuebar_Fe56_threshold_comparison_newgrid.png")
 
 
-#plot_threshold_comparison()
 
 def plot_threshold_comparison_scatter():
     #iron and scint events
@@ -494,8 +488,6 @@ def plot_threshold_comparison_scatter():
     plt.savefig("plotting/TMS_threshold_comparison_total_events.png")
 
 
-#plot_threshold_comparison_scatter()
-
 
 def findPeakFe():
     TMS = Path.home() / "software/geant4/geant4-work/TMS"
@@ -548,7 +540,7 @@ def findPeakFe():
     #plt.title("100,000 events per electron energy generated, uniformly and isotropically in Fe layers")
     plt.savefig("plotting/compare_peak_structure_16_32.png")
 
-#findPeakFe()
+
 def compare_MARLEY_NOMARLEY():
 
     file_MARLEY = SNOWGLOBES/"out"/"MARLEY100k_garching_nue_Fe56_TMS_iron_events_smeared_unweighted.dat"
@@ -573,7 +565,6 @@ def compare_MARLEY_NOMARLEY():
     plt.title(r"CC $\nu_e$ on $^{56}$Fe in TMS, MARLEY + G4 vs only G4 smearing matrx")#0% efficiency $\leq$ 5 MeV")
     plt.savefig("plotting/MARLEY100k_NOMARLEY_COMPARISON.png")
 
-#compare_MARLEY_NOMARLEY()
 
 def compare_settings_effects(
     tree_name="TMS",
@@ -636,4 +627,17 @@ def compare_settings_effects(
     plt.tight_layout()
     plt.savefig("plotting/test.png")
 
-#compare_settings_effects()
+
+
+if __name__ == "__main__":
+    #plot_one_channel_smeared_unsmeared()
+    #plot_two_channel_smeared_unsmeared()
+    #plot_one_channel_iron_smeared_unsmeared("nue_Fe56")
+    #plot_one_channel_scint_smeared_unsmeared("ibd")
+    plot_all_TMS_iron_scint()
+    #plot_threshold_comparison()
+    #plot_threshold_comparison_scatter()
+    #findPeakFe()
+    #compare_MARLEY_NOMARLEY()
+    #compare_settings_effects()
+

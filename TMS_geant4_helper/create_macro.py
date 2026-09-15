@@ -104,10 +104,6 @@ def printMacroMarley(n_events):
                 print(f"/analysis/setFileName data_marley/MARLEY_CC_nue/MARLEY_TMS_{i:.5f}_CC_nue_Fe56_MeV.root", file = f)
                 print(f"/run/beamOn {n_events} \n", file = f)    
 
-#printMacro()
-#printMacroFindPeak()
-#printMacroMarley(10000)
-
 
 def printMacroMarley100k(n_events, n_jobs):
 
@@ -142,7 +138,6 @@ def printMacroMarley100k(n_events, n_jobs):
                 print(f"/run/beamOn {n_events}\n", file=f)
 
 
-#printMacroMarley100k(100000, 8)
 
 def printMacroMissing(n_events):
     bin_edges = np.linspace(0.5, 100, 201)
@@ -173,4 +168,10 @@ def printMacroMissing(n_events):
 
             print(f"/run/beamOn {n_events}\n", file=f)
 
-printMacroMissing(100000)
+
+if __name__ == "__main__":
+    #printMacro()
+    #printMacroFindPeak()
+    #printMacroMarley(100000)
+    printMacroMarley100k(100000, 8)
+    #printMacroMissing(100000)

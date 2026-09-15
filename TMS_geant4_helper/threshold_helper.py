@@ -83,7 +83,7 @@ def reset_effic_to_100(detector):
                 "{" + ",".join(f"{x:.1f}" for x in values) + "}\n"
             )
 
-
-reset_effic_to_100("TMS_scint")
+if __name__ == "__main__":
+    reset_effic_to_100("TMS_scint")
 
     

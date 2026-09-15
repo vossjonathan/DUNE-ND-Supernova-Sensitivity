@@ -78,6 +78,6 @@ def get_theoretical():
     plt.ylabel(r"Integrated $B(GT)$ per 1 MeV bin")
     plt.savefig("Marley_helper/theoretical_BGT_binnedfff.png", dpi=300)
   
-
-print_experimental("CCnuebarAnantaraman1991.csv")
-#get_theoretical()
+if __name__ == "__main__":
+    print_experimental("CCnuebarAnantaraman1991.csv")
+    #get_theoretical()
