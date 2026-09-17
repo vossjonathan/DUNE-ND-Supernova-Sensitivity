@@ -44,7 +44,7 @@ def create_garching_fluence():
     print(np.sum(pinched_0[:, 1]))
     print(np.sum(nue_fluence))
 
-#create_garching_fluence()
+
 
 
 def plot_livermore_garching():

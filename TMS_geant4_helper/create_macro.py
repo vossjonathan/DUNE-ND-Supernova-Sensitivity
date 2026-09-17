@@ -7,21 +7,21 @@ TMS = Path.home()/"software"/"geant4"/"geant4-work"/"TMS"
 
 
 def printMacro():
-    with open(TMS/"build"/"energyScan.mac", "w") as f:
+    with open(TMS/"build"/"macros"/"NCScintEnergyScan.mac", "w") as f:
 
         
         print("/run/initialize", file = f)
         print("/tracking/storeTrajectory 0", file = f)
         print("/run/printProgress 1000\n", file = f)
-        print("/tms/channel ESiron", file = f)
+        print("/tms/channel ScintNC", file = f)
         bin_edges = np.linspace(0.5, 100, 201)
         bin_centers = 0.5 * (bin_edges[:-1] + bin_edges[1:])
-        bin_centers = bin_centers[bin_centers >= 4.71]
+        bin_centers = bin_centers[bin_centers >= 15.12]
 
 
         for i in bin_centers:
             print(f"/tms/nuEnergy {i:.5f} MeV", file = f)
-            print(f"/analysis/setFileName CC_nuebar_56Fe_correct_grid_100k/TMS_{i:.5f}_nuebar_Fe56_MeV.root", file = f)
+            print(f"/analysis/setFileName data_without_marley/NC_scint/TMS_{i:.5f}_Scint_MeV.root", file = f)
             print("/run/beamOn 100000 \n", file = f)
 
 
@@ -170,8 +170,8 @@ def printMacroMissing(n_events):
 
 
 if __name__ == "__main__":
-    #printMacro()
+    printMacro()
     #printMacroFindPeak()
     #printMacroMarley(100000)
-    printMacroMarley100k(100000, 8)
+    #printMacroMarley100k(100000, 8)
     #printMacroMissing(100000)

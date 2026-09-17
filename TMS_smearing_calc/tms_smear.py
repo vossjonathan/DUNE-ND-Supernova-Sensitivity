@@ -3,8 +3,10 @@ from pathlib import Path
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm, TwoSlopeNorm, SymLogNorm
+from .config import DETECTOR_SMEARING_CONFIG
 
 TMS = Path.home()/"software"/"geant4"/"geant4-work"/"TMS"
+ANALYSIS = Path.home()/"duke"/"analysis"
 
 def get_smearing_column(file):
 
@@ -25,41 +27,57 @@ def get_smearing_column(file):
 
     return column
 
+def build_smearing_matrix(detector, channel):
 
-
-def build_smearing_matrix():
-    columns = []
     bin_edges = np.linspace(0.5, 100, 201)
     bin_centers = 0.5 * (bin_edges[:-1] + bin_edges[1:])
-    bin_centers = bin_centers[(bin_centers >= 4.8)]# & (bin_centers <= 69)]
 
-    for E in bin_centers:
-        #file = Path(TMS/"build"/f"data_marley/MARLEY_CC_nuebar_100k_ALLOWED/MARLEY_TMS_{E:.5f}_CC_nuebar_ALLOWED_Fe56_MeV.root")
-        file = Path(TMS/"build"/f"data_without_marley/CC_nue_56Fe_correct_grid_100k/TMS_{E:.5f}_nue_Fe56_MeV.root")
-        column = get_smearing_column(file)
-        columns.append(column)
+    channel_config = DETECTOR_SMEARING_CONFIG[detector]["channels"][channel]
+    threshold = channel_config["threshold"]
 
-    matrix = np.column_stack(columns) #191 columns
     smearing_matrix = np.zeros((200, 200))
-    a, b = matrix.shape
-    smearing_matrix[:, (200 - b):] = matrix
-    print("sum across columns: ", matrix.sum(axis = 0))
+
+    for i, E in enumerate(bin_centers):
+
+        if E < threshold:
+            continue
+
+        filename = channel_config["filename"].format(E=E)
+        file = (ANALYSIS/"data"/ "smearing_matrix_data"/channel_config["folder"]/filename)
+
+        if not file.exists():
+            raise FileNotFoundError(f"{channel}: missing file at E = {E:.5f} MeV:\n{file}")
+
+        smearing_matrix[:, i] = get_smearing_column(file)
+
+    if channel_config["ES"]:
+        flavor = channel.split("_")[0]
+        smearing_matrix = create_ES_smearing_matrix(smearing_matrix, flavor)
+
+    if np.isnan(smearing_matrix).any():
+        raise ValueError(f"{channel}: matrix contains NaNs")
+
+    if np.any(smearing_matrix < 0):
+        raise ValueError(f"{channel}: matrix contains negative values")
+
     return smearing_matrix
 
 
-def write_snowglobes_matrix(smearing_matrix, filename):
-    print(type(smearing_matrix))
+
+def write_snowglobes_matrix(smearing_matrix, detector,  channel):
+    print(smearing_matrix.shape)
     n_reco, n_true = smearing_matrix.shape
+    config = DETECTOR_SMEARING_CONFIG[detector]
+    material = config["material"]
+
+    filename = Path.home()/"software"/"snowglobes"/"smear"/f"{detector}"/f"smear_{channel}_{detector}.dat"
     with open(filename, "w") as f:
 
-        f.write("energy(#nuebar_Fe56_smear)<\n")
+        f.write(f"energy(#{channel}_smear)<\n")
 
         for i in range(n_reco):
 
-            values = ",".join(
-    "0.0" if x == 0.0 else f"{x:.8e}"
-    for x in smearing_matrix[i]
-)
+            values = ",".join("0.0" if x == 0.0 else f"{x:.8e}" for x in smearing_matrix[i])
             line = f"{{0,{n_true - 1},{values}}}"
 
             if i == 0:
@@ -74,8 +92,7 @@ def write_snowglobes_matrix(smearing_matrix, filename):
         f.write(">\n")
 
 
-def create_ES_smearing_matrix(flavor):
-    response_matrix = build_smearing_matrix()
+def create_ES_smearing_matrix(matrix, flavor):
     #print(type(response_matrix))
     SNOWGLOBES = Path.home()/"software"/"snowglobes"
 
@@ -84,14 +101,12 @@ def create_ES_smearing_matrix(flavor):
     nue_e_file = INTERACTION/ f"interaction_{flavor}_e.ssv"
 
     matrix_nue_e = np.loadtxt(nue_e_file)
-    smearing_matrix = response_matrix @ matrix_nue_e
+    smearing_matrix = matrix @ matrix_nue_e
 
     return smearing_matrix
 
 
-def plot_smearing_matrix(matrix):
-    #matrix = build_smearing_matrix()
-    #matrix = create_ES_smearing_matrix()
+def plot_smearing_matrix(matrix, detector, channel):
     
     print(matrix.sum(axis = 0))
 
@@ -99,30 +114,13 @@ def plot_smearing_matrix(matrix):
     plt.xlabel(r"True neutrino energy E$_\nu$ [MeV]")#(r"true neutrino energy $E_\nu$ [MeV]")
     plt.ylabel(r"Scintillator energy $E_{Sc}$ [MeV]")
     plt.colorbar(label = "Probability")
-    plt.title(r"MARLEY Smearing Matrix $\bar\nu_e$ CC ALLOWED, 100,000 runs / bin")#(r"ES smearing matrix $\bar\nu_e$, TMS (only scintillator)")
-    plt.savefig("TMS_smearing_calc/MARLEY_CC_nuebar_ALLOWED_100k.png")
+    plt.title(f"Smearing matrix for {detector}, {channel}")
+    plt.savefig(f"TMS_smearing_calc/{detector}_{channel}_smearing_matrix.png")
 
 
 
 
-def plot_E_L():
-    filename = "TMS_50.25_CC_nue_bar_MeV.root"
-    file = uproot.open(TMS/"build"/"CC_nue_bar_56Fe_data"/filename)
-    tree = file["TMS"]
-
-    Escint = tree["Escint"].array(library="np")
-    Lscint = tree["Lscint"].array(library = "np")
-
-    plt.hist2d(Lscint, Escint, bins=100, norm = LogNorm())
-
-    plt.xlabel("Track length in scintillator")
-    plt.ylabel(r"$E_{\rm scint}$ [MeV]")
-    plt.colorbar(label="Events")
-    plt.savefig("E_L.png")
-
-
-def plot_effiency():
-    matrix = build_smearing_matrix()
+def plot_effiency(matrix, detector, channel):
     efficiency = matrix.sum(axis=0)
 
     bin_edges = np.linspace(0.5, 100, 201)
@@ -131,9 +129,9 @@ def plot_effiency():
     plt.plot(bin_centers, efficiency)
     plt.xlabel(r"$E_\nu$ [MeV]")
     plt.ylabel("Detection efficiency")
-    plt.title("MARLEY smearing matrix effiency 100k")
+    plt.title(f"Effiency plot for {detector}, channel: {channel}")
     plt.ylim(0, 1)
-    plt.savefig("TMS_smearing_calc/NC_smear_efficiency.png")
+    plt.savefig(f"TMS_smearing_calc/{detector}_{channel}_efficiency.png")
 
 
 
@@ -192,11 +190,14 @@ def plot_difference_matrix():
 
 
 if __name__ == "__main__":
-    matrix = build_smearing_matrix() 
+    matrix = build_smearing_matrix("TMS_scint", "nue_e") 
     
-    #write_snowglobes_matrix(matrix, "../../software/snowglobes/smear/TMS_iron/ONLYG4REAL_smear_nuebar_Fe56_TMS_iron.dat")   
+    #write_snowglobes_matrix(matrix, "../../software/snowglobes/smear/TMS_scint/GEANT4_smear_nc_nue_scint_TMS_scint.dat")   
     #matrix = create_ES_smearing_matrix()
-    #plot_smearing_matrix()
+    plot_smearing_matrix(
+    matrix = matrix,
+    title = "Chekcing",
+    save_as = "test_nuebar_scint")
     #plot_E_L()
     #plot_effiency()
     #plot_difference_matrix()

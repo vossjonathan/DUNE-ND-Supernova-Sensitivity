@@ -1,0 +1,311 @@
+# Configuration for all channels where the smearing matrix is created
+# with MARLEY + Geant4 or Geant4-only.
+
+DETECTOR_SMEARING_CONFIG = {
+
+
+    "TMS_iron": {
+
+        "material": "iron",
+
+        "channels": {
+
+            "nue_Fe56": {
+                "folder": "MARLEY_CC_nue100k_ALLOWED",
+                "threshold": 6.31,
+                "filename": "MARLEY_TMS_{E:.5f}_CC_ALLOWED_Fe56_MeV.root",
+                "ES": False,
+            },
+
+
+            "nuebar_Fe56": {
+                "folder": "MARLEY_CC_nuebar_100k_ALLOWED",
+                "threshold": 5.1,
+                "filename": "MARLEY_TMS_{E:.5f}_CC_nuebar_ALLOWED_Fe56_MeV.root",
+                "ES": False,
+            },
+    
+
+            "nc_nue_Fe56": {
+                "folder": "MARLEY_NC_nue100k",
+                "threshold": 3.4,
+                "filename": "MARLEY_TMS_{E:.5f}_NC_nue_Fe56_MeV.root",
+                "ES": False,
+            },
+
+            "nc_nuebar_Fe56": {
+                "folder": "MARLEY_NC_nue100k",
+                "threshold": 3.4,
+                "filename": "MARLEY_TMS_{E:.5f}_NC_nue_Fe56_MeV.root",
+                "ES": False,
+            },
+
+            "nc_numu_Fe56": {
+                "folder": "MARLEY_NC_nue100k",
+                "threshold": 3.4,
+                "filename": "MARLEY_TMS_{E:.5f}_NC_nue_Fe56_MeV.root",
+                "ES": False,
+            },
+
+            "nc_numubar_Fe56": {
+                "folder": "MARLEY_NC_nue100k",
+                "threshold": 3.4,
+                "filename": "MARLEY_TMS_{E:.5f}_NC_nue_Fe56_MeV.root",
+                "ES": False,
+            },
+
+            "nc_nutau_Fe56": {
+                "folder": "MARLEY_NC_nue100k",
+                "threshold": 3.4,
+                "filename": "MARLEY_TMS_{E:.5f}_NC_nue_Fe56_MeV.root",
+                "ES": False,
+            },
+
+            "nc_nutaubar_Fe56": {
+                "folder": "MARLEY_NC_nue100k",
+                "threshold": 3.4,
+                "filename": "MARLEY_TMS_{E:.5f}_NC_nue_Fe56_MeV.root",
+                "ES": False,
+            },
+
+            "nue_e": {
+                "folder": "G4_ES_Fe56_data",
+                "threshold": 0.5,
+                "filename": "TMS_{E:.5f}_ES_Fe56_MeV.root",
+                "ES": True,
+            },
+
+            "nuebar_e": {
+                "folder": "G4_ES_Fe56_data",
+                "threshold": 0.5,
+                "filename": "TMS_{E:.5f}_ES_Fe56_MeV.root",
+                "ES": True,
+            },
+
+            "numu_e": {
+                "folder": "G4_ES_Fe56_data",
+                "threshold": 0.5,
+                "filename": "TMS_{E:.5f}_ES_Fe56_MeV.root",
+                "ES": True,
+            },
+
+            "numubar_e": {
+                "folder": "G4_ES_Fe56_data",
+                "threshold": 0.5,
+                "filename": "TMS_{E:.5f}_ES_Fe56_MeV.root",
+                "ES": True,
+            },
+
+            "nutau_e": {
+                "folder": "G4_ES_Fe56_data",
+                "threshold": 0.5,
+                "filename": "TMS_{E:.5f}_ES_Fe56_MeV.root",
+                "ES": True,
+            },
+
+            "nutaubar_e": {
+                "folder": "G4_ES_Fe56_data",
+                "threshold": 0.5,
+                "filename": "TMS_{E:.5f}_ES_Fe56_MeV.root",
+                "ES": True,
+            },
+        },
+    },
+
+
+    "TMS_scint": {
+
+        "material": "scint",
+
+        "channels": {
+
+            "ibd": {
+                "folder": "G4_IBD_scint_data",
+                "threshold": 1.806,
+                "filename": "TMS_{E:.5f}_IBD_scint_MeV.root",
+                "ES": False,
+            },
+
+
+            "nue_e": {
+                "folder": "G4_ES_scint_data",
+                "threshold": 0.5,
+                "filename": "TMS_{E:.5f}_ES_scint_MeV.root",
+                "ES": True,
+            },
+
+            "nuebar_e": {
+                "folder": "G4_ES_scint_data",
+                "threshold": 0.5,
+                "filename": "TMS_{E:.5f}_ES_scint_MeV.root",
+                "ES": True,
+            },
+
+            "numu_e": {
+                "folder": "G4_ES_scint_data",
+                "threshold": 0.5,
+                "filename": "TMS_{E:.5f}_ES_scint_MeV.root",
+                "ES": True,
+            },
+
+            "numubar_e": {
+                "folder": "G4_ES_scint_data",
+                "threshold": 0.5,
+                "filename": "TMS_{E:.5f}_ES_scint_MeV.root",
+                "ES": True,
+            },
+
+            "nutau_e": {
+                "folder": "G4_ES_scint_data",
+                "threshold": 0.5,
+                "filename": "TMS_{E:.5f}_ES_scint_MeV.root",
+                "ES": True,
+            },
+
+            "nutaubar_e": {
+                "folder": "G4_ES_scint_data",
+                "threshold": 0.5,
+                "filename": "TMS_{E:.5f}_ES_scint_MeV.root",
+                "ES": True,
+            },
+
+
+            "nc_nue_C12": {
+                "folder": "G4_NC_scint",
+                "threshold": 15.1,
+                "filename": "TMS_{E:.5f}_Scint_MeV.root",
+                "ES": False,
+            },
+
+            "nc_nuebar_C12": {
+                "folder": "G4_NC_scint",
+                "threshold": 15.1,
+                "filename": "TMS_{E:.5f}_Scint_MeV.root",
+                "ES": False,
+            },
+
+            "nc_numu_C12": {
+                "folder": "G4_NC_scint",
+                "threshold": 15.1,
+                "filename": "TMS_{E:.5f}_Scint_MeV.root",
+                "ES": False,
+            },
+
+            "nc_numubar_C12": {
+                "folder": "G4_NC_scint",
+                "threshold": 15.1,
+                "filename": "TMS_{E:.5f}_Scint_MeV.root",
+                "ES": False,
+            },
+
+            "nc_nutau_C12": {
+                "folder": "G4_NC_scint",
+                "threshold": 15.1,
+                "filename": "TMS_{E:.5f}_Scint_MeV.root",
+                "ES": False,
+            },
+
+            "nc_nutaubar_C12": {
+                "folder": "G4_NC_scint",
+                "threshold": 15.1,
+                "filename": "TMS_{E:.5f}_Scint_MeV.root",
+                "ES": False,
+            },
+        },
+    },
+}
+
+
+argon_channels = {
+        "nue_e" : 18,
+        "nuebar_e" : 18,
+        "numu_e" : 18,
+        "numubar_e" : 18,
+        "nutau_e" : 18,
+        "nutaubar_e" : 18,
+        "nue_Ar40" : 1,
+        "nuebar_Ar40" : 1,
+        "nc_nue_Ar40" : 1,
+        "nc_nuebar_Ar40" : 1,
+        "nc_numu_Ar40" : 1,
+        "nc_numubar_Ar40" : 1,
+        "nc_nutau_Ar40" : 1,
+        "nc_nutaubar_Ar40" : 1
+
+    }
+
+
+scint_channels = {
+        "ibd":1,
+        "nue_e" : 4,
+        "nuebar_e" : 4,
+        "numu_e" : 4,
+        "numubar_e" : 4,
+        "nutau_e" : 4,
+        "nutaubar_e" : 4,
+        "nue_C12" : 0.4945,
+        "nuebar_C12" : 0.4945,
+        "nc_nue_C12" : 0.4945,
+        "nc_nuebar_C12" : 0.4945,
+        "nc_numu_C12" : 0.4945,
+        "nc_numubar_C12" : 0.4945,
+        "nc_nutau_C12" : 0.4945,
+        "nc_nutaubar_C12" : 0.4945,
+        "nue_C13" : 0.0055,
+        "nc_nue_C13" : 0.0055,
+        "nc_nuebar_C13" : 0.0055,
+        "nc_numu_C13" : 0.0055,
+        "nc_numubar_C13" : 0.0055,
+        "nc_nutau_C13" : 0.0055,
+        "nc_nutaubar_C13" : 0.0055
+    }
+
+lead_channels = {
+        "nue_e" : 82,
+        "nuebar_e" : 82,
+        "numu_e" : 82,
+        "numubar_e" : 82,
+        "nutau_e" : 82,
+        "nutaubar_e" : 82,
+        "nue_Pb208_1n" : 1,
+        "nue_Pb208_2n" : 1,
+        "nc_nue_Pb208_1n" : 1,
+        "nc_nuebar_Pb208_1n" : 1,
+        "nc_numu_Pb208_1n" : 1,
+        "nc_numubar_Pb208_1n" : 1,
+        "nc_nutau_Pb208_1n" : 1,
+        "nc_nutaubar_Pb208_1n" : 1,
+        "nc_nue_Pb208_2n" : 1,
+        "nc_nuebar_Pb208_2n" : 1,
+        "nc_numu_Pb208_2n" : 1,
+        "nc_numubar_Pb208_2n" : 1,
+        "nc_nutau_Pb208_2n" : 1,
+        "nc_nutaubar_Pb208_2n" : 1
+
+    }
+
+iron_channels = {
+        "nue_e" : 26,
+        "nuebar_e" : 26,
+        "numu_e" : 26,
+        "numubar_e" : 26,
+        "nutau_e" : 26,
+        "nutaubar_e" : 26,
+        "nue_Fe56" : 1,
+        "nuebar_Fe56" : 1,
+        "nc_nue_Fe56" : 1,
+        "nc_nuebar_Fe56" : 1,
+        "nc_numu_Fe56" : 1,
+        "nc_numubar_Fe56" : 1,
+        "nc_nutau_Fe56" : 1,
+        "nc_nutaubar_Fe56" : 1,
+    }
+ALL_DETECTOR = {
+    "NDLAr": {"material": "argon", "channels" : argon_channels},
+    "ECAL_lead":  {"material": "lead", "channels" : lead_channels},
+    "ECAL_scint":  {"material": "scint", "channels" : scint_channels},
+    "TMS_iron":  {"material": "iron", "channels" : iron_channels},
+    "TMS_scint":  {"material": "scint", "channels" : scint_channels},
+    "STT":  {"material": "scint", "channels" : scint_channels},
+    "GRAIN":  {"material": "argon", "channels" : argon_channels},
+}
