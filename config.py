@@ -1,6 +1,9 @@
 # Configuration for all channels where the smearing matrix is created
 # with MARLEY + Geant4 or Geant4-only.
 
+# Configuration for all channels where the smearing matrix is created
+# with MARLEY + Geant4 or Geant4-only.
+
 DETECTOR_SMEARING_CONFIG = {
 
 
@@ -10,11 +13,20 @@ DETECTOR_SMEARING_CONFIG = {
 
         "channels": {
 
+            #"G4_only_nue_Fe56": {
+            #   "folder": "G4_ONLY_CC_nue_100k",
+            #   "threshold": 4.6,
+            #    "filename": "TMS_{E:.5f}_nue_Fe56_MeV.root",
+            #    "ES": False,
+            #    "weight": 1,
+            #},
+
             "nue_Fe56": {
                 "folder": "MARLEY_CC_nue100k_ALLOWED",
                 "threshold": 6.31,
                 "filename": "MARLEY_TMS_{E:.5f}_CC_ALLOWED_Fe56_MeV.root",
                 "ES": False,
+                "weight": 1,
             },
 
 
@@ -23,6 +35,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "threshold": 5.1,
                 "filename": "MARLEY_TMS_{E:.5f}_CC_nuebar_ALLOWED_Fe56_MeV.root",
                 "ES": False,
+                "weight": 1,
             },
     
 
@@ -31,6 +44,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "threshold": 3.4,
                 "filename": "MARLEY_TMS_{E:.5f}_NC_nue_Fe56_MeV.root",
                 "ES": False,
+                "weight": 1,
             },
 
             "nc_nuebar_Fe56": {
@@ -38,6 +52,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "threshold": 3.4,
                 "filename": "MARLEY_TMS_{E:.5f}_NC_nue_Fe56_MeV.root",
                 "ES": False,
+                "weight": 1,
             },
 
             "nc_numu_Fe56": {
@@ -45,6 +60,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "threshold": 3.4,
                 "filename": "MARLEY_TMS_{E:.5f}_NC_nue_Fe56_MeV.root",
                 "ES": False,
+                "weight": 1,
             },
 
             "nc_numubar_Fe56": {
@@ -52,6 +68,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "threshold": 3.4,
                 "filename": "MARLEY_TMS_{E:.5f}_NC_nue_Fe56_MeV.root",
                 "ES": False,
+                "weight": 1,
             },
 
             "nc_nutau_Fe56": {
@@ -59,6 +76,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "threshold": 3.4,
                 "filename": "MARLEY_TMS_{E:.5f}_NC_nue_Fe56_MeV.root",
                 "ES": False,
+                "weight": 1,
             },
 
             "nc_nutaubar_Fe56": {
@@ -66,6 +84,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "threshold": 3.4,
                 "filename": "MARLEY_TMS_{E:.5f}_NC_nue_Fe56_MeV.root",
                 "ES": False,
+                "weight": 1,
             },
 
             "nue_e": {
@@ -73,6 +92,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "threshold": 0.5,
                 "filename": "TMS_{E:.5f}_ES_Fe56_MeV.root",
                 "ES": True,
+                "weight": 26,
             },
 
             "nuebar_e": {
@@ -80,6 +100,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "threshold": 0.5,
                 "filename": "TMS_{E:.5f}_ES_Fe56_MeV.root",
                 "ES": True,
+                "weight": 26,
             },
 
             "numu_e": {
@@ -87,6 +108,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "threshold": 0.5,
                 "filename": "TMS_{E:.5f}_ES_Fe56_MeV.root",
                 "ES": True,
+                "weight": 26,
             },
 
             "numubar_e": {
@@ -94,6 +116,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "threshold": 0.5,
                 "filename": "TMS_{E:.5f}_ES_Fe56_MeV.root",
                 "ES": True,
+                "weight": 26,
             },
 
             "nutau_e": {
@@ -101,6 +124,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "threshold": 0.5,
                 "filename": "TMS_{E:.5f}_ES_Fe56_MeV.root",
                 "ES": True,
+                "weight": 26,
             },
 
             "nutaubar_e": {
@@ -108,6 +132,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "threshold": 0.5,
                 "filename": "TMS_{E:.5f}_ES_Fe56_MeV.root",
                 "ES": True,
+                "weight": 26,
             },
         },
     },
@@ -124,6 +149,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "threshold": 1.806,
                 "filename": "TMS_{E:.5f}_IBD_scint_MeV.root",
                 "ES": False,
+                "weight": 1,
             },
 
 
@@ -132,6 +158,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "threshold": 0.5,
                 "filename": "TMS_{E:.5f}_ES_scint_MeV.root",
                 "ES": True,
+                "weight": 4,
             },
 
             "nuebar_e": {
@@ -139,6 +166,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "threshold": 0.5,
                 "filename": "TMS_{E:.5f}_ES_scint_MeV.root",
                 "ES": True,
+                "weight": 4,
             },
 
             "numu_e": {
@@ -146,6 +174,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "threshold": 0.5,
                 "filename": "TMS_{E:.5f}_ES_scint_MeV.root",
                 "ES": True,
+                "weight": 4,
             },
 
             "numubar_e": {
@@ -153,6 +182,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "threshold": 0.5,
                 "filename": "TMS_{E:.5f}_ES_scint_MeV.root",
                 "ES": True,
+                "weight": 4,
             },
 
             "nutau_e": {
@@ -160,6 +190,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "threshold": 0.5,
                 "filename": "TMS_{E:.5f}_ES_scint_MeV.root",
                 "ES": True,
+                "weight": 4,
             },
 
             "nutaubar_e": {
@@ -167,6 +198,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "threshold": 0.5,
                 "filename": "TMS_{E:.5f}_ES_scint_MeV.root",
                 "ES": True,
+                "weight": 4,
             },
 
 
@@ -175,6 +207,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "threshold": 15.1,
                 "filename": "TMS_{E:.5f}_Scint_MeV.root",
                 "ES": False,
+                "weight": 0.4945,
             },
 
             "nc_nuebar_C12": {
@@ -182,6 +215,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "threshold": 15.1,
                 "filename": "TMS_{E:.5f}_Scint_MeV.root",
                 "ES": False,
+                "weight": 0.4945,
             },
 
             "nc_numu_C12": {
@@ -189,6 +223,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "threshold": 15.1,
                 "filename": "TMS_{E:.5f}_Scint_MeV.root",
                 "ES": False,
+                "weight": 0.4945,
             },
 
             "nc_numubar_C12": {
@@ -196,6 +231,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "threshold": 15.1,
                 "filename": "TMS_{E:.5f}_Scint_MeV.root",
                 "ES": False,
+                "weight": 0.4945,
             },
 
             "nc_nutau_C12": {
@@ -203,6 +239,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "threshold": 15.1,
                 "filename": "TMS_{E:.5f}_Scint_MeV.root",
                 "ES": False,
+                "weight": 0.4945,
             },
 
             "nc_nutaubar_C12": {
@@ -210,6 +247,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "threshold": 15.1,
                 "filename": "TMS_{E:.5f}_Scint_MeV.root",
                 "ES": False,
+                "weight": 0.4945,
             },
         },
     },

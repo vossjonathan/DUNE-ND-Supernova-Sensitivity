@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from pathlib  import Path
 import matplotlib.patches as mpatches
-import helper
+import plotting.helper as helper
 
 
 SNOWGLOBES = Path.home()/"software"/"snowglobes"
@@ -134,23 +134,24 @@ def plot_different_smeared_signals_argon(detector, flux):
     plt.stairs(total_nc_events_smeared,energy_smeared, label="NC Interactions", color="red", baseline = None, linestyle = "-")
     plt.stairs(events_smeared_nue_Ar40,energy_smeared,label=r"$\nu_e$ Ar40", color="green", baseline = None, linestyle = "-")
     plt.stairs(events_smeared_nuebar_Ar40, energy_smeared,label=r"$\bar{\nu}_e$ Ar40", color="orange", baseline = None, linestyle = "-")
-    plt.stairs(total_events, energy_smeared,label="Total", color="black", baseline = None, linestyle = "-")
+    plt.stairs(total_events, energy_smeared,label="Total", color="black", baseline = None, linestyle = "-", linewidth = 1.6)
     total_count = np.sum(total_events)
-    plt.text(0.92, 0.665,f"Total events: {total_count:.2f}\n"
-f"CC nue: {np.sum(events_smeared_nue_Ar40):.2f}\n"
-f"CC nuebar: {np.sum(events_smeared_nuebar_Ar40):.2f}\n"
-f"NC combined: {np.sum(total_nc_events_smeared):.2f}\n"
-f"eES combined: {np.sum(total_nu_e_events_smeared):.2f}\n",
-transform=plt.gca().transAxes,ha="right",va="top")
+    plt.text(0.92, 0.665,f"Total events: {total_count:.2f}", transform=plt.gca().transAxes,ha="right",va="top")
+#'''f"CC nue: {np.sum(events_smeared_nue_Ar40):.2f}\n"
+#f"CC nuebar: {np.sum(events_smeared_nuebar_Ar40):.2f}\n"
+#f"NC combined: {np.sum(total_nc_events_smeared):.2f}\n"
+##f"eES combined: {np.sum(total_nu_e_events_smeared):.2f}\n",
+#transform=plt.gca().transAxes,ha="right",va="top")'''
+
     plt.xlabel(r"Detected energy $E_{det}$ [MeV]")
     plt.ylabel("Number of Events per 0.5 MeV energy bin")
     plt.xlim(0,50)
     plt.legend()
     plt.grid(True, alpha=0.3)
     #plt.title(f"{flux} {detector} smeared signal for differend channels")
-    plt.title(rf"""NDLAr supernova signal across all channels
-    basic ar40kt response, {flux}, no additional Threshold""")
-    plt.savefig(f"plotting/{flux}_{detector}_different_smeared_channels_stairs.png")
+    #plt.title(rf"""NDLAr supernova signal across all channels
+    #basic ar40kt response, {flux}, no additional Threshold""")
+    plt.savefig(f"plotting/{flux}_{detector}_different_smeared_channels_stairs.pdf", bbox_inches = "tight")
     plt.close()
     return total_count
 
@@ -514,33 +515,41 @@ def plot_different_smeared_signals_iron(detector, flux):
     return total_count
 
 
-def compare_detectors_bar_plot(flux):
+def compare_detectors_bar_plot(flux, smeared):
     #working TMS iron channels, existing smearing matrix:
     TMS_iron_channel = ["nue_Fe56", "nuebar_Fe56","nue_e", "nuebar_e", "numu_e", "numubar_e", "nutau_e", "nutaubar_e", "nc_nue_Fe56","nc_nuebar_Fe56","nc_numu_Fe56","nc_numubar_Fe56","nc_nutau_Fe56","nc_nutaubar_Fe56", ]
-    all_iron = ['nue_e', 'nuebar_e', 'numu_e', 'numubar_e', 'nutau_e', 'nutaubar_e', 'nue_Fe56', 'nuebar_Fe56', 'nc_nue_Fe56', 'nc_nuebar_Fe56', 'nc_numu_Fe56', 'nc_numubar_Fe56', 'nc_nutau_Fe56', 'nc_nutaubar_Fe56']
     total_TMS_iron= 0
     for channel in TMS_iron_channel:
         u, s =  helper.get_channel_totals("TMS_iron", "iron", channel, flux)
-        total_TMS_iron += s
+        if smeared:
+            total_TMS_iron += s
+        else:
+            total_TMS_iron += u
     #working TMS scint channels, existing smearing matrix:
     TMS_scint_channel = ["ibd","nue_e", "nuebar_e", "numu_e", "numubar_e", "nutau_e", "nutaubar_e", "nc_nue_C12", "nc_nuebar_C12", "nc_numu_C12", "nc_numubar_C12", "nc_nutau_C12", "nc_nutaubar_C12"]
     all_scint = ['ibd', 'nue_e', 'nuebar_e', 'numu_e', 'numubar_e', 'nutau_e', 'nutaubar_e', 'nue_C12', 'nuebar_C12', 'nc_nue_C12', 'nc_nuebar_C12', 'nc_numu_C12', 'nc_numubar_C12', 'nc_nutau_C12', 'nc_nutaubar_C12', 'nue_C13', 'nc_nue_C13', 'nc_nuebar_C13', 'nc_numu_C13', 'nc_numubar_C13', 'nc_nutau_C13', 'nc_nutaubar_C13']
     total_TMS_scint = 0
     total_STT = 0
     total_ECAL_scint = 0
-    for channel in TMS_scint_channel:
+    for channel in all_scint:
         u, s = helper.get_channel_totals("TMS_scint", "scint", channel, flux)
-        total_TMS_scint += s
+        if smeared:
+            total_TMS_scint += s
+        else:
+            total_TMS_scint += u
 
 
     for channel in all_scint:
+        u_STT, s_STT = helper.get_channel_totals("STT", "scint", channel, flux)
+        u_ECAL, s_ECAL = helper.get_channel_totals("ECAL_scint", "scint", channel, flux)
 
+        if smeared:
+            total_STT += s_STT
+            total_ECAL_scint += s_ECAL
+        else:
+            total_STT += u_STT
+            total_ECAL_scint += u_ECAL        
 
-        u, s = helper.get_channel_totals("STT", "scint", channel, flux)
-        total_STT += s
-
-        u, s = helper.get_channel_totals("ECAL_scint", "scint", channel, flux)
-        total_ECAL_scint += s        
 
 
     #argon_channel =  ["nc_nue_Ar40","nc_nuebar_Ar40", "nc_numu_Ar40", "nc_numubar_Ar40", "nc_nutau_Ar40", "nc_nutaubar_Ar40","nue_e", "nuebar_e", "numu_e", "numubar_e", "nutau_e", "nutaubar_e"]
@@ -550,18 +559,24 @@ def compare_detectors_bar_plot(flux):
     
 
     for channel in all_argon:
-        u, s = helper.get_channel_totals("NDLAr", "argon", channel, flux)
-        total_NDLAr += s  
-
-        u, s = helper.get_channel_totals("GRAIN", "argon", channel, flux)
-        total_GRAIN += s  
+        u_ND, s_ND = helper.get_channel_totals("NDLAr", "argon", channel, flux)
+        u_G, s_G = helper.get_channel_totals("GRAIN", "argon", channel, flux)
+        if smeared:
+            total_NDLAr += s_ND  
+            total_GRAIN += s_G
+        else:
+            total_NDLAr += u_ND
+            total_GRAIN += u_G  
 
 
     all_lead = ['nue_e', 'nuebar_e', 'numu_e', 'numubar_e', 'nutau_e', 'nutaubar_e', 'nue_Pb208_1n', 'nue_Pb208_2n', 'nc_nue_Pb208_1n', 'nc_nuebar_Pb208_1n', 'nc_numu_Pb208_1n', 'nc_numubar_Pb208_1n', 'nc_nutau_Pb208_1n', 'nc_nutaubar_Pb208_1n', 'nc_nue_Pb208_2n', 'nc_nuebar_Pb208_2n', 'nc_numu_Pb208_2n', 'nc_numubar_Pb208_2n', 'nc_nutau_Pb208_2n', 'nc_nutaubar_Pb208_2n']
     total_ECAL_lead = 0
     for channel in all_lead:
         u, s = helper.get_channel_totals("ECAL_lead", "lead", channel, flux)
-        total_ECAL_lead += s  
+        if smeared:
+            total_ECAL_lead += s  
+        else:
+            total_ECAL_lead += u
              
     count_NDLAr = total_NDLAr
     count_TMS_scint = total_TMS_scint
@@ -587,6 +602,8 @@ def compare_detectors_bar_plot(flux):
             label="Lead"
         )
     ]
+    
+    plt.rcParams.update({'font.size': 16})
     plt.figure(figsize=(8, 5))
     plt.legend(handles=legend_patches, loc='upper right', framealpha=1.0)
     
@@ -607,23 +624,29 @@ def compare_detectors_bar_plot(flux):
     #plt.text(1, count_TMS_scint/ 2,"scint", ha="center", va="center", color="black", fontsize=12)
     #plt.text(1, count_TMS_scint + count_TMS_iron / 2,"iron", ha="center", va="center", color="black", fontsize=12)
     #plt.text(3, count_STT / 2,"scint", ha="center", va="center", color="black", fontsize=12)
-    off= 0.7
-    plt.text(2, count_ECAL_lead + count_ECAL_scint + off,f"{(count_ECAL_scint + count_ECAL_lead):.2f}", ha="center", va="center", color="black", fontsize=12)
-    plt.text(0, count_NDLAr + off ,f"{count_NDLAr:.2f}", ha="center", va="center", color="black", fontsize=12)
-    plt.text(1, count_TMS_scint + count_TMS_iron + off,f"{count_TMS_scint + count_TMS_iron:.2f}", ha="center", va="center", color="black", fontsize=12)
-    plt.text(3, count_STT + off,f"{count_STT:.2f}", ha="center", va="center", color="black", fontsize=12)
-    plt.text(4, count_GRAIN + off,f"{count_GRAIN:.2f}", ha="center", va="center", color="black", fontsize=12)
-    plt.text(x = 0.79, y = 0.73, s = f"Total: {sum(counts):.2f}",transform=plt.gca().transAxes, ha = "left", va = "top")
+    off= 2
+    plt.text(2, count_ECAL_lead + count_ECAL_scint + off,f"{(count_ECAL_scint + count_ECAL_lead):.2f}", ha="center", va="center", color="black")
+    plt.text(0, count_NDLAr + off ,f"{count_NDLAr:.2f}", ha="center", va="center", color="black")
+    plt.text(1, count_TMS_scint + count_TMS_iron + off,f"{count_TMS_scint + count_TMS_iron:.2f}", ha="center", va="center", color="black")
+    plt.text(3, count_STT + off,f"{count_STT:.2f}", ha="center", va="center", color="black")
+    plt.text(4, count_GRAIN + off,f"{count_GRAIN:.2f}", ha="center", va="center", color="black")
+    plt.text(x = 0.695, y = 0.61, s = f"Total: {sum(counts):.2f}",transform=plt.gca().transAxes, ha = "left", va = "top")
 
 
     plt.xticks([0, 1, 2, 3, 4], ["ND-LAr", "TMS", "ECAL", "STT", "GRAIN"])
 
-    plt.ylabel("Number of events")
+    plt.ylabel("Expected number of interactions")
     plt.ylim(0, 1.3*max(total_counts))
     #plt.legend(handlelength = 0, handletextpad = 0)
-    #plt.bar(detectors, counts)
-    plt.title(f"Expected supernova events in DUNE near detectors, smeared, {flux.capitalize()} flux")
-    plt.savefig(f"plotting/{flux}_smeared_detector_comparison.png")
+    #plt.bar(detectors, counts)    if smeared: 
+    if smeared:
+        word = "smeared" 
+    else:
+        word = "unsmeared"
+    #plt.title(f"Expected supernova events in DUNE near detectors, {word}, {flux.capitalize()} flux")
+    plt.tight_layout()
+    plt.savefig(f"plotting/{flux}_{word}_detector_comparison.svg")
+    #plt.savefig(f"plotting/{flux}_{word}_detector_comparison_new.pdf", bbox_inches = "tight")
     plt.close()
 
 
@@ -648,9 +671,9 @@ def plot_all_NC_channels_iron():
 
 if __name__ == "__main__":
     #plot_total_and_unsmeared_argon("NDLAr", "garching")
-    #plot_different_smeared_signals_argon("GRAIN", "garching")
+    #plot_different_smeared_signals_argon("NDLAr", "garching")
     #plot_different_smeared_signals_scint("TMS_scint", "garching")
     #plot_different_smeared_signals_lead("ECAL_lead", "garching")
     #plot_different_smeared_signals_iron("TMS_iron", "garching")
-    compare_detectors_bar_plot("garching")
+    compare_detectors_bar_plot("garching", smeared = False)
     #plot_all_NC_channels_iron()

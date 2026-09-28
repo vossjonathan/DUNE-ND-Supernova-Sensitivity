@@ -2,6 +2,7 @@ import numpy as np
 from pathlib import Path
 import subprocess
 import shutil
+from config import DETECTOR_SMEARING_CONFIG
 
 
 SNOWGLOBES = Path.home()/"software"/"snowglobes"
@@ -14,50 +15,54 @@ OUT = SNOWGLOBES / "out"
 
 def threshold_study():
     #channels = ["nue_e", "nuebar_e", "numu_e", "numubar_e", "nutau_e", "nutaubar_e"]
-    channels = ["nue_Fe56", "nuebar_Fe56"]
+    #channels = ["nue_Fe56", "nuebar_Fe56"]
     #channels = ["ibd"]
+    detectors = ["TMS_iron", "TMS_scint"]
 
-    thresholds = np.arange(0.5, 8.2, 0.5)
+    thresholds = np.arange(0.5, 8.05, 0.5)
     print(thresholds)
     for threshold in thresholds:
 
         index = int(2*threshold - 1)
-        for channel in channels:
-            file = EFFIC /f"effic_{channel}_TMS_iron.dat"
-            
-            
-            values = np.ones(200)
+        for detector in detectors:
+            material = DETECTOR_SMEARING_CONFIG[detector]["material"]
+            channels = DETECTOR_SMEARING_CONFIG[detector]["channels"]
+            for channel in channels:
+                file = EFFIC / detector / f"effic_{channel}_{detector}.dat"
                 
                 
-            values[:index] = 0.0
-        
+                values = np.ones(200)
+                    
+                    
+                values[:index] = 0.0
+            
 
-            with open(file, "w") as f:
-                f.write(
-                    "{" + ",".join(f"{x:.1f}" for x in values) + "}\n"
-                )
+                with open(file, "w") as f:
+                    f.write(
+                        "{" + ",".join(f"{x:.1f}" for x in values) + "}\n"
+                    )
 
-
-        subprocess.run(
-            ["./supernova.pl", "0", "garching", "iron", "TMS_iron"],
-            cwd=SNOWGLOBES,
-            check=True
-        )
+            
+            subprocess.run(
+                ["./supernova.pl", "0", "garching", material, detector],
+                cwd=SNOWGLOBES,
+                check=True
+            )
 
         # save outputs before next run overwrites them
-        for channel in channels:
+            for channel in channels:
 
-            source = (
-                OUT /
-                f"garching_{channel}_TMS_iron_events_smeared_unweighted.dat"
-            )
+                source = (
+                    OUT /
+                    f"garching_{channel}_{detector}_events_smeared_unweighted.dat"
+                )
 
-            target = (
-                OUT /
-                f"garching_{channel}_TMS_iron_events_smeared_unweighted_{threshold}MeV.dat"
-            )
+                target = (
+                    OUT /
+                    f"garching_{channel}_{detector}_events_smeared_unweighted_{threshold}MeV.dat"
+                )
 
-            shutil.copy(source, target)
+                shutil.copy(source, target)
 
 def detector_comparison(flux):
     #sets all effiencies to 100%, so threshold 0.5 MeV
@@ -67,23 +72,22 @@ def detector_comparison(flux):
         pass
 
 def reset_effic_to_100(detector):
-    channels_TMS_iron = ["nue_Fe56", "nuebar_Fe56","nue_e", "nuebar_e", "numu_e", "numubar_e", "nutau_e", "nutaubar_e"]
-    channels_TMS_scint = ["ibd", "nue_e", "nuebar_e", "numu_e", "numubar_e", "nutau_e", "nutaubar_e"]
-    detector_channels = {"TMS_iron": channels_TMS_iron, "TMS_scint": channels_TMS_scint}
 
-    for channel in detector_channels[detector]:
-        file = EFFIC / detector / f"effic_{channel}_{detector}.dat"
+    detectors = ["TMS_iron", "TMS_scint"]
+    for detector in detectors:
+        channels = DETECTOR_SMEARING_CONFIG[detector]["channels"]
+        for channel in channels:
+            file = EFFIC / detector / f"effic_{channel}_{detector}.dat"
+            values = np.ones(200)
         
-        
-        values = np.ones(200)
-    
 
-        with open(file, "w") as f:
-            f.write(
-                "{" + ",".join(f"{x:.1f}" for x in values) + "}\n"
-            )
+            with open(file, "w") as f:
+                f.write(
+                    "{" + ",".join(f"{x:.1f}" for x in values) + "}\n"
+                )
 
 if __name__ == "__main__":
+    threshold_study()
     reset_effic_to_100("TMS_scint")
 
     

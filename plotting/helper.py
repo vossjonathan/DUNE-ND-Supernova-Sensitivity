@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from pathlib  import Path
 import matplotlib.patches as mpatches
-
+from config import DETECTOR_SMEARING_CONFIG
 
 SNOWGLOBES = Path.home()/"software"/"snowglobes"
 OUT = Path.home()/"software"/"snowglobes"/"out"
@@ -222,3 +222,61 @@ def get_channel_out_smeared_unsmeared(detector, material, channel, flux):
     events_unsmeared_w = events_unsmeared* weight
 
     return (events_unsmeared_w, events_smeared_w)
+
+def calculate_DUNE_ND_energy_lost():
+    
+    DEPTH = 60 * 100 #in cm
+
+    ROCK_DENSITY = 2.7 #in g/cm^3
+
+    X = ROCK_DENSITY * DEPTH # in
+
+    print(X) #1.6 10^4
+    #https://pdg.lbl.gov/2017/AtomicNuclearProperties/MUE/muE_standard_rock.pdf
+    #--> Energy Loss in 60m around 38 GeV
+
+def get_smeared_unsmeared_TMS_total():
+    detectors = ["TMS_iron", "TMS_scint"]
+    total_u = 0
+    total_s = 0
+    for detector in detectors:
+        config = DETECTOR_SMEARING_CONFIG[detector]
+        material = config["material"]
+        channel_config = config["channels"]
+        for channel in channel_config.keys():
+            u, s = get_channel_totals(detector, material, channel, "garching")
+            total_u += u
+            total_s += s
+
+    print("Total unsmeared TMS: ", total_u)
+    print("Total smeared TMS: ", total_s)
+
+def effiency_per_channel():
+    detectors = ["TMS_iron", "TMS_scint"]
+    for detector in detectors:
+        config = DETECTOR_SMEARING_CONFIG[detector]
+        material = config["material"]
+
+        for channel in config["channels"]:
+            u, s = get_channel_totals(
+                detector,
+                material,
+                channel,
+                "garching"
+            )
+
+            eff = s / u if u > 0 else 0
+
+            print(
+                f"{detector:12} "
+                f"{channel:20} "
+                f"unsmeared={u:8.3f} "
+                f"smeared={s:8.3f} "
+                f"eff={100*eff:6.1f}%"
+            )
+
+if __name__ == "__main__":
+    #calculate_DUNE_ND_energy_lost()
+    #get_smeared_unsmeared_TMS_total()
+    effiency_per_channel()
+

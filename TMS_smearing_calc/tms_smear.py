@@ -3,10 +3,13 @@ from pathlib import Path
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm, TwoSlopeNorm, SymLogNorm
-from .config import DETECTOR_SMEARING_CONFIG
+from config import DETECTOR_SMEARING_CONFIG, ALL_DETECTOR
 
 TMS = Path.home()/"software"/"geant4"/"geant4-work"/"TMS"
 ANALYSIS = Path.home()/"duke"/"analysis"
+SNOWGLOBES = Path.home()/"software"/"snowglobes"
+
+
 
 def get_smearing_column(file):
 
@@ -114,8 +117,8 @@ def plot_smearing_matrix(matrix, detector, channel):
     plt.xlabel(r"True neutrino energy E$_\nu$ [MeV]")#(r"true neutrino energy $E_\nu$ [MeV]")
     plt.ylabel(r"Scintillator energy $E_{Sc}$ [MeV]")
     plt.colorbar(label = "Probability")
-    plt.title(f"Smearing matrix for {detector}, {channel}")
-    plt.savefig(f"TMS_smearing_calc/{detector}_{channel}_smearing_matrix.png")
+    #plt.title(f"Smearing matrix for {detector}, {channel}")
+    plt.savefig(f"TMS_smearing_calc/{detector}_{channel}_smearing_matrix.svg", bbox_inches="tight", dpi = 900)
 
 
 
@@ -139,10 +142,10 @@ def plot_difference_matrix():
     columns = []
     bin_edges = np.linspace(0.5, 100, 201)
     bin_centers = 0.5 * (bin_edges[:-1] + bin_edges[1:])
-    bin_centers = bin_centers[bin_centers >= 4.8]
+    bin_centers = bin_centers[bin_centers >= 6.7]
 
     for i in bin_centers:
-        column = get_smearing_column(TMS/"build"/f"data_marley/MARLEY_CC_nuebar_100k_ALLOWED/MARLEY_TMS_{i:.5f}_CC_nuebar_ALLOWED_Fe56_MeV.root")
+        column = get_smearing_column(ANALYSIS/"data"/f"smearing_matrix_data/MARLEY_CC_nue100k_ALLOWED/MARLEY_TMS_{i:.5f}_CC_ALLOWED_Fe56_MeV.root")
         columns.append(column)
     matrix = np.column_stack(columns) #191 columns
     smearing_matrix1 = np.zeros((200, 200))
@@ -153,10 +156,10 @@ def plot_difference_matrix():
     columns = []
     bin_edges = np.linspace(0.5, 100, 201)
     bin_centers = 0.5 * (bin_edges[:-1] + bin_edges[1:])
-    bin_centers = bin_centers[bin_centers >= 4.8]
+    bin_centers = bin_centers[bin_centers >= 4.6]
 
     for i in bin_centers:
-        column = get_smearing_column(TMS/"build"/f"data_without_marley/CC_nuebar_56Fe_correct_grid_100k/TMS_{i:.5f}_nuebar_Fe56_MeV.root")
+        column = get_smearing_column(TMS/"build"/f"data_without_marley/CC_nue_56Fe_correct_grid_100k/TMS_{i:.5f}_nue_Fe56_MeV.root")
         columns.append(column)
     matrix = np.column_stack(columns) #191 columns
     smearing_matrix2 = np.zeros((200, 200))
@@ -184,20 +187,28 @@ def plot_difference_matrix():
 
     plt.colorbar(label="Difference")
 
-    plt.title(r"M$_{marley}$ - M$_{g4}$, CC $\bar\nu_e$ on $^{56}$Fe")
-    plt.savefig("TMS_smearing_calc/diff_matrix_MARLEY_G4_CC_nuebar.png",dpi=200,bbox_inches="tight")
+    plt.title(r"M$_{marley}$ - M$_{g4}$, marley allowed CC $\nu_e$ on $^{56}$Fe")
+    plt.savefig("TMS_smearing_calc/diff_matrix_MARLEY_ALLOWED_G4_CC_nue.png",dpi=200,bbox_inches="tight")
     plt.close()
 
 
+
+
+
+
+
+
 if __name__ == "__main__":
-    matrix = build_smearing_matrix("TMS_scint", "nue_e") 
-    
+    matrix = build_smearing_matrix("TMS_iron", "nue_Fe56") 
+
     #write_snowglobes_matrix(matrix, "../../software/snowglobes/smear/TMS_scint/GEANT4_smear_nc_nue_scint_TMS_scint.dat")   
     #matrix = create_ES_smearing_matrix()
     plot_smearing_matrix(
     matrix = matrix,
-    title = "Chekcing",
-    save_as = "test_nuebar_scint")
+    detector = "TMS_iron",
+    channel = "nue_Fe56")
     #plot_E_L()
     #plot_effiency()
     #plot_difference_matrix()
+
+

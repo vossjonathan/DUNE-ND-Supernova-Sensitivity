@@ -61,8 +61,6 @@ def plot_iron_cross():
     
     plt.savefig("xcns_calculations/iron_with_marley.png")
 
-
-
 def compare_CC_nue_xsec():
 
     #includes dummy Ar continuum react file
@@ -72,13 +70,13 @@ def compare_CC_nue_xsec():
     marley_xsec_continuum = marley_data_continuum[:, 1]
 
     #only discrete react file
-    marley_file_default = Path.home()/"software"/"marley"/"data_xsec"/f"Fe_Ar_discrete.txt"
+    marley_file_default = Path.home()/"software"/"marley"/"data_xsec"/f"nuebarCCDEFAULT.txt"
     marley_data_default = np.loadtxt(marley_file_default)
     marley_energy_default = marley_data_default[:, 0]
     marley_xsec_default = marley_data_default[:, 1]
 
     #only dicrete react file, form factors: allowed
-    marley_file_allowed = Path.home()/"software"/"marley"/"data_xsec"/f"Fe_allowed.txt"
+    marley_file_allowed = Path.home()/"software"/"marley"/"data_xsec"/f"nuebarCCALLOWED.txt"
     marley_data_allowed = np.loadtxt(marley_file_allowed)
     marley_energy_allowed = marley_data_allowed[:, 0]
     marley_xsec_allowed = marley_data_allowed[:, 1]
@@ -89,18 +87,22 @@ def compare_CC_nue_xsec():
     marley_energy_4 = marley_data_4[:, 0]
     marley_xsec_4 = marley_data_4[:, 1]
 
-    #CC nue Data
+    '''#CC nue Data
     energies_KOLBE = np.arange(10,105,5) #in MeV
     cross_section_KOLBE = np.array([0.661, 6.45, 29.3, 73.3, 140, 236, 371, 555, 798, 1100, 1480, 1920, 2420, 2990, 3600, 4270, 4980, 5730, 6520])
 
     energies_LAZAUSKAS = np.array([7.5, 10, 12.5, 15, 20, 25, 30, 40, 50, 60, 70, 80, 90, 100])
-    cross_section_LAZAUSKAS = np.array([0.877, 3.63, 8.94, 17.3, 52.6, 125, 233, 544, 983, 1670, 2590, 3730, 5070, 6600])
+    cross_section_LAZAUSKAS = np.array([0.877, 3.63, 8.94, 17.3, 52.6, 125, 233, 544, 983, 1670, 2590, 3730, 5070, 6600])'''
     #CC nuebar Data
+    energies_LAZAUSKAS = np.array([7.5, 10, 12.5, 15, 20, 25, 30, 40, 50, 60, 70, 80, 90, 100])
+    #cross sections in 10^-42cm^2
+    cross_section_LAZAUSKAS = np.array([0.841, 2.95 , 6.09, 10.3, 21.7, 37.4, 57.4, 120, 209, 353, 526, 727, 940, 1140])
+
     x = np.arange(0, 100, 0.5)
 
-    KOLBE_interp = np.zeros(len(x))
+    '''KOLBE_interp = np.zeros(len(x))
     func = PchipInterpolator(energies_KOLBE, cross_section_KOLBE, extrapolate= False)
-    KOLBE_interp += func(x)
+    KOLBE_interp += func(x)'''
 
     LAZAUSKAS_interp = np.zeros(len(x))
     #func = interp1d(energies_paper, cross_section_paper, kind = 'linear', fill_value= 'extrapolate')
@@ -109,26 +111,82 @@ def compare_CC_nue_xsec():
 
 
     #plt.plot(marley_energy_allowed, marley_xsec_allowed, label = "MARLEY: allowed", color = "red")
-    plt.xlim(0, 30)
-    plt.ylim(0,300)
+    #plt.xlim(0, 30)
+    #plt.ylim(0,300)
     #plt.yscale('log')
     plt.plot(marley_energy_default, marley_xsec_default, label = "MARLEY only discrete", color = "green")
     #plt.plot(marley_energy_continuum, marley_xsec_continuum, label = "MARLEY discrete + continuum 40Ar Files", color = "red")
     plt.plot(marley_energy_allowed, marley_xsec_allowed, label = "MARLEY discrete, allowed", color = "purple")
     #plt.plot(marley_energy_4, marley_xsec_4, label = "MARLEY discrete + continuum 40Ar, allowed", color = "grey")
-    plt.plot(x, KOLBE_interp, color = "tab:blue")
-    plt.plot(x, LAZAUSKAS_interp, color = "tab:orange")
+    #plt.plot(x, KOLBE_interp, color = "tab:blue")
+    plt.plot(x, LAZAUSKAS_interp, color = "tab:orange", label = "Lazauskas, 2007")
     #plt.scatter(energies_KOLBE, cross_section_KOLBE, label = "Kolbe, 2001")
-    #plt.scatter(energies_LAZAUSKAS, cross_section_LAZAUSKAS, label = "Lazauskas, 2007")
+    plt.scatter(energies_LAZAUSKAS, cross_section_LAZAUSKAS, label = "Lazauskas, 2007")
 
 
     plt.legend()
     plt.grid(True, alpha = 0.3)
     plt.xlabel(r"Neutrino energy E$_\nu$ [MeV]")
     plt.ylabel(r"$\sigma$ in $10^{-42} cm^2$")
-    plt.title(r"CC $\nu_e$ cross section on 56Fe comparison")
+    plt.title(r"CC $\bar\nu_e$ cross section on 56Fe comparison")
     
-    plt.savefig("xcns_calculations/testtest.png")
+    plt.savefig("xcns_calculations/nuebarCCFe.png")
+    plt.close()
+
+def get_snowglobes_xsec(channel, column):
+    file = XSCNS/f"xs_{channel}.dat"
+    data = np.loadtxt(file)
+
+    energies = data[:, 0] #log(GeV)
+    energies_GeV = 10**energies
+    energies_MeV = energies_GeV * 1000
+    xsec = data[:, column]*energies_GeV*1e4
+    return (energies_MeV, xsec)
+
+def compare_Fe_cross_sections_snowglobes():
+
+    e_CC_nue, x_CC_nue = get_snowglobes_xsec("nue_Fe56", 1)
+
+    e_CC_nuebar, x_CC_nuebar = get_snowglobes_xsec("nuebar_Fe56", 4)
+
+    e_ES_nue, x_ES_nue = get_snowglobes_xsec("nue_e", 1)
+
+    e_NC_nue, x_NC_nue = get_snowglobes_xsec("nc_nue_Fe56", 1)
+
+    energies_CC_nue_scatter = np.array([7.5, 10, 12.5, 15, 20, 25, 30, 40, 50, 60, 70, 80, 90, 100])
+    cross_section_CC_nue_scatter = np.array([0.877, 3.63, 8.94, 17.3, 52.6, 125, 233, 544, 983, 1670, 2590, 3730, 5070, 6600])
+
+    energies_CC_nuebar_scatter = np.array([7.5, 10, 12.5, 15, 20, 25, 30, 40, 50, 60, 70, 80, 90, 100])
+    cross_section_CC_nuebar_scatter = np.array([0.841, 2.95 , 6.09, 10.3, 21.7, 37.4, 57.4, 120, 209, 353, 526, 727, 940, 1140])
+
+    energies_NC_scatter = np.arange(10,105,5) #in MeV
+    
+        #cross sections in 10^-42 cm^2, source: 1, 23, column 2
+    cross_section_NC_scatter = np.array([0.191, 2.19, 6.90, 15.1, 28.5, 48.9, 78.6, 119, 172, 239, 320, 415, 525, 650, 789, 942, 1110, 1290, 1490])
+
+
+    #plt.plot(marley_energy_allowed, marley_xsec_allowed, label = "MARLEY: allowed", color = "red")
+    #plt.xlim(0, 30)
+    #plt.ylim(0,300)
+    #plt.yscale('log')
+    plt.plot(e_CC_nue, x_CC_nue, color = "tab:green")
+    plt.scatter(energies_CC_nue_scatter, cross_section_CC_nue_scatter, label = r"CC $\nu_e$ Lazauskas, 2007", color = "tab:green")
+
+    plt.plot(e_CC_nuebar, x_CC_nuebar, color = "tab:orange")
+    plt.scatter(energies_CC_nuebar_scatter, cross_section_CC_nuebar_scatter, label = r"CC $\bar\nu_e$ Lazauskas, 2007", color = "tab:orange")
+
+    plt.plot(e_NC_nue, x_NC_nue, color = "tab:blue")
+    plt.scatter(energies_NC_scatter, cross_section_NC_scatter, label = r"NC $\nu_x$ Kolbe, 2001", color = "tab:blue")
+
+    #plt.plot(e_ES_nue, x_ES_nue, color = "red", label = r"eES $\nu_e$ from SNOwGLoBES")
+
+    plt.legend()
+    plt.grid(True, alpha = 0.3)
+    plt.xlabel(r"Neutrino energy E$_\nu$ [MeV]")
+    plt.ylabel(r"$\sigma$ in $10^{-42} cm^2$")
+   # plt.title(r"CC $\bar\nu_e$ cross section on 56Fe comparison")
+    
+    plt.savefig("plotting/snowglobes_xsec_comparison.svg", bbox_inches="tight", dpi = 900)
     plt.close()
 
 
@@ -240,8 +298,9 @@ MARLEY AA $\langle\sigma\rangle = $ {marley_avg:.2f} $\times$ 10$^{{-42}}$ cm$^2
 
 if __name__ == "__main__":
     #plot_iron_cross()
+    compare_Fe_cross_sections_snowglobes()
     #compare_CC_nue_xsec()
     #compare_xsec_Fe_Pb()
-    flux_averaged_xsec_CC_nue()
+    #flux_averaged_xsec_CC_nue()
 
     

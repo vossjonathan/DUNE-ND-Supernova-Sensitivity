@@ -169,9 +169,23 @@ def printMacroMissing(n_events):
             print(f"/run/beamOn {n_events}\n", file=f)
 
 
+def printMacroCosmic():
+    with open(TMS/"build"/"macros"/"CosmicMuScan3.mac", "w") as f:
+
+        
+        print("/run/initialize", file = f)
+        print("/tracking/storeTrajectory 0", file = f)
+        print("/tracking/verbose 0", file=f)
+        print("/run/printProgress 1000\n", file = f)
+        print("/tms/channel CosmicMu", file = f)
+
+        print(f"/analysis/setFileName data_without_marley/Cosmic_data_theta_36/TMS_cosmic_mu.root", file = f)
+        print("/run/beamOn 100000 \n", file = f)
+
 if __name__ == "__main__":
-    printMacro()
+    #printMacro()
     #printMacroFindPeak()
     #printMacroMarley(100000)
     #printMacroMarley100k(100000, 8)
     #printMacroMissing(100000)
+    printMacroCosmic()

@@ -1,7 +1,7 @@
 from plotting.plot import plot_all_TMS_iron_scint
 import subprocess
 from TMS_smearing_calc.tms_smear import build_smearing_matrix, write_snowglobes_matrix
-from TMS_smearing_calc.config import DETECTOR_SMEARING_CONFIG, ALL_DETECTOR
+from config import DETECTOR_SMEARING_CONFIG, ALL_DETECTOR
 from pathlib import Path
 
 detectors = ["NDLAr", "ECAL_lead", "ECAL_scint", "TMS_iron", "TMS_scint", "GRAIN", "STT"]
@@ -42,6 +42,6 @@ def run_all_detectors_snowglobes():
             run_snowglobes(flux, detector, material)
 
 if __name__ == "__main__":
-    #main()
+    main()
     #write_all_smearing_matrices()
-    run_all_detectors_snowglobes()
+    #run_all_detectors_snowglobes()
