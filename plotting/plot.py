@@ -3,13 +3,13 @@ import matplotlib.pyplot as plt
 from pathlib  import Path
 import uproot
 import plotting.helper as helper
-from config import DETECTOR_SMEARING_CONFIG, ALL_DETECTOR
+from config import DETECTOR_SMEARING_CONFIG, ALL_DETECTOR, iron_channels, argon_channels, lead_channels, scint_channels
 
 SNOWGLOBES = Path.home()/"software"/"snowglobes"
 THRESHOLDS = np.arange(0.5, 8.2, 0.5)
 
 #weights not considered, basic plot
-def plot_one_channel_smeared_unsmeared(flux, channel, detector, title):
+def plot_one_channel_smeared_unsmeared(flux, channel, detector):
 
     file_smeared = SNOWGLOBES/"out"/f"{flux}_{channel}_{detector}_events_smeared_unweighted.dat"
     file_unsmeared = SNOWGLOBES/"out"/f"{flux}_{channel}_{detector}_events_unweighted.dat"
@@ -22,7 +22,7 @@ def plot_one_channel_smeared_unsmeared(flux, channel, detector, title):
     events_smeared = data_smeared[:, 1]
     events_unsmeared = data_unsmeared[:, 1]
 
-    plt.stairs(events_smeared, energy, label="Smeared: Scintillator deposited E", color="blue")
+    plt.stairs(events_smeared, energy, label="Smeared: LAr deposited E", color="blue")
     plt.stairs(events_unsmeared, energy, label=r"Unsmeared: true $E_\nu$", color="red")
     plt.xlim(0,50)
     plt.text(0.42, 0.76,f"Total events unsmeared: {events_unsmeared.sum():.2f}\nTotal events smeared: {events_smeared.sum():.2f}",transform=plt.gca().transAxes)#,ha="right",va="top")
@@ -31,7 +31,7 @@ def plot_one_channel_smeared_unsmeared(flux, channel, detector, title):
     plt.ylabel("Number of Events per bin")
     plt.legend()
     plt.grid(True, alpha=0.3)
-    plt.title(title)#0% efficiency $\leq$ 5 MeV")
+    plt.title(f"Smeared vs. unsmeared signal, {flux} flux, {channel}, {detector}")
     plt.savefig(f"plotting/{flux}_{channel}_{detector}_smeared_unsmeared.svg", bbox_inches="tight", dpi=900)
     plt.close()
 
@@ -69,22 +69,7 @@ def plot_two_channel_smeared_unsmeared(title, save_as):
 
 
 def plot_one_channel_iron_smeared_unsmeared(channel):
-    channels = {
-        "nue_e" : 26,
-        "nuebar_e" : 26,
-        "numu_e" : 26,
-        "numubar_e" : 26,
-        "nutau_e" : 26,
-        "nutaubar_e" : 26,
-        "nue_Fe56" : 1,
-        "nuebar_Fe56" : 1,
-        "nc_nue_Fe56" : 1,
-        "nc_nuebar_Fe56" : 1,
-        "nc_numu_Fe56" : 1,
-        "nc_numubar_Fe56" : 1,
-        "nc_nutau_Fe56" : 1,
-        "nc_nutaubar_Fe56" : 1,
-    }
+    channels = iron_channels
     file_smeared = SNOWGLOBES/"out"/f"garching_{channel}_TMS_iron_events_smeared_unweighted.dat"
     file_unsmeared = SNOWGLOBES/"out"/f"garching_{channel}_TMS_iron_events_unweighted.dat"
 
@@ -113,31 +98,7 @@ def plot_one_channel_iron_smeared_unsmeared(channel):
 
 
 def plot_one_channel_scint_smeared_unsmeared(channel):
-    channels = {
-        "ibd":1,
-        "nue_e" : 4,
-        "nuebar_e" : 4,
-        "numu_e" : 4,
-        "numubar_e" : 4,
-        "nutau_e" : 4,
-        "nutaubar_e" : 4,
-        "nue_C12" : 0.4945,
-        "nuebar_C12" : 0.4945,
-        "nc_nue_C12" : 0.4945,
-        "nc_nuebar_C12" : 0.4945,
-        "nc_numu_C12" : 0.4945,
-        "nc_numubar_C12" : 0.4945,
-        "nc_nutau_C12" : 0.4945,
-        "nc_nutaubar_C12" : 0.4945,
-        "nue_C13" : 0.0055,
-        "nc_nue_C13" : 0.0055,
-        "nc_nuebar_C13" : 0.0055,
-        "nc_numu_C13" : 0.0055,
-        "nc_numubar_C13" : 0.0055,
-        "nc_nutau_C13" : 0.0055,
-        "nc_nutaubar_C13" : 0.0055
-
-    }
+    channels = lead_channels
     file_smeared = SNOWGLOBES/"out"/f"garching_{channel}_TMS_scint_events_smeared_unweighted.dat"
     file_unsmeared = SNOWGLOBES/"out"/f"garching_{channel}_TMS_scint_events_unweighted.dat"
 
@@ -168,37 +129,8 @@ def plot_one_channel_scint_smeared_unsmeared(channel):
 
 def plot_all_TMS_iron_scint(flux):
     #channels with geant4 smearing matrix
-    channels_scint = {        
-        "ibd":1,
-        "nue_e" : 4,
-        "nuebar_e" : 4,
-        "numu_e" : 4,
-        "numubar_e" : 4,
-        "nutau_e" : 4,
-        "nutaubar_e" : 4,
-        "nc_nue_C12": 0.4945,
-        "nc_nuebar_C12": 0.4945,
-        "nc_numu_C12": 0.4945,
-        "nc_numubar_C12": 0.4945,
-        "nc_nutau_C12": 0.4945,
-        "nc_nutaubar_C12": 0.4945,
-    }
-    channels_iron = {
-        "nue_e" : 26,
-        "nuebar_e" : 26,
-        "numu_e" : 26,
-        "numubar_e" : 26,
-        "nutau_e" : 26,
-        "nutaubar_e" : 26,
-        "nue_Fe56" : 1,
-        "nuebar_Fe56" : 1,
-        "nc_nue_Fe56" : 1,
-        "nc_nuebar_Fe56" : 1,
-        "nc_numu_Fe56" : 1,
-        "nc_numubar_Fe56" : 1,
-        "nc_nutau_Fe56" : 1,
-        "nc_nutaubar_Fe56" : 1,
-    }
+    channels_scint = scint_channels #import from config.py
+    channels_iron = iron_channels
 
     total_iron_ES = np.zeros(200)
     total_scint_ES = np.zeros(200)
@@ -398,7 +330,7 @@ def plot_threshold_comparison_new():
     plt.grid(True, alpha = 0.3)
     plt.xlabel("Threshold [MeV]")
     plt.ylabel("Expected event rate")
-    plt.title("Threshold comparison new")
+    #plt.title("Threshold comparison new")
     plt.savefig("plotting/new_threshold_comparison.svg", bbox_inches = "tight", dpi = 900)
 
 
@@ -549,11 +481,7 @@ def compare_settings_effects(
 #save_as = "garching_TMS_iron_NC_nue_smeared_unsmeared.png"
 
 if __name__ == "__main__":
-    '''plot_one_channel_smeared_unsmeared(
-        flux = "garching",
-        channel = "nue_Fe56",
-        detector = "TMS_iron",
-        title = "")'''
+    #plot_one_channel_smeared_unsmeared(flux = "garching", channel = "nue_Fe56", detector = "TMS_iron", title = "")
 
 
     """plot_two_channel_smeared_unsmeared(

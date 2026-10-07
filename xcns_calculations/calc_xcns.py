@@ -181,7 +181,7 @@ def calc_Pb_CC_nue():
     cross_sections_globes = cross_sections_interp_extrap* 1e-4 / energies_GeV #in 10^-38cm^2 /GeV
     zeros = np.zeros(len(energies_MeV))
 
-    output = np.column_stack((logE, zeros, zeros, zeros, cross_sections_globes, zeros, zeros))
+    output = np.column_stack((logE, cross_sections_globes, zeros, zeros, zeros, zeros, zeros))
 
     outfile = XSCNS / "CALC_xs_nue_Pb208.dat"
 

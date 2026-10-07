@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from pathlib  import Path
 import matplotlib.patches as mpatches
 import plotting.helper as helper
+from config import iron_channels, scint_channels, lead_channels, argon_channels
 
 
 SNOWGLOBES = Path.home()/"software"/"snowglobes"
@@ -12,23 +13,7 @@ def plot_total_and_unsmeared_argon(detector, flux):
     #enter detector and flux as strings, e.g. detector = "ar40kt", flux = "livermore"
 
 
-    channels = {
-        "nue_e" : 18,
-        "nuebar_e" : 18,
-        "numu_e" : 18,
-        "numubar_e" : 18,
-        "nutau_e" : 18,
-        "nutaubar_e" : 18,
-        "nue_Ar40" : 1,
-        "nuebar_Ar40" : 1,
-        "nc_nue_Ar40" : 1,
-        "nc_nuebar_Ar40" : 1,
-        "nc_numu_Ar40" : 1,
-        "nc_numubar_Ar40" : 1,
-        "nc_nutau_Ar40" : 1,
-        "nc_nutaubar_Ar40" : 1
-
-    }
+    channels = argon_channels
 
     total_events_unsmeared = np.zeros(200)
     total_events_smeared = np.zeros(200)
@@ -71,24 +56,7 @@ def plot_different_smeared_signals_argon(detector, flux):
     #enter detector and flux as strings, e.g. detector = "ar40kt", flux = "livermore"
 
 
-    channels = {
-        "nue_e" : 18,
-        "nuebar_e" : 18,
-        "numu_e" : 18,
-        "numubar_e" : 18,
-        "nutau_e" : 18,
-        "nutaubar_e" : 18,
-        "nue_Ar40" : 1,
-        "nuebar_Ar40" : 1,
-        "nc_nue_Ar40" : 1,
-        "nc_nuebar_Ar40" : 1,
-        "nc_numu_Ar40" : 1,
-        "nc_numubar_Ar40" : 1,
-        "nc_nutau_Ar40" : 1,
-        "nc_nutaubar_Ar40" : 1
-
-    }
-
+    channels = argon_channels
     total_nu_e_events_smeared = np.zeros(200)
     total_nc_events_smeared = np.zeros(200)
    
@@ -151,7 +119,7 @@ def plot_different_smeared_signals_argon(detector, flux):
     #plt.title(f"{flux} {detector} smeared signal for differend channels")
     #plt.title(rf"""NDLAr supernova signal across all channels
     #basic ar40kt response, {flux}, no additional Threshold""")
-    plt.savefig(f"plotting/{flux}_{detector}_different_smeared_channels_stairs.pdf", bbox_inches = "tight")
+    plt.savefig(f"plotting/{flux}_{detector}_different_smeared_channels_stairs.svg", bbox_inches = "tight", dpi = 900)
     plt.close()
     return total_count
 
@@ -164,31 +132,7 @@ def plot_different_smeared_signals_scint(detector, flux):
     else:
         detector_name = detector
 
-    channels = {
-        "ibd":1,
-        "nue_e" : 4,
-        "nuebar_e" : 4,
-        "numu_e" : 4,
-        "numubar_e" : 4,
-        "nutau_e" : 4,
-        "nutaubar_e" : 4,
-        "nue_C12" : 0.4945,
-        "nuebar_C12" : 0.4945,
-        "nc_nue_C12" : 0.4945,
-        "nc_nuebar_C12" : 0.4945,
-        "nc_numu_C12" : 0.4945,
-        "nc_numubar_C12" : 0.4945,
-        "nc_nutau_C12" : 0.4945,
-        "nc_nutaubar_C12" : 0.4945,
-        "nue_C13" : 0.0055,
-        "nc_nue_C13" : 0.0055,
-        "nc_nuebar_C13" : 0.0055,
-        "nc_numu_C13" : 0.0055,
-        "nc_numubar_C13" : 0.0055,
-        "nc_nutau_C13" : 0.0055,
-        "nc_nutaubar_C13" : 0.0055
-
-    }
+    channels = scint_channels
 
     total_nu_e_events_smeared = np.zeros(200)
     total_C12_events_smeared = np.zeros(200)
@@ -297,30 +241,8 @@ def plot_different_smeared_signals_scint(detector, flux):
 def plot_different_smeared_signals_lead(detector, flux):
     #enter detector and flux as strings, e.g. detector = "ar40kt", flux = "livermore"
 
+    channels = lead_channels
 
-    channels = {
-        "nue_e" : 82,
-        "nuebar_e" : 82,
-        "numu_e" : 82,
-        "numubar_e" : 82,
-        "nutau_e" : 82,
-        "nutaubar_e" : 82,
-        "nue_Pb208_1n" : 1,
-        "nue_Pb208_2n" : 1,
-        "nc_nue_Pb208_1n" : 1,
-        "nc_nuebar_Pb208_1n" : 1,
-        "nc_numu_Pb208_1n" : 1,
-        "nc_numubar_Pb208_1n" : 1,
-        "nc_nutau_Pb208_1n" : 1,
-        "nc_nutaubar_Pb208_1n" : 1,
-        "nc_nue_Pb208_2n" : 1,
-        "nc_nuebar_Pb208_2n" : 1,
-        "nc_numu_Pb208_2n" : 1,
-        "nc_numubar_Pb208_2n" : 1,
-        "nc_nutau_Pb208_2n" : 1,
-        "nc_nutaubar_Pb208_2n" : 1
-
-    }
 
     total_nu_e_events_smeared = np.zeros(200)
     total_nc_1n_events_smeared = np.zeros(200)
@@ -420,22 +342,7 @@ def plot_different_smeared_signals_iron(detector, flux):
     else:
         detector_name = detector 
 
-    channels = {
-        "nue_e" : 26,
-        "nuebar_e" : 26,
-        "numu_e" : 26,
-        "numubar_e" : 26,
-        "nutau_e" : 26,
-        "nutaubar_e" : 26,
-        "nue_Fe56" : 1,
-        "nuebar_Fe56" : 1,
-        "nc_nue_Fe56" : 1,
-        "nc_nuebar_Fe56" : 1,
-        "nc_numu_Fe56" : 1,
-        "nc_numubar_Fe56" : 1,
-        "nc_nutau_Fe56" : 1,
-        "nc_nutaubar_Fe56" : 1,
-    }
+    channels = iron_channels
 
     total_nu_e_events_smeared = np.zeros(200)
     total_nc_events_smeared = np.zeros(200)
@@ -517,7 +424,7 @@ def plot_different_smeared_signals_iron(detector, flux):
 
 def compare_detectors_bar_plot(flux, smeared):
     #working TMS iron channels, existing smearing matrix:
-    TMS_iron_channel = ["nue_Fe56", "nuebar_Fe56","nue_e", "nuebar_e", "numu_e", "numubar_e", "nutau_e", "nutaubar_e", "nc_nue_Fe56","nc_nuebar_Fe56","nc_numu_Fe56","nc_numubar_Fe56","nc_nutau_Fe56","nc_nutaubar_Fe56", ]
+    TMS_iron_channel = iron_channels.keys()
     total_TMS_iron= 0
     for channel in TMS_iron_channel:
         u, s =  helper.get_channel_totals("TMS_iron", "iron", channel, flux)
@@ -527,7 +434,7 @@ def compare_detectors_bar_plot(flux, smeared):
             total_TMS_iron += u
     #working TMS scint channels, existing smearing matrix:
     TMS_scint_channel = ["ibd","nue_e", "nuebar_e", "numu_e", "numubar_e", "nutau_e", "nutaubar_e", "nc_nue_C12", "nc_nuebar_C12", "nc_numu_C12", "nc_numubar_C12", "nc_nutau_C12", "nc_nutaubar_C12"]
-    all_scint = ['ibd', 'nue_e', 'nuebar_e', 'numu_e', 'numubar_e', 'nutau_e', 'nutaubar_e', 'nue_C12', 'nuebar_C12', 'nc_nue_C12', 'nc_nuebar_C12', 'nc_numu_C12', 'nc_numubar_C12', 'nc_nutau_C12', 'nc_nutaubar_C12', 'nue_C13', 'nc_nue_C13', 'nc_nuebar_C13', 'nc_numu_C13', 'nc_numubar_C13', 'nc_nutau_C13', 'nc_nutaubar_C13']
+    all_scint = scint_channels.keys()
     total_TMS_scint = 0
     total_STT = 0
     total_ECAL_scint = 0
@@ -553,7 +460,7 @@ def compare_detectors_bar_plot(flux, smeared):
 
 
     #argon_channel =  ["nc_nue_Ar40","nc_nuebar_Ar40", "nc_numu_Ar40", "nc_numubar_Ar40", "nc_nutau_Ar40", "nc_nutaubar_Ar40","nue_e", "nuebar_e", "numu_e", "numubar_e", "nutau_e", "nutaubar_e"]
-    all_argon = ['nue_e', 'nuebar_e', 'numu_e', 'numubar_e', 'nutau_e', 'nutaubar_e', 'nue_Ar40', 'nuebar_Ar40', 'nc_nue_Ar40', 'nc_nuebar_Ar40', 'nc_numu_Ar40', 'nc_numubar_Ar40', 'nc_nutau_Ar40', 'nc_nutaubar_Ar40']
+    all_argon = argon_channels.keys()
     total_NDLAr = 0
     total_GRAIN = 0
     
@@ -569,7 +476,7 @@ def compare_detectors_bar_plot(flux, smeared):
             total_GRAIN += u_G  
 
 
-    all_lead = ['nue_e', 'nuebar_e', 'numu_e', 'numubar_e', 'nutau_e', 'nutaubar_e', 'nue_Pb208_1n', 'nue_Pb208_2n', 'nc_nue_Pb208_1n', 'nc_nuebar_Pb208_1n', 'nc_numu_Pb208_1n', 'nc_numubar_Pb208_1n', 'nc_nutau_Pb208_1n', 'nc_nutaubar_Pb208_1n', 'nc_nue_Pb208_2n', 'nc_nuebar_Pb208_2n', 'nc_numu_Pb208_2n', 'nc_numubar_Pb208_2n', 'nc_nutau_Pb208_2n', 'nc_nutaubar_Pb208_2n']
+    all_lead = lead_channels.keys()
     total_ECAL_lead = 0
     for channel in all_lead:
         u, s = helper.get_channel_totals("ECAL_lead", "lead", channel, flux)
@@ -671,9 +578,9 @@ def plot_all_NC_channels_iron():
 
 if __name__ == "__main__":
     #plot_total_and_unsmeared_argon("NDLAr", "garching")
-    #plot_different_smeared_signals_argon("NDLAr", "garching")
+    plot_different_smeared_signals_argon("NDLAr", "garching")
     #plot_different_smeared_signals_scint("TMS_scint", "garching")
     #plot_different_smeared_signals_lead("ECAL_lead", "garching")
     #plot_different_smeared_signals_iron("TMS_iron", "garching")
-    compare_detectors_bar_plot("garching", smeared = False)
+    #compare_detectors_bar_plot("garching", smeared = False)
     #plot_all_NC_channels_iron()
