@@ -14,9 +14,9 @@ The resulting detector response matrices are incorporated into SNOwGLoBES to est
 
 ## Main Results
 
-For a supernova at 10 kpc, the study predicts approximately **10.5 TMS events** using the Garching flux model and **52.3 events** using the Livermore model.
+For a supernova at 10 kpc, the study predicts approximately 10.5 TMS events using the Garching flux model and 52.3 events using the Livermore model.
 
-Applying simplified energy-deposition and track-length cuts yields approximately **8.3 signal events and 17.8 cosmic-muon background events** for the Garching model.
+Applying simplified energy-deposition and track-length cuts yields approximately 8.3 signal events and 17.8 cosmic-muon background events for the Garching model.
 
 These results represent first-order estimates based on simplified detector and background models.
 
