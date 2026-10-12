@@ -27,7 +27,9 @@
 /// \brief Implementation of the B4c::ActionInitialization class
 
 #include "ActionInitialization.hh"
-
+#include <cstdlib>
+#include <string>
+#include <stdexcept>
 #include "EventAction.hh"
 #include "MarleyPrimaryGeneratorAction.hh"
 #include "PrimaryGeneratorAction.hh"
