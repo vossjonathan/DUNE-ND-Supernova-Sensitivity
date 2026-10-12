@@ -112,17 +112,18 @@ def plot_missing_TMS_channels_unsmeared(flux):
         plt.stairs(events_unsmeared, ENERGY_GRID, label = channel)
 
     text = "\n".join(f"{channel}: {events:.3f}" for channel, events in channels.items() if channel.startswith("nue"))
-    text += f"\nTotal NC C13: {total_nc_count:.3f}"
+    text += f"\nNC C13: {total_nc_count:.3f}"
+    text += f"\n\nTotal C13 events: {(round(total_nc_count, 3) + round(channels['nue_C13'], 3)):.3f}"
     text += f"\nTotal events: {total_count:.3f}"
-    plt.text(0.64, 0.21, text, transform=plt.gca().transAxes, linespacing = 1.3)
+    plt.text(0.66, 0.12, text, transform=plt.gca().transAxes, linespacing = 1.3)
 
-    plt.xlabel(r" Detected $E_{det}$ [MeV]")
+    plt.xlabel(r" True $E_\nu$ [MeV]")
     plt.ylabel("Number of Events per 0.5 MeV energy bin")
     plt.xlim(0,70)
     plt.legend()
     plt.grid(True, alpha=0.3)
-    plt.title("Unsmeared spectra of missing scintillator channels")
-    plt.savefig(f"scripts/debug_plots/{flux}_unsmeared_missing_scint_channels.png", bbox_inches = "tight", dpi = 900)
+    plt.title("Unsmeared spectra of additional scintillator channels")
+    plt.savefig(f"scripts/debug_plots/{flux}_unsmeared_missing_scint_channels.svg", bbox_inches = "tight", dpi = 900)
     plt.close()
 
 

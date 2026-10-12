@@ -1,10 +1,13 @@
-# Configuration for all channels where the smearing matrix is created
-# with MARLEY + Geant4 or Geant4-only.
+
+
 
 import numpy as np
 
 ENERGY_GRID = np.linspace(0.5, 100, 201)
 
+
+# Configuration for all channels where the smearing matrix is created
+# with MARLEY + Geant4 or Geant4-only.
 DETECTOR_SMEARING_CONFIG = {
 
 
@@ -339,6 +342,14 @@ iron_channels = {
         "nc_nutau_Fe56" : 1,
         "nc_nutaubar_Fe56" : 1,
     }
+
+# Collection of all detector interaction channels
+# For majority no realistic detector response was developed
+# see DETECTOR_CONFIG for all channels with detector response simulation
+# For every channel the snowglobes channel weight is added
+# From snowglobes, only unweighted files are used (weighting does not 100% work right now)
+# The weighting is done in an extra step in Python with the help of the following dictionary
+
 ALL_DETECTOR = {
     "NDLAr": {"material": "argon", "channels" : argon_channels},
     "ECAL_lead":  {"material": "lead", "channels" : lead_channels},

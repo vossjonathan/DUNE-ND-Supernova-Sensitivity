@@ -133,8 +133,8 @@ def compare_CC_nue_xsec():
     plt.savefig("debug_plots/nuebarCCFe.png")
     plt.close()
 
-def get_snowglobes_xsec(channel, column):
-    file = XSCNS/f"xs_{channel}.dat"
+def get_snowglobes_xsec(channel, column, suffix = ""):
+    file = XSCNS/f"xs_{channel}{suffix}.dat"
     data = np.loadtxt(file)
 
     energies = data[:, 0] #log(GeV)
@@ -189,6 +189,71 @@ def compare_Fe_cross_sections_snowglobes():
     plt.savefig("debug_plots/snowglobes_xsec_comparison.svg", bbox_inches="tight", dpi = 900)
     plt.close()
 
+def compare_CC_C13_cross_sections():
+    energies_MeV_extrap, xsec_nue_C13_extrap = get_snowglobes_xsec("nue_C13", 1)
+    energies_snow, xsec_snow = get_snowglobes_xsec("nue_C13", 1, suffix = "_original_snowglobes")
+    #SOURCE:
+    energies_paper = np.arange(3, 55)  # MeV
+
+    cross_section_paper = np.array([
+        0.0221, 0.0939, 0.223, 0.439, 0.838, 1.41,
+        2.16, 3.10, 4.20, 5.52, 7.09, 8.90, 10.9,
+        13.2, 15.9, 18.6, 21.7, 25.1, 28.8, 32.7,
+        37.0, 41.5, 46.2, 51.4, 56.9, 62.6,
+        68.7, 75.0, 81.8, 88.9, 96.2, 104,
+        112, 121, 129, 138, 148, 159, 170,
+        180, 192, 203, 215, 228, 241, 256,
+        270, 284, 299, 315, 331, 347
+    ])
+
+    
+    
+    plt.plot(energies_paper, cross_section_paper, label = "literature xsec, Suzuki 2019", color = "tab:orange")    
+    plt.plot(energies_MeV_extrap, xsec_nue_C13_extrap, label = "Extrapolated cross sections", color = "tab:orange", linestyle = "--")
+    plt.plot(energies_snow, xsec_snow, label = "snowglobes xsec C13", color = "tab:blue")
+    plt.legend()
+    plt.xlabel(r"Neutrino energy $E_\nu$ [MeV]")
+    plt.ylabel(r"$\sigma$ in $10^{-42} cm^2$")
+    plt.title(r"Comparison of C13 CC $\nu_e$ cross sections")
+    plt.grid(True, alpha = 0.3)
+    plt.savefig("scripts/debug_plots/C13_cross_section_snowglobes.svg", bbox_inches = "tight", dpi = 900)
+    plt.close()
+
+def compare_NC_C13_cross_sections():
+    
+    energies_MeV_extrap, xsec_nue_C13_extrap = get_snowglobes_xsec("nc_nue_C13", 1)
+    energies_snow, xsec_snow = get_snowglobes_xsec("nc_nue_C13", 1, suffix = "_original_snowglobes")
+    #SOURCE:
+    energies_paper = np.arange(6, 61)  # MeV
+
+    cross_section_paper = np.array([
+        1.61144e-14, 4.98686e-7, 1.70467e-5, 1.44971e-4,
+        0.00492129, 0.0208600, 0.0506791, 0.0947193,
+        0.154234, 0.229880, 0.322241, 0.431917,
+        0.559371, 0.705006, 0.869271, 1.05267,
+        1.25572, 1.47902, 1.72324, 1.98912,
+        2.27737, 2.58877, 2.92406, 3.28421,
+        3.66993, 4.08214, 4.52166, 4.98929,
+        5.48597, 6.01253, 6.56985, 7.15877,
+        7.78015, 8.43485, 9.12365, 9.84743,
+        10.6069, 11.4029, 12.2361, 13.1073,
+        14.0169, 14.9658, 15.9545, 16.9835,
+        18.0532, 19.1641, 20.3165, 21.5107,
+        22.7470, 24.0256, 25.3465, 26.7098,
+        28.1156, 29.5636, 31.0538
+    ])
+    
+    
+    plt.plot(energies_paper, cross_section_paper, label = "literature xsec, Suzuki 2019", color = "tab:orange")    
+    plt.plot(energies_MeV_extrap, xsec_nue_C13_extrap, label = "Extrapolated cross sections", color = "tab:orange", linestyle = "--")
+    plt.plot(energies_snow, xsec_snow, label = "snowglobes xsec C13", color = "tab:blue")
+    plt.legend()
+    plt.xlabel(r"Neutrino energy $E_\nu$ [MeV]")
+    plt.ylabel(r"$\sigma$ in $10^{-42} cm^2$")
+    plt.title(r"Comparison of C13 NC $\nu_e$ cross sections")
+    plt.grid(True, alpha = 0.3)
+    plt.savefig("scripts/debug_plots/NC_C13_cross_section_snowglobes.svg", bbox_inches = "tight", dpi = 900)
+    plt.close()
 
 def compare_xsec_Fe_Pb():
 
@@ -297,8 +362,10 @@ MARLEY AA $\langle\sigma\rangle = $ {marley_avg:.2f} $\times$ 10$^{{-42}}$ cm$^2
 
 
 if __name__ == "__main__":
+    #compare_CC_C13_cross_sections()
+    compare_NC_C13_cross_sections()
     #plot_iron_cross()
-    compare_Fe_cross_sections_snowglobes()
+    #compare_Fe_cross_sections_snowglobes()
     #compare_CC_nue_xsec()
     #compare_xsec_Fe_Pb()
     #flux_averaged_xsec_CC_nue()

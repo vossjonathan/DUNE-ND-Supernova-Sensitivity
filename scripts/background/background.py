@@ -11,12 +11,23 @@ SNOWGLOBES = Path.home()/"software"/"snowglobes"
 CUTS = np.arange(0, 100, 1)
 EXPECTED_MUONS = 150 * 9
 BG_FILE = TMS/"build"/"data_without_marley"/"Cosmic_data_theta_36"/"TMS_cosmic_mu.root"
-#TODOO: create functions:
-# 
-# seperate plot functions, 
-# function which applies Energy cut as wished, 
-# function which applies Lscint cut as wished,
-# function which applies both cuts and prints the expected events
+
+
+# used for background study
+# calculates the columns depth = rho * depth
+# column depth is then compared with CSDA data to approximate energy loss 
+def calculate_DUNE_ND_energy_lost():
+    
+    DEPTH = 60 * 100 #in cm
+
+    ROCK_DENSITY = 2.7 #in g/cm^3
+
+    X = ROCK_DENSITY * DEPTH # in
+
+    print(X) #1.6 10^4
+    #https://pdg.lbl.gov/2017/AtomicNuclearProperties/MUE/muE_standard_rock.pdf
+    #--> Energy Loss in 60m around 38 GeV
+
 
 def load_background_data(file):
     with uproot.open(file) as root_file:

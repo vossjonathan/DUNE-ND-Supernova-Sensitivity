@@ -1,0 +1,97 @@
+/run/numberOfThreads 1
+/run/initialize
+/tracking/storeTrajectory 0
+/run/printProgress 10000
+
+/marley/nuEnergy 10.20125 MeV
+/analysis/setFileName data_marley/MARLEY_CC_nuebar_100k_ALLOWED/MARLEY_TMS_10.20125_CC_nuebar_ALLOWED_Fe56_MeV.root
+/run/beamOn 100000
+
+/marley/nuEnergy 14.18125 MeV
+/analysis/setFileName data_marley/MARLEY_CC_nuebar_100k_ALLOWED/MARLEY_TMS_14.18125_CC_nuebar_ALLOWED_Fe56_MeV.root
+/run/beamOn 100000
+
+/marley/nuEnergy 18.16125 MeV
+/analysis/setFileName data_marley/MARLEY_CC_nuebar_100k_ALLOWED/MARLEY_TMS_18.16125_CC_nuebar_ALLOWED_Fe56_MeV.root
+/run/beamOn 100000
+
+/marley/nuEnergy 22.14125 MeV
+/analysis/setFileName data_marley/MARLEY_CC_nuebar_100k_ALLOWED/MARLEY_TMS_22.14125_CC_nuebar_ALLOWED_Fe56_MeV.root
+/run/beamOn 100000
+
+/marley/nuEnergy 26.12125 MeV
+/analysis/setFileName data_marley/MARLEY_CC_nuebar_100k_ALLOWED/MARLEY_TMS_26.12125_CC_nuebar_ALLOWED_Fe56_MeV.root
+/run/beamOn 100000
+
+/marley/nuEnergy 30.10125 MeV
+/analysis/setFileName data_marley/MARLEY_CC_nuebar_100k_ALLOWED/MARLEY_TMS_30.10125_CC_nuebar_ALLOWED_Fe56_MeV.root
+/run/beamOn 100000
+
+/marley/nuEnergy 34.08125 MeV
+/analysis/setFileName data_marley/MARLEY_CC_nuebar_100k_ALLOWED/MARLEY_TMS_34.08125_CC_nuebar_ALLOWED_Fe56_MeV.root
+/run/beamOn 100000
+
+/marley/nuEnergy 38.06125 MeV
+/analysis/setFileName data_marley/MARLEY_CC_nuebar_100k_ALLOWED/MARLEY_TMS_38.06125_CC_nuebar_ALLOWED_Fe56_MeV.root
+/run/beamOn 100000
+
+/marley/nuEnergy 42.04125 MeV
+/analysis/setFileName data_marley/MARLEY_CC_nuebar_100k_ALLOWED/MARLEY_TMS_42.04125_CC_nuebar_ALLOWED_Fe56_MeV.root
+/run/beamOn 100000
+
+/marley/nuEnergy 46.02125 MeV
+/analysis/setFileName data_marley/MARLEY_CC_nuebar_100k_ALLOWED/MARLEY_TMS_46.02125_CC_nuebar_ALLOWED_Fe56_MeV.root
+/run/beamOn 100000
+
+/marley/nuEnergy 50.00125 MeV
+/analysis/setFileName data_marley/MARLEY_CC_nuebar_100k_ALLOWED/MARLEY_TMS_50.00125_CC_nuebar_ALLOWED_Fe56_MeV.root
+/run/beamOn 100000
+
+/marley/nuEnergy 53.98125 MeV
+/analysis/setFileName data_marley/MARLEY_CC_nuebar_100k_ALLOWED/MARLEY_TMS_53.98125_CC_nuebar_ALLOWED_Fe56_MeV.root
+/run/beamOn 100000
+
+/marley/nuEnergy 57.96125 MeV
+/analysis/setFileName data_marley/MARLEY_CC_nuebar_100k_ALLOWED/MARLEY_TMS_57.96125_CC_nuebar_ALLOWED_Fe56_MeV.root
+/run/beamOn 100000
+
+/marley/nuEnergy 61.94125 MeV
+/analysis/setFileName data_marley/MARLEY_CC_nuebar_100k_ALLOWED/MARLEY_TMS_61.94125_CC_nuebar_ALLOWED_Fe56_MeV.root
+/run/beamOn 100000
+
+/marley/nuEnergy 65.92125 MeV
+/analysis/setFileName data_marley/MARLEY_CC_nuebar_100k_ALLOWED/MARLEY_TMS_65.92125_CC_nuebar_ALLOWED_Fe56_MeV.root
+/run/beamOn 100000
+
+/marley/nuEnergy 69.90125 MeV
+/analysis/setFileName data_marley/MARLEY_CC_nuebar_100k_ALLOWED/MARLEY_TMS_69.90125_CC_nuebar_ALLOWED_Fe56_MeV.root
+/run/beamOn 100000
+
+/marley/nuEnergy 73.88125 MeV
+/analysis/setFileName data_marley/MARLEY_CC_nuebar_100k_ALLOWED/MARLEY_TMS_73.88125_CC_nuebar_ALLOWED_Fe56_MeV.root
+/run/beamOn 100000
+
+/marley/nuEnergy 77.86125 MeV
+/analysis/setFileName data_marley/MARLEY_CC_nuebar_100k_ALLOWED/MARLEY_TMS_77.86125_CC_nuebar_ALLOWED_Fe56_MeV.root
+/run/beamOn 100000
+
+/marley/nuEnergy 81.84125 MeV
+/analysis/setFileName data_marley/MARLEY_CC_nuebar_100k_ALLOWED/MARLEY_TMS_81.84125_CC_nuebar_ALLOWED_Fe56_MeV.root
+/run/beamOn 100000
+
+/marley/nuEnergy 85.82125 MeV
+/analysis/setFileName data_marley/MARLEY_CC_nuebar_100k_ALLOWED/MARLEY_TMS_85.82125_CC_nuebar_ALLOWED_Fe56_MeV.root
+/run/beamOn 100000
+
+/marley/nuEnergy 89.80125 MeV
+/analysis/setFileName data_marley/MARLEY_CC_nuebar_100k_ALLOWED/MARLEY_TMS_89.80125_CC_nuebar_ALLOWED_Fe56_MeV.root
+/run/beamOn 100000
+
+/marley/nuEnergy 93.78125 MeV
+/analysis/setFileName data_marley/MARLEY_CC_nuebar_100k_ALLOWED/MARLEY_TMS_93.78125_CC_nuebar_ALLOWED_Fe56_MeV.root
+/run/beamOn 100000
+
+/marley/nuEnergy 97.76125 MeV
+/analysis/setFileName data_marley/MARLEY_CC_nuebar_100k_ALLOWED/MARLEY_TMS_97.76125_CC_nuebar_ALLOWED_Fe56_MeV.root
+/run/beamOn 100000
+

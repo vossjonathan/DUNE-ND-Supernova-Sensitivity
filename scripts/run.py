@@ -44,6 +44,6 @@ def run_all_detectors_snowglobes():
 
 if __name__ == "__main__":
     #main()
-    run_all_detectors_snowglobes()
-    #write_all_smearing_matrices()
+    #run_all_detectors_snowglobes()
+    write_all_smearing_matrices()
     #run_all_detectors_snowglobes()

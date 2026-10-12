@@ -1,0 +1,14 @@
+nue_e 0 + e 26.
+nuebar_e 1 - e 26.
+numu_e 2 + m 26.
+numubar_e 3 - m 26.
+nutau_e 4 + t 26.
+nutaubar_e 5 - t 26.
+nue_Fe56 6 + e 1.
+nuebar_Fe56 7 - e 1.
+nc_nue_Fe56 8 + e 1.
+nc_numu_Fe56 9 + m 1.
+nc_nutau_Fe56 10 + t 1.
+nc_nuebar_Fe56 11 - e 1.
+nc_numubar_Fe56 12 - m 1.
+nc_nutaubar_Fe56 13 - t 1.
