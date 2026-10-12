@@ -1,7 +1,6 @@
 # DUNE Near Detector Supernova Sensitivity Study
 
-This repository contains the simulation and analysis code developed during a research internship at Duke University to investigate the sensitivity of the DUNE near detector complex to neutrinos from a
-Galactic core-collapse supernova, with particular emphasis on The Muon Spectrometer (TMS).
+This repository contains the simulation and analysis code developed during a research internship at Duke University to investigate the sensitivity of the DUNE near detector complex to neutrinos from a Galactic core-collapse supernova, with particular emphasis on the Muon Spectrometer (TMS).
 
 ## Overview
 
@@ -29,6 +28,8 @@ These results represent first-order estimates based on simplified detector and b
 - `scripts/` — Python analysis and visualization
 - `figures/` — Selected simulation results and plots
 
-## Status
+The repository contains the project-specific code, configurations, and results. The original simulations were performed using separate local installations of Geant4, MARLEY, and SNOwGLoBES. The corresponding directories in this repository contain the relevant project files, not complete installations of these software packages.
 
-This repository contains research code and is currently being organized and documented. Full reproduction of the simulations requires external installations of Geant4, MARLEY, and SNOwGLoBES.
+## Compiling the Geant4 Simulation
+
+The Geant4 model requires an external installation of **Geant4
