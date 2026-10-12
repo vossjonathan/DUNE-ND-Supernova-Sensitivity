@@ -1,6 +1,6 @@
 # DUNE Near Detector Supernova Sensitivity Study
 
-This repository contains the simulation and analysis code developed during a research internship at Duke University to investigate the sensitivity of the DUNE near detector complex to neutrinos from a Galactic core-collapse supernova, with particular emphasis on the Muon Spectrometer (TMS).
+This repository contains the simulation and analysis code developed during a research internship at Duke University to investigate the sensitivity of the DUNE near detector complex to neutrinos from a Galactic core-collapse supernova, with particular emphasis on The Muon Spectrometer (TMS).
 
 ## Overview
 
