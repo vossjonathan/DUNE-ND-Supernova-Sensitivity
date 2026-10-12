@@ -25,11 +25,11 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 target_include_directories(exampleB4c PRIVATE
     ${PROJECT_SOURCE_DIR}/include
-    ${PROJECT_SOURCE_DIR}/external/EcoMug
+    ${PROJECT_SOURCE_DIR}/EcoMug
     /home/jonat/software/marley/include
     /home/jonat/software/marley/include/builtin
 )
-include_directories(${PROJECT_SOURCE_DIR}/external/EcoMug)
+include_directories(${PROJECT_SOURCE_DIR}/EcoMug)
 target_link_libraries(exampleB4c PRIVATE
     ${Geant4_LIBRARIES}
     /home/jonat/software/marley/build/lib/libMARLEY.so
