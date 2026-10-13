@@ -27,7 +27,7 @@ These results represent first-order estimates based on simplified detector and b
 - `SNOwGLoBES/` Detector configurations, cross sections, and smearing matrices
 - `analysis/` Python analysis and visualization
 - `figures/` Selected simulation results and plots
-- `data/` Root data for smearing matrices etc.
+- `data/` Local Root data (not included)
 
 The repository contains the project-specific code, configurations, and results. The original simulations were performed using separate local installations of Geant4, MARLEY, and SNOwGLoBES. The corresponding directories in this repository contain the relevant project files, not complete installations of these software packages.
 
@@ -41,4 +41,14 @@ Running the simulations additionally requires selecting the appropriate event ge
 The MARLEY reaction files for charged current and neutral current electron-neutrino interactions on 56Fe and were created by Sam Hedges. The corresponding file is not redistributed in this repository.
 
 The charged-current electron-antineutrino reaction file (`vebar56FeCC_Scott2014.react`) was prepared as part of this project based on experimental data from Scott et al. (2014).
+## Third-Party Software
 
+This project contains code based on Geant4 examples and
+modified code from MARLEY, as well as the EcoMug library.
+
+This product includes software developed by Members
+of the Geant4 Collaboration (http://cern.ch/geant4).
+
+The relevant third-party licenses are included in
+`Geant4/LICENSE`, `MARLEY/COPYING`, and
+`Geant4/EcoMug/LICENSE`.
