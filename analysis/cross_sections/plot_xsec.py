@@ -1,16 +1,28 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from pathlib  import Path
-from scipy.interpolate import interp1d
 from scipy.interpolate import PchipInterpolator
 
+
+#This file mostly contains debug plots and compares differenct cross section sources, channels and MARLEY calculations
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+
+#local SNOwGLoBES installation Path
 SNOWGLOBES = Path.home()/"software"/"snowglobes"
 XSCNS = SNOWGLOBES/"xscns"
-MARLEY = Path.home()/"software"/"marley"
 
+#local MARLEY installation
+MARLEY = Path.home()/"software"/"marley"
+MARLEY_XSEC = MARLEY/ "data_xsec"
+
+PLOT_DIR = REPO_ROOT /"analysis"/"debug_plots"
+
+
+#plots cross section comparison of Lazauskas vs. Kolbe vs. MARLEY calculated cross section
 def plot_iron_cross():
 
-    marley_file = Path.home()/"software"/"marley"/"Fe_Fermi-MEMA.txt"
+    marley_file = MARLEY_XSEC/"Fe_Fermi-MEMA.txt"
     data_marley = np.loadtxt(marley_file)
     energies_marley = data_marley[:, 0]
     xsec_marley = data_marley[:, 1]
@@ -25,15 +37,14 @@ def plot_iron_cross():
     logE = template[:,0] #in log10(energy in GeV)
     
     energies_GeV = 10**logE #in GeV
-    energies_MeV = 10**logE * 1000 #in MeV
+    energies_MeV = energies_GeV * 1000 #in MeV
     #cross_sections_interp = np.interp(energies_MeV, energies_paper, cross_section_paper, left = 0)
 
     cross_sections_interp_extrap = np.zeros(len(energies_MeV))
     #func = interp1d(energies_paper, cross_section_paper, kind = 'linear', fill_value= 'extrapolate')
     func = PchipInterpolator(energies_paper, cross_section_paper_KOLBE, extrapolate= False)
     cross_sections_interp_extrap += func(energies_MeV)
-    #print("only interp ", cross_sections_interp[700:800])
-    #print('interp, extrap ', cross_sections_interp_extrap[700:800])
+
     #cross_sections_interp_extrap = np.maximum(0, cross_sections_interp_extrap) #cut of negative values
 
 
@@ -57,32 +68,34 @@ def plot_iron_cross():
     plt.legend()
     plt.xlabel("E [MeV]")
     plt.ylabel(r"$\sigma$ in $10^{-42} cm^2$")
-    plt.title("linear inter- and extrapolation")
+    plt.title("PCHIP interpolation of Kolbe cross sections")
     
-    plt.savefig("debug_plots/iron_with_marley.png")
+    plt.savefig(PLOT_DIR/"iron_with_marley.png")
+    plt.close()
 
-def compare_CC_nue_xsec():
+#comparing different MARLEY settings and the resuling Fe56 cross sections, only debug plot
+def compare_xsec_MARLEY():
 
     #includes dummy Ar continuum react file
-    marley_file_continuum = Path.home()/"software"/"marley"/"data_xsec"/f"Fe_Ar_copy.txt"
+    marley_file_continuum = MARLEY_XSEC/"Fe_Ar_copy.txt"
     marley_data_continuum = np.loadtxt(marley_file_continuum)
     marley_energy_continuum = marley_data_continuum[:, 0]
     marley_xsec_continuum = marley_data_continuum[:, 1]
 
     #only discrete react file
-    marley_file_default = Path.home()/"software"/"marley"/"data_xsec"/f"nuebarCCDEFAULT.txt"
+    marley_file_default = MARLEY_XSEC/"nuebarCCDEFAULT.txt"
     marley_data_default = np.loadtxt(marley_file_default)
     marley_energy_default = marley_data_default[:, 0]
     marley_xsec_default = marley_data_default[:, 1]
 
     #only dicrete react file, form factors: allowed
-    marley_file_allowed = Path.home()/"software"/"marley"/"data_xsec"/f"nuebarCCALLOWED.txt"
+    marley_file_allowed = MARLEY_XSEC/"nuebarCCALLOWED.txt"
     marley_data_allowed = np.loadtxt(marley_file_allowed)
     marley_energy_allowed = marley_data_allowed[:, 0]
     marley_xsec_allowed = marley_data_allowed[:, 1]
 
     #discrete plus Ar dummy continuum file, form factors: allowed
-    marley_file_4 = Path.home()/"software"/"marley"/"data_xsec"/f"Fe_allowed_Ar_dummy.txt"
+    marley_file_4 = MARLEY_XSEC/f"Fe_allowed_Ar_dummy.txt"
     marley_data_4 = np.loadtxt(marley_file_4)
     marley_energy_4 = marley_data_4[:, 0]
     marley_xsec_4 = marley_data_4[:, 1]
@@ -130,8 +143,11 @@ def compare_CC_nue_xsec():
     plt.ylabel(r"$\sigma$ in $10^{-42} cm^2$")
     plt.title(r"CC $\bar\nu_e$ cross section on 56Fe comparison")
     
-    plt.savefig("debug_plots/nuebarCCFe.png")
+    plt.savefig(PLOT_DIR/"nuebarCCFe.png")
     plt.close()
+
+# helper function to get snowglobes cross section
+# it returns the energies used and the cross section for the corresponding energy
 
 def get_snowglobes_xsec(channel, column, suffix = ""):
     file = XSCNS/f"xs_{channel}{suffix}.dat"
@@ -186,7 +202,7 @@ def compare_Fe_cross_sections_snowglobes():
     plt.ylabel(r"$\sigma$ in $10^{-42} cm^2$")
    # plt.title(r"CC $\bar\nu_e$ cross section on 56Fe comparison")
     
-    plt.savefig("debug_plots/snowglobes_xsec_comparison.svg", bbox_inches="tight", dpi = 900)
+    plt.savefig(PLOT_DIR/ "snowglobes_xsec_comparison.svg", bbox_inches="tight", dpi = 900)
     plt.close()
 
 def compare_CC_C13_cross_sections():
@@ -216,14 +232,15 @@ def compare_CC_C13_cross_sections():
     plt.ylabel(r"$\sigma$ in $10^{-42} cm^2$")
     plt.title(r"Comparison of C13 CC $\nu_e$ cross sections")
     plt.grid(True, alpha = 0.3)
-    plt.savefig("scripts/debug_plots/C13_cross_section_snowglobes.svg", bbox_inches = "tight", dpi = 900)
+    plt.savefig(PLOT_DIR/"C13_cross_section_snowglobes.svg", bbox_inches = "tight", dpi = 900)
     plt.close()
 
 def compare_NC_C13_cross_sections():
     
     energies_MeV_extrap, xsec_nue_C13_extrap = get_snowglobes_xsec("nc_nue_C13", 1)
     energies_snow, xsec_snow = get_snowglobes_xsec("nc_nue_C13", 1, suffix = "_original_snowglobes")
-    #SOURCE:
+
+    #SOURCE: 5, 8 (Table 4, Suzuki)
     energies_paper = np.arange(6, 61)  # MeV
 
     cross_section_paper = np.array([
@@ -252,17 +269,17 @@ def compare_NC_C13_cross_sections():
     plt.ylabel(r"$\sigma$ in $10^{-42} cm^2$")
     plt.title(r"Comparison of C13 NC $\nu_e$ cross sections")
     plt.grid(True, alpha = 0.3)
-    plt.savefig("scripts/debug_plots/NC_C13_cross_section_snowglobes.svg", bbox_inches = "tight", dpi = 900)
+    plt.savefig(PLOT_DIR/"NC_C13_cross_section_snowglobes.svg", bbox_inches = "tight", dpi = 900)
     plt.close()
 
 def compare_xsec_Fe_Pb():
 
-    marley_file_default = Path.home()/"software"/"marley"/"Fe_DEFAULT.txt"
+    marley_file_default = MARLEY_XSEC/"Fe_DEFAULT.txt"
     marley_data_default = np.loadtxt(marley_file_default)
     marley_energy_default = marley_data_default[:, 0]
     marley_xsec_default = marley_data_default[:, 1]
 
-    Pb_file = Path.home()/"software"/"marley"/"Pb_xsec_data.txt"
+    Pb_file = MARLEY_XSEC/"Pb_xsec_data.txt"
     Pb_data = np.loadtxt(Pb_file)
     Pb_energy = Pb_data[:, 0]
     Pb_xsec = Pb_data[:, 1]
@@ -291,10 +308,10 @@ def compare_xsec_Fe_Pb():
     plt.ylabel(r"$\sigma$ in $10^{-42} cm^2$")
     plt.title(r"CC $\nu_e$ cross section on 56Fe vs 208Pb")
     
-    plt.savefig("debug_plots/comparison_Pb_paper.png")
+    plt.savefig(PLOT_DIR/"comparison_Pb_paper.png")
+    plt.close()
 
-
-def flux_averaged_xsec_CC_nue():
+def flux_averaged_xsec():
     energy_common = np.linspace(0, 100, 10001)
 
     file_flux = SNOWGLOBES/"fluxes"/"garching.dat"
@@ -358,16 +375,16 @@ MARLEY AA $\langle\sigma\rangle = $ {marley_avg:.2f} $\times$ 10$^{{-42}}$ cm$^2
     plt.title(r"MARLEY / SNOwGLoBES cross section comparison for CC $\bar\nu_e$")
     plt.xlabel(r"Neutrino energy E$_\nu$ [MeV]")
     plt.ylabel(r"cross section $\sigma$ in 10$^{-42}$ cm$^2$")
-    plt.savefig("debug_plots/xsec_CCnuebar_comparison.png")
-
+    plt.savefig(PLOT_DIR/"xsec_CCnuebar_comparison.png")
+    plt.close()
 
 if __name__ == "__main__":
     #compare_CC_C13_cross_sections()
-    compare_NC_C13_cross_sections()
-    #plot_iron_cross()
-    #compare_Fe_cross_sections_snowglobes()
-    #compare_CC_nue_xsec()
-    #compare_xsec_Fe_Pb()
-    #flux_averaged_xsec_CC_nue()
+    #compare_NC_C13_cross_sections()
+    plot_iron_cross()
+    compare_Fe_cross_sections_snowglobes()
+    compare_xsec_MARLEY()
+    compare_xsec_Fe_Pb()
+    flux_averaged_xsec()
 
-    
+    pass
