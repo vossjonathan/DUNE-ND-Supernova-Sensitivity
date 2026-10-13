@@ -11,7 +11,7 @@ def main():
 
     print("Creating current TMS signal plot...")
 
-    plot_all_TMS_iron_scint()
+    plot_all_TMS_iron_scint("garching")
 
     print("Finished.")
 

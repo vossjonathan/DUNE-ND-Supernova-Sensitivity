@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from pathlib  import Path
 import matplotlib.patches as mpatches
-from scripts.config import DETECTOR_SMEARING_CONFIG, ALL_DETECTOR
+from analysis.config import DETECTOR_SMEARING_CONFIG, ALL_DETECTOR
 
 # contains some useful function used throughout all python files
 

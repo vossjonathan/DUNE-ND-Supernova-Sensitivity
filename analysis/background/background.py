@@ -2,15 +2,26 @@ import uproot
 from pathlib import Path
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.colors import LogNorm, TwoSlopeNorm, SymLogNorm
-from scripts.config import DETECTOR_SMEARING_CONFIG, ALL_DETECTOR
+from analysis.config import DETECTOR_SMEARING_CONFIG, ALL_DETECTOR
 
-TMS = Path.home()/"software"/"geant4"/"geant4-work"/"TMS"
-ANALYSIS = Path.home()/"duke"/"analysis"
-SNOWGLOBES = Path.home()/"software"/"snowglobes"
+
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+
+#change to your snowglobes installation path
+SNOWGLOBES = Path.home()/"software"/"snowglobes" 
+
 CUTS = np.arange(0, 100, 1)
-EXPECTED_MUONS = 150 * 9
-BG_FILE = TMS/"build"/"data_without_marley"/"Cosmic_data_theta_36"/"TMS_cosmic_mu.root"
+
+# NDLAr expects 100Hz cosmic ray rate, TMS top surface area is 1.5 times as big as NDLAr top surface area
+# A cosmic ray rate of 150Hz is assumed for TMS, 9 second of supernova signal (For electron capture Garching model)
+EXPECTED_MUONS = 150 * 9 
+
+DATA_DIR = REPO_ROOT/"data"
+
+BG_FILE = DATA_DIR/"background_data"/"TMS_cosmic_mu.root"
+
+PLOT_DIR = REPO_ROOT /"analysis"/"debug_plots"
 
 
 # used for background study
@@ -18,17 +29,17 @@ BG_FILE = TMS/"build"/"data_without_marley"/"Cosmic_data_theta_36"/"TMS_cosmic_m
 # column depth is then compared with CSDA data to approximate energy loss 
 def calculate_DUNE_ND_energy_lost():
     
-    DEPTH = 60 * 100 #in cm
+    DEPTH = 60 * 100 #in cm, depth of DUNE ND complex
 
     ROCK_DENSITY = 2.7 #in g/cm^3
 
-    X = ROCK_DENSITY * DEPTH # in
+    X = ROCK_DENSITY * DEPTH #in g/cm^2
 
     print(X) #1.6 10^4
     #https://pdg.lbl.gov/2017/AtomicNuclearProperties/MUE/muE_standard_rock.pdf
     #--> Energy Loss in 60m around 38 GeV
 
-
+#returns Escint and Lscint
 def load_background_data(file):
     with uproot.open(file) as root_file:
         tree = root_file["TMS"]
@@ -38,8 +49,9 @@ def load_background_data(file):
 
     return Escint, Lscint
 
-def print_background_info():
-    Escint, Lscint = load_background_data(BG_FILE)
+# prints useful information for a background root file
+def print_background_info(file = BG_FILE):
+    Escint, Lscint = load_background_data(file)
 
     n_generated = len(Escint)
     n_zero = np.count_nonzero(Escint == 0)
@@ -49,8 +61,6 @@ def print_background_info():
     E_relevant = Escint[energy_mask]
     L_relevant = Lscint[energy_mask]
 
-    n_generated = len(Escint)
-    n_zero = len(Escint[Escint == 0])
     frac_kept = len(E_relevant)/n_generated
 
     print("Number of events 0.5 Mev < E < 15 MeV: ", len(E_relevant), f"({frac_kept*100}%)")
@@ -88,7 +98,7 @@ def plot_bg_energy_distr():
     plt.xlabel("Deposited energy in scintillator [MeV]")
     plt.ylabel("Expected events per 1 MeV bin")
     plt.grid(True, alpha = 0.3)
-    plt.savefig("debug_plots/muon_distribution_theta_36GeV.svg", bbox_inches="tight", dpi=900)
+    plt.savefig(PLOT_DIR /"cosmic_muon_energy_distribution.svg", bbox_inches="tight", dpi=900)
     plt.close()
 
 
@@ -123,7 +133,7 @@ def get_weighted_unsmeared_rates():
                 if E < threshold:
                     continue
                 geant4_filename = channel_config[channel]["filename"].format(E = E)
-                file = ANALYSIS/"data"/"smearing_matrix_data"/geant4_folder/geant4_filename
+                file = DATA_DIR /"smearing_matrix_data"/geant4_folder/geant4_filename
                 file = uproot.open(file)
                 tree = file["TMS"]
                 Escint= tree["Escint"].array(library = "np")
@@ -167,7 +177,6 @@ def events_after_cuts(Emax, Lmax, Emin = 0.5, Lmin = 0):
     n_kept = len(E_cut)
     frac_kept = n_kept/n_generated
     SN_bg_events = frac_kept * EXPECTED_MUONS
-    SN_events = 10.48
     print(f"From {EXPECTED_MUONS} muons:")
     print(f"{SN_bg_events} are within the cuts, so {Emin} < E < {Emax} and {Lmin} < L < {Lmax}")
 
@@ -205,7 +214,7 @@ def plot_frac_cut(cut):
     plt.grid(True, alpha = 0.3)
     #plt.title(r"Scintillator path length $L_{scint}$ comparison")
     plt.legend(loc = "upper right", bbox_to_anchor=(1.0, 0.90))
-    plt.savefig("debug_plots/fracplot2.svg", bbox_inches="tight", dpi=900)
+    plt.savefig(PLOT_DIR / "fracplot2.svg", bbox_inches="tight", dpi=900)
     plt.close()
 
 
@@ -213,8 +222,12 @@ def plot_frac_cut(cut):
 
 
 if __name__ == "__main__":
-    print_background_info()  
-    events_after_cuts(15, 30)
-    #get_weighted_unsmeared_rates()
+
+    calculate_DUNE_ND_energy_lost()
+    load_background_data(BG_FILE)
+    print_background_info()
+    apply_cuts(Emax = 15, Lmax = 30)
     plot_bg_energy_distr()
+    get_weighted_unsmeared_rates()
+    events_after_cuts(Emax = 15, Lmax = 30)
     plot_frac_cut(30)

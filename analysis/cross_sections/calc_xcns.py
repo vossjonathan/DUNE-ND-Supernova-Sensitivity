@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from pathlib  import Path
 from scipy.interpolate import interp1d
 from scipy.interpolate import PchipInterpolator
-from scripts.config import ENERGY_GRID
+from analysis.config import ENERGY_GRID
 
 #linear interpolation and extrapolation
 

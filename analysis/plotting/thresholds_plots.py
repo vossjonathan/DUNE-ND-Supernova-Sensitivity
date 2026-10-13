@@ -2,8 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from pathlib  import Path
 import uproot
-from scripts.config import DETECTOR_SMEARING_CONFIG, ENERGY_GRID, ALL_DETECTOR, iron_channels, argon_channels, lead_channels, scint_channels
-from scripts.helper import load_events_weighted, load_smeared_data_threshold
+from analysis.config import DETECTOR_SMEARING_CONFIG, ENERGY_GRID, ALL_DETECTOR, iron_channels, argon_channels, lead_channels, scint_channels
+from analysis.helper import load_events_weighted, load_smeared_data_threshold
 import subprocess
 import shutil
 

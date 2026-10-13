@@ -3,7 +3,7 @@ from pathlib import Path
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm, TwoSlopeNorm, SymLogNorm
-from scripts.config import DETECTOR_SMEARING_CONFIG, ALL_DETECTOR
+from analysis.config import DETECTOR_SMEARING_CONFIG, ALL_DETECTOR
 
 TMS = Path.home()/"software"/"geant4"/"geant4-work"/"TMS"
 ANALYSIS = Path.home()/"duke"/"analysis"
