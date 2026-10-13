@@ -9,10 +9,15 @@ from analysis.helper import load_events_weighted
 SNOWGLOBES = Path.home()/"software"/"snowglobes"
 OUT = Path.home()/"software"/"snowglobes"/"out"
 
+REPO_ROOT = Path(__file__).resolve().parents[2]
+
+PLOT_DIR = REPO_ROOT /"analysis"/"debug_plots"
+
+#plots smeared spectra of all implemented channel with response
 def plot_all_TMS_iron_scint(flux):
     #channels with geant4 smearing matrix
-    channels_scint = ALL_DETECTOR["TMS_scint"]["channels"] #import from config.py
-    channels_iron = ALL_DETECTOR["TMS_iron"]["channels"]
+    channels_scint = DETECTOR_SMEARING_CONFIG["TMS_scint"]["channels"] #import from config.py
+    channels_iron = DETECTOR_SMEARING_CONFIG["TMS_iron"]["channels"]
 
     total_iron_ES = np.zeros(200)
     total_scint_ES = np.zeros(200)
@@ -95,8 +100,8 @@ def plot_all_TMS_iron_scint(flux):
     plt.xlabel("Deposited E in scint [MeV]")
     plt.ylabel("Number of events per 0.5 MeV bin")
     #plt.title("Supernova Signal in TMS Detector\n Garching flux, no additional Threshold ")
-    plt.savefig(f"debug_plots/{flux}_TMS_signal_preliminary_NC_C12.svg", bbox_inches = "tight")
-
+    plt.savefig(PLOT_DIR/f"{flux}_TMS_signal_combined.svg", bbox_inches = "tight")
+    plt.close()
 
 def plot_total_and_unsmeared_argon(detector, flux):
     #enter detector and flux as strings, e.g. detector = "ar40kt", flux = "livermore"
@@ -124,8 +129,8 @@ def plot_total_and_unsmeared_argon(detector, flux):
     plt.legend()
     plt.grid(True, alpha=0.3)
     plt.title(f"{flux} {detector} smeared/unsmeared across all channels")
-    plt.savefig(f"debug_plots/{flux}_{detector}_smeared_unsmeared_all_channels.png")
-
+    plt.savefig(PLOT_DIR/f"{flux}_{detector}_smeared_unsmeared_all_channels.png")
+    plt.close()
 
 def plot_different_smeared_signals_argon(detector, flux):
     #enter detector and flux as strings, e.g. detector = "ar40kt", flux = "livermore"
@@ -138,36 +143,20 @@ def plot_different_smeared_signals_argon(detector, flux):
 
     for channel, weight in list(channels.items())[:6]:
 
-        smeared = OUT/f"{flux}_{channel}_{detector}_events_smeared_unweighted.dat"
+        events_smeared_w = load_events_weighted(flux, channel, detector, True)
 
-        data_smeared = np.loadtxt(smeared, max_rows=200)
-
-        #energy_smeared = data_smeared[:, 0] * 1000
-        events_smeared = data_smeared[:, 1]
-
-        events_smeared_w = events_smeared * weight
         total_nu_e_events_smeared += events_smeared_w
 
-    smeared_nue_Ar40 = OUT/f"{flux}_nue_Ar40_{detector}_events_smeared_unweighted.dat"
-    data_smeared_nue_Ar40 = np.loadtxt(smeared_nue_Ar40, max_rows=200)
-    events_smeared_nue_Ar40 = data_smeared_nue_Ar40[:, 1]
-    energy_smeared = np.linspace(0.5, 100, 201) #in MeV
+    events_smeared_nue_Ar40 = load_events_weighted(flux, "nue_Ar40", detector, True)
+    energy_smeared = ENERGY_GRID #in MeV
 
-    smeared_nuebar_Ar40 = OUT/f"{flux}_nuebar_Ar40_{detector}_events_smeared_unweighted.dat"
-    data_smeared_nuebar_Ar40 = np.loadtxt(smeared_nuebar_Ar40, max_rows=200)
-    events_smeared_nuebar_Ar40 = data_smeared_nuebar_Ar40[:, 1]
+    events_smeared_nuebar_Ar40 = load_events_weighted(flux, "nuebar_Ar40", detector, True)
 
 
     for channel, weight in list(channels.items())[8:]:
 
-        smeared = OUT/f"{flux}_{channel}_{detector}_events_smeared_unweighted.dat"
+        events_smeared_w = load_events_weighted(flux, channel, detector, True)
 
-        data_smeared = np.loadtxt(smeared, max_rows=200)
-
-        #energy_smeared = data_smeared[:, 0] * 1000
-        events_smeared = data_smeared[:, 1]
-
-        events_smeared_w = events_smeared * weight
         total_nc_events_smeared += events_smeared_w
 
     total_events = total_nu_e_events_smeared + total_nc_events_smeared + events_smeared_nue_Ar40 + events_smeared_nuebar_Ar40
@@ -194,9 +183,10 @@ def plot_different_smeared_signals_argon(detector, flux):
     #plt.title(f"{flux} {detector} smeared signal for differend channels")
     #plt.title(rf"""NDLAr supernova signal across all channels
     #basic ar40kt response, {flux}, no additional Threshold""")
-    plt.savefig(f"debug_plots/{flux}_{detector}_different_smeared_channels_stairs.svg", bbox_inches = "tight", dpi = 900)
+    plt.savefig(PLOT_DIR/f"{flux}_{detector}_different_smeared_channels_stairs.svg", bbox_inches = "tight", dpi = 900)
     plt.close()
-    return total_count
+    print("Total count: ", total_count)
+
 
 def plot_different_smeared_signals_scint(detector, flux):
     #enter detector and flux as strings, e.g. detector = "ar40kt", flux = "livermore"
@@ -205,6 +195,8 @@ def plot_different_smeared_signals_scint(detector, flux):
     else:
         detector_name = detector
 
+    energy_smeared = ENERGY_GRID
+
     channels = ALL_DETECTOR[detector]["channels"]
 
     total_nu_e_events_smeared = np.zeros(200)
@@ -212,24 +204,13 @@ def plot_different_smeared_signals_scint(detector, flux):
     total_C13_events_smeared = np.zeros(200)  
 
     #ibd channel
-    smeared_ibd = OUT/f"{flux}_ibd_{detector}_events_smeared_unweighted.dat"
-    data_smeared_ibd = np.loadtxt(smeared_ibd, max_rows=200)
-    events_smeared_ibd = data_smeared_ibd[:, 1]
-    energy_smeared = np.linspace(0.5, 100, 201)
-    events_smeared_ibd_w = events_smeared_ibd * channels["ibd"]
+    events_smeared_ibd_w = load_events_weighted(flux, "ibd", detector, True)
 
 
 
-    for channel, weight in list(channels.items())[1:7]:
+    for channel in list(channels.keys())[1:7]:
 
-        smeared = OUT/f"{flux}_{channel}_{detector}_events_smeared_unweighted.dat"
-
-        data_smeared = np.loadtxt(smeared, max_rows=200)
-
-        #energy_smeared = data_smeared[:, 0] * 1000
-        events_smeared = data_smeared[:, 1]
-
-        events_smeared_w = events_smeared * weight
+        events_smeared_w = load_events_weighted(flux, channel, detector, True)
         total_nu_e_events_smeared += events_smeared_w
 
     total_C12_NC_events = np.zeros(200)
@@ -237,16 +218,9 @@ def plot_different_smeared_signals_scint(detector, flux):
     total_C12_nuebar_events = np.zeros(200)
 
 
-    for channel, weight in list(channels.items())[7:15]:
+    for channel in list(channels.keys())[7:15]:
 
-        smeared = OUT/f"{flux}_{channel}_{detector}_events_smeared_unweighted.dat"
-
-        data_smeared = np.loadtxt(smeared, max_rows=200)
-
-        #energy_smeared = data_smeared[:, 0] * 1000
-        events_smeared = data_smeared[:, 1]
-
-        events_smeared_w = events_smeared * weight
+        events_smeared_w = load_events_weighted(flux, channel, detector, True)
 
         if channel == "nue_C12":
             total_C12_nue_events += events_smeared_w
@@ -260,16 +234,10 @@ def plot_different_smeared_signals_scint(detector, flux):
         total_C12_events_smeared += events_smeared_w
 
 
-    for channel, weight in list(channels.items())[15:]:
+    for channel in list(channels.keys())[15:]:
 
-        smeared = OUT/f"{flux}_{channel}_{detector}_events_smeared_unweighted.dat"
+        events_smeared_w = load_events_weighted(flux, channel, detector, True)
 
-        data_smeared = np.loadtxt(smeared, max_rows=200)
-
-        #energy_smeared = data_smeared[:, 0] * 1000
-        events_smeared = data_smeared[:, 1]
-
-        events_smeared_w = events_smeared * weight
         total_C13_events_smeared += events_smeared_w
 
     total_events = total_nu_e_events_smeared + total_C12_events_smeared + total_C13_events_smeared + events_smeared_ibd_w
@@ -294,7 +262,7 @@ def plot_different_smeared_signals_scint(detector, flux):
     plt.stairs(events_smeared_ibd_w, energy_smeared, label="IBD", color="green", baseline = None, linestyle = "-")
     plt.stairs(total_events,energy_smeared,  label="Total", color="black", baseline = None, linestyle = "-", linewidth = 1.6)
 
-    plt.xlabel(r" Deposited E in Scint$ [MeV]")
+    plt.xlabel(" Deposited E in Scint [MeV]")
     plt.ylabel("Number of Events / 0.5 MeV bin")
     plt.legend()
     plt.xlim(0,30)
@@ -305,15 +273,17 @@ def plot_different_smeared_signals_scint(detector, flux):
     plt.text(0.905, 0.66,f"Total events: {total_count:.2f}",transform=plt.gca().transAxes,ha="right",va="top")
     plt.title(fr"""{detector_name} SN signal (10kpc) across all channels
     {flux.capitalize()}, no additional threshold""")
-    plt.savefig(f"debug_plots/{flux}_{detector}_different_smeared_channels_stairs.png")
+
+    plt.savefig(PLOT_DIR/f"{flux}_{detector}_different_smeared_channels_stairs.png")
     plt.close()
-    return total_count
+    print("Total count: ", total_count)
 
 
 
 def plot_different_smeared_signals_lead(detector, flux):
     #enter detector and flux as strings, e.g. detector = "ar40kt", flux = "livermore"
 
+    energy_smeared = ENERGY_GRID
     channels = ALL_DETECTOR[detector]["channels"]
 
 
@@ -322,54 +292,26 @@ def plot_different_smeared_signals_lead(detector, flux):
     total_nc_2n_events_smeared = np.zeros(200)  
 
     #cc 1n channel
-    smeared_cc_1n = OUT/f"{flux}_nue_Pb208_1n_{detector}_events_smeared_unweighted.dat"
-    data_smeared_cc_1n = np.loadtxt(smeared_cc_1n, max_rows=200)
-    events_smeared_cc_1n = data_smeared_cc_1n[:, 1]
-    energy_smeared = data_smeared_cc_1n[:, 0] * 1000
-    events_smeared_cc_1n_w = events_smeared_cc_1n * channels["nue_Pb208_1n"]
+
+    events_smeared_cc_1n_w = load_events_weighted(flux, "nue_Pb208_1n", detector, True)
 
     #cc 2n channel
-    smeared_cc_2n = OUT/f"{flux}_nue_Pb208_2n_{detector}_events_smeared_unweighted.dat"
-    data_smeared_cc_2n = np.loadtxt(smeared_cc_2n, max_rows=200)
-    events_smeared_cc_2n = data_smeared_cc_2n[:, 1]
-    energy_smeared = np.linspace(0.5, 100, 201)
-    events_smeared_cc_2n_w = events_smeared_cc_2n * channels["nue_Pb208_2n"]
+    
+    events_smeared_cc_2n_w = load_events_weighted(flux, "nue_Pb208_2n", detector, True)
+    for channel in list(channels.keys())[:6]:
 
-    for channel, weight in list(channels.items())[:6]:
-
-        smeared = OUT/f"{flux}_{channel}_{detector}_events_smeared_unweighted.dat"
-
-        data_smeared = np.loadtxt(smeared, max_rows=200)
-
-        #energy_smeared = data_smeared[:, 0] * 1000
-        events_smeared = data_smeared[:, 1]
-
-        events_smeared_w = events_smeared * weight
+        events_smeared_w = load_events_weighted(flux, channel, detector, True)
         total_nu_e_events_smeared += events_smeared_w
 
-    for channel, weight in list(channels.items())[8:14]:
+    for channel in list(channels.keys())[8:14]:
 
-        smeared = OUT/f"{flux}_{channel}_{detector}_events_smeared_unweighted.dat"
-
-        data_smeared = np.loadtxt(smeared, max_rows=200)
-
-        #energy_smeared = data_smeared[:, 0] * 1000
-        events_smeared = data_smeared[:, 1]
-
-        events_smeared_w = events_smeared * weight
+        events_smeared_w = load_events_weighted(flux, channel, detector, True)
         total_nc_1n_events_smeared += events_smeared_w
 
 
-    for channel, weight in list(channels.items())[14:]:
+    for channel in list(channels.keys())[14:]:
 
-        smeared = OUT/f"{flux}_{channel}_{detector}_events_smeared_unweighted.dat"
-
-        data_smeared = np.loadtxt(smeared, max_rows=200)
-
-        #energy_smeared = data_smeared[:, 0] * 1000
-        events_smeared = data_smeared[:, 1]
-
-        events_smeared_w = events_smeared * weight
+        events_smeared_w = load_events_weighted(flux, channel, detector, True)
         total_nc_2n_events_smeared += events_smeared_w
 
     total_events = total_nu_e_events_smeared + total_nc_1n_events_smeared + total_nc_2n_events_smeared + events_smeared_cc_1n_w + events_smeared_cc_2n_w
@@ -387,8 +329,8 @@ def plot_different_smeared_signals_lead(detector, flux):
 
     plt.figure()
     plt.stairs(total_nu_e_events_smeared, energy_smeared, label=r"$\nu, e^-$ scattering", color="blue", linestyle = "-")
-    plt.stairs( total_nc_1n_events_smeared, energy_smeared,label="NC 1n Interactions", color="red", linestyle = "-")
-    plt.stairs( total_nc_2n_events_smeared, energy_smeared,label="NC 2n Interactions", color="orange", linestyle = "-")
+    plt.stairs(total_nc_1n_events_smeared, energy_smeared,label="NC 1n Interactions", color="red", linestyle = "-")
+    plt.stairs(total_nc_2n_events_smeared, energy_smeared,label="NC 2n Interactions", color="orange", linestyle = "-")
     plt.stairs(events_smeared_cc_1n_w,energy_smeared,  label="CC 1n", color="green", linestyle = "-")
     plt.stairs(events_smeared_cc_2n_w, energy_smeared, label="CC 2n", color="purple", linestyle = "-")
     plt.stairs(total_events, energy_smeared,  label=f"Total", color="black", linestyle = "-")
@@ -396,16 +338,16 @@ def plot_different_smeared_signals_lead(detector, flux):
     total_count = np.sum(total_events)
     #plt.text(0.97, 0.73, f"total events: {total_count:.2f}")
     plt.text(0.88, 0.605,f"Total events: {total_count:.2f}",transform=plt.gca().transAxes,ha="right",va="top")
-    plt.xlabel(r" true neutrino energy $E_\nu$ [MeV]")
+    plt.xlabel(r"Reconstructed energy [MeV]")
     plt.ylabel("Number of Events per 0.5 MeV energy bin")
     plt.xlim(0, 60)
     plt.legend()
     plt.grid(True, alpha=0.3)
     #plt.title(f"{flux} {detector} smeared signal for differend channels")
-    plt.title(f"ECAL (only lead) supernova signal across all channels\n {flux}, unsmeared signal")
-    plt.savefig(f"debug_plots/{flux}_{detector}_different_smeared_channels_stairs.png")
+    plt.title(f"ECAL (only lead) supernova signal across all channels\n {flux}, smeared signal")
+    plt.savefig(PLOT_DIR/f"{flux}_{detector}_different_smeared_channels_stairs.png")
     plt.close()
-    return total_count
+    print("Total count: ", total_count)
 
 def plot_different_smeared_signals_iron(detector, flux):
     #enter detector and flux as strings, e.g. detector = "ar40kt", flux = "livermore"
@@ -422,47 +364,26 @@ def plot_different_smeared_signals_iron(detector, flux):
   
 
     #nue_Fe56 channel
-    smeared_nue_Fe56 = OUT/f"{flux}_nue_Fe56_{detector}_events_smeared_unweighted.dat"
-    data_smeared_nue_Fe56 = np.loadtxt(smeared_nue_Fe56, max_rows=200)
-    events_smeared_nue_Fe56 = data_smeared_nue_Fe56[:, 1]
-    energy_smeared = np.linspace(0.5, 100, 201)
-    events_smeared_nue_Fe56_w = events_smeared_nue_Fe56 * channels["nue_Fe56"]
+    events_smeared_nue_Fe56_w = load_events_weighted(flux, "nue_Fe56", detector, True)
 
     #nuebar_Fe56 channel
-    smeared_nuebar_Fe56 = OUT/f"{flux}_nuebar_Fe56_{detector}_events_smeared_unweighted.dat"
-    data_smeared_nuebar_Fe56 = np.loadtxt(smeared_nuebar_Fe56, max_rows=200)
-    events_smeared_nuebar_Fe56 = data_smeared_nuebar_Fe56[:, 1]
-    energy_smeared = np.linspace(0.5, 100, 201)
-    events_smeared_nuebar_Fe56_w = events_smeared_nuebar_Fe56 * channels["nuebar_Fe56"]
+    events_smeared_nuebar_Fe56_w = load_events_weighted(flux, "nuebar_Fe56", detector, True)
 
 
 
-    for channel, weight in list(channels.items())[0:6]:
+    for channel in list(channels.keys())[0:6]:
 
-        smeared = OUT/f"{flux}_{channel}_{detector}_events_smeared_unweighted.dat"
+        events_smeared_w = load_events_weighted(flux, channel, detector, True)
 
-        data_smeared = np.loadtxt(smeared, max_rows=200)
-
-        #energy_smeared = data_smeared[:, 0] * 1000
-        events_smeared = data_smeared[:, 1]
-
-        events_smeared_w = events_smeared * weight
         total_nu_e_events_smeared += events_smeared_w
 
-    for channel, weight in list(channels.items())[8:]:
+    for channel in list(channels.keys())[8:]:
 
-        smeared = OUT/f"{flux}_{channel}_{detector}_events_smeared_unweighted.dat"
-
-        data_smeared = np.loadtxt(smeared, max_rows=200)
-
-        #energy_smeared = data_smeared[:, 0] * 1000
-        events_smeared = data_smeared[:, 1]
-
-        events_smeared_w = events_smeared * weight
+        events_smeared_w = load_events_weighted(flux, channel, detector, True)
         total_nc_events_smeared += events_smeared_w
 
 
-    energy = np.linspace(0.5, 100, 201)
+    energy = ENERGY_GRID
     total_events = total_nu_e_events_smeared + total_nc_events_smeared + events_smeared_nue_Fe56_w + events_smeared_nuebar_Fe56_w
 
     
@@ -489,12 +410,14 @@ def plot_different_smeared_signals_iron(detector, flux):
     plt.title(f" {detector_name} SN signal (10kpc) for different channels\n{flux.capitalize()} flux, no additional threshold")
     plt.text(0.92, 0.67,f"Total events: {total_count:.2f}",transform=plt.gca().transAxes,ha="right",va="top")
     #plt.title("TMS (scintillator only) supernova signal across all channels\n basic scint20kt response")
-    plt.savefig(f"debug_plots/{flux}_{detector}_different_smeared_channels.png")
+    plt.savefig(PLOT_DIR/f"{flux}_{detector}_different_smeared_channels.png")
     plt.close()
     total_count = np.sum(total_events)
-    return total_count
+    print("Total count: ", total_count)
 
-
+#creates bar plot to compare event yields of all DUNE ND components
+#smeared = True for smeared spectrum and smeared = False for unsmeared
+#detector response not yet implemented for all ND components so bar plot with smeared = True not really comparable
 def compare_detectors_bar_plot(flux, smeared):
     #working TMS iron channels, existing smearing matrix:
 
@@ -559,8 +482,6 @@ def compare_detectors_bar_plot(flux, smeared):
     counts = [count_NDLAr, count_TMS_scint, count_TMS_iron, count_ECAL_lead, count_ECAL_scint, count_STT, count_GRAIN]
     total_counts = [count_NDLAr, count_TMS_scint + count_TMS_iron, count_ECAL_lead + count_ECAL_scint, count_STT, count_GRAIN]
 
-    material_colors = {'Argon': 'tab:green', 'Scintillator': 'tab:blue', 'Iron': 'tab:red', 'Lead': 'tab:purple'}   
-
     legend_patches = [
         mpatches.Patch(color="tab:green", label="Argon"),
         mpatches.Patch(color="tab:blue", label="Scintillator"),
@@ -588,12 +509,7 @@ def compare_detectors_bar_plot(flux, smeared):
     plt.bar(3, count_STT, label="STT: scint", color = "tab:blue")
     plt.bar(4, count_GRAIN, label="GRAIN: argon", color = "tab:green")
 
-    #plt.text(2, count_ECAL_lead / 2,"lead", ha="center", va="center", color="black", fontsize=12)
-    #plt.text(2, count_ECAL_lead + count_ECAL_scint / 2,"scint", ha="center", va="center", color="black", fontsize=12)
-    #plt.text(0, count_NDLAr/ 2,"argon", ha="center", va="center", color="black", fontsize=12)
-    #plt.text(1, count_TMS_scint/ 2,"scint", ha="center", va="center", color="black", fontsize=12)
-    #plt.text(1, count_TMS_scint + count_TMS_iron / 2,"iron", ha="center", va="center", color="black", fontsize=12)
-    #plt.text(3, count_STT / 2,"scint", ha="center", va="center", color="black", fontsize=12)
+
     off= 2
     plt.text(2, count_ECAL_lead + count_ECAL_scint + off,f"{(count_ECAL_scint + count_ECAL_lead):.2f}", ha="center", va="center", color="black")
     plt.text(0, count_NDLAr + off ,f"{count_NDLAr:.2f}", ha="center", va="center", color="black")
@@ -615,16 +531,16 @@ def compare_detectors_bar_plot(flux, smeared):
         word = "unsmeared"
     #plt.title(f"Expected supernova events in DUNE near detectors, {word}, {flux.capitalize()} flux")
     plt.tight_layout()
-    plt.savefig(f"debug_plots/{flux}_{word}_detector_comparison_new.svg")
+    plt.savefig(PLOT_DIR/f"{flux}_{word}_detector_comparison_bar_plot.svg")
     #plt.savefig(f"plotting/{flux}_{word}_detector_comparison_new.pdf", bbox_inches = "tight")
     plt.close()
 
 if __name__ == "__main__":
-    #plot_all_TMS_iron_scint(flux)
+    #plot_all_TMS_iron_scint("garching")
     #plot_total_and_unsmeared_argon(detector, flux)
     #plot_different_smeared_signals_argon(detector, flux)
     #plot_different_smeared_signals_scint(detector, flux)
     #plot_different_smeared_signals_lead(detector, flux)
     #plot_different_smeared_signals_iron(detector, flux)
-    #compare_detectors_bar_plot(flux, smeared)
+    compare_detectors_bar_plot("garching", smeared = False)
     pass

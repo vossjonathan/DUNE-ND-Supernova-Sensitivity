@@ -7,12 +7,19 @@ from analysis.helper import load_events_weighted, load_smeared_data_threshold
 import subprocess
 import shutil
 
+#local snowglobes path
 SNOWGLOBES = Path.home()/"software"/"snowglobes"
 EFFIC = SNOWGLOBES / "effic"
 EFFIC_TMS_IRON = EFFIC / "TMS_iron"
 EFFIC_TMS_SCINT = EFFIC / "TMS_scint"
 OUT = SNOWGLOBES / "out"
 
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+
+PLOT_DIR = REPO_ROOT /"analysis"/"debug_plots"
+
+#compares the effects of threshold changes for every channel
 def plot_threshold_comparison():
     detectors  = ["TMS_iron", "TMS_scint"]
 
@@ -105,9 +112,11 @@ def plot_threshold_comparison():
     plt.xlabel("Threshold [MeV]")
     plt.ylabel("Expected event rate")
     #plt.title("Threshold comparison new")
-    plt.savefig("debug_plots/new_threshold_comparison.svg", bbox_inches = "tight", dpi = 900)
+    plt.savefig(PLOT_DIR/"new_threshold_comparison.svg", bbox_inches = "tight", dpi = 900)
+    plt.close()
 
-
+#rewrites the effic files and performs snowglobes calculation with new effic files
+#saves the snowglobes data seperately with the suffix "_5.0MeV" for a threshold of 5.0 MeV for example
 def threshold_study():
     #channels = ["nue_e", "nuebar_e", "numu_e", "numubar_e", "nutau_e", "nutaubar_e"]
     #channels = ["nue_Fe56", "nuebar_Fe56"]
@@ -160,20 +169,20 @@ def threshold_study():
                 shutil.copy(source, target)
 
 
+#resets all effic files of a detector to 100% effieciency so no post smearing efficiencies are applied
 def reset_effic_to_100(detector):
 
-    detectors = ["TMS_iron", "TMS_scint"]
-    for detector in detectors:
-        channels = DETECTOR_SMEARING_CONFIG[detector]["channels"]
-        for channel in channels:
-            file = EFFIC / detector / f"effic_{channel}_{detector}.dat"
-            values = np.ones(200)
-        
 
-            with open(file, "w") as f:
-                f.write(
-                    "{" + ",".join(f"{x:.1f}" for x in values) + "}\n"
-                )
+    channels = DETECTOR_SMEARING_CONFIG[detector]["channels"]
+    for channel in channels:
+        file = EFFIC / detector / f"effic_{channel}_{detector}.dat"
+        values = np.ones(200)
+    
+
+        with open(file, "w") as f:
+            f.write(
+                "{" + ",".join(f"{x:.1f}" for x in values) + "}\n"
+            )
 
 if __name__ == "__main__":
     #plot_threshold_comparison()

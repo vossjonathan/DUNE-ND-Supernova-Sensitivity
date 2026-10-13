@@ -5,11 +5,16 @@ from pathlib import Path
 from analysis.config import ENERGY_GRID
 from analysis.helper import load_events_weighted
 
-
+#local snowglobes installation path
 SNOWGLOBES = Path.home()/"software"/"snowglobes"
 
+REPO_ROOT = Path(__file__).resolve().parents[2]
+
+PLOT_DIR = REPO_ROOT /"analysis"/"debug_plots"
 
 
+#plots event spectrum of a specific channel in a detector with flux
+#you can choose between smeared = True and smeared = False for smeared or unsmeared spectrum
 def plot_one_channel_weighted(flux, channel, detector, smeared):
     events = load_events_weighted(flux, channel, detector, smeared)
 
@@ -25,9 +30,11 @@ def plot_one_channel_weighted(flux, channel, detector, smeared):
     plt.legend()
     plt.grid(True, alpha = 0.3)
     plt.title(f"{word.capitalize()} events for {detector}, {channel}, {flux} flux")
-    plt.savefig(f"debug_plots/{flux}_{detector}_{channel}_{word}_events.svg", bbox_inches = "tight", dpi = 900)
+    plt.savefig(PLOT_DIR/f"{flux}_{detector}_{channel}_{word}_events.svg", bbox_inches = "tight", dpi = 900)
     plt.close()
-    
+
+#Debug function to compare different smearing matrices
+#File have to be adjusted in the function
 def plot_two_channel_smeared_unsmeared(title, save_as):
 
     energy = ENERGY_GRID
@@ -55,8 +62,11 @@ def plot_two_channel_smeared_unsmeared(title, save_as):
     plt.legend()
     plt.grid(True, alpha=0.3)
     plt.title(title)
-    plt.savefig(f"debug_plots/{save_as}")
+    plt.savefig(PLOT_DIR/f"{save_as}")
+    plt.close()
 
+
+#Comparison plot of smeared vs unsmeared spectrum of a channel of a detector with flux
 def plot_one_channel_smeared_vs_unsmeared(flux, channel, detector):
 
     events_unsmeared = load_events_weighted(flux, channel, detector, smeared = False)
@@ -74,9 +84,10 @@ def plot_one_channel_smeared_vs_unsmeared(flux, channel, detector):
     plt.grid(True, alpha=0.3)
 
     plt.title(f"{detector}, {channel} unsmeared vs. smeared, {flux} flux")
-    plt.savefig(f"debug_plots/{flux}_{channel}_{detector}_smeared_vs_unsmeared.svg", bbox_inches = "tight", dpi = 900)
+    plt.savefig(PLOT_DIR/f"{flux}_{channel}_{detector}_smeared_vs_unsmeared.svg", bbox_inches = "tight", dpi = 900)
     plt.close()
 
+#plots all smeared neutral current channels for iron part of TMS
 def plot_all_NC_channels_iron():
     channels = ['nc_nue_Fe56', 'nc_nuebar_Fe56', 'nc_numu_Fe56']
     total_nc_events_smeared = np.zeros(200)
@@ -95,9 +106,10 @@ def plot_all_NC_channels_iron():
     plt.legend()
     plt.grid(True, alpha=0.3)
     plt.title("TMS iron NC channels comparison")
-    plt.savefig(f"debug_plots/NC_channels_comparison.png")
+    plt.savefig(PLOT_DIR/f"NC_channels_comparison.png")
     plt.close()
 
+#Plots unsmeared spectrum of the channels of TMS where the smearing matrix was not implemented
 def plot_missing_TMS_channels_unsmeared(flux):
     channels = {"nue_C12": 0, "nuebar_C12": 0, "nue_C13":0,  "nc_nue_C13":0, "nc_nuebar_C13":0, "nc_numu_C13":0, "nc_numubar_C13":0, "nc_nutau_C13":0, "nc_nutaubar_C13":0}
 
@@ -123,7 +135,7 @@ def plot_missing_TMS_channels_unsmeared(flux):
     plt.legend()
     plt.grid(True, alpha=0.3)
     plt.title("Unsmeared spectra of additional scintillator channels")
-    plt.savefig(f"scripts/debug_plots/{flux}_unsmeared_missing_scint_channels.svg", bbox_inches = "tight", dpi = 900)
+    plt.savefig(PLOT_DIR/f"{flux}_unsmeared_missing_scint_channels.svg", bbox_inches = "tight", dpi = 900)
     plt.close()
 
 
