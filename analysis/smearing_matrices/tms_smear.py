@@ -71,10 +71,8 @@ def build_smearing_matrix(detector, channel):
 
 
 def write_snowglobes_matrix(smearing_matrix, detector,  channel):
-    print(smearing_matrix.shape)
     n_reco, n_true = smearing_matrix.shape
     config = DETECTOR_SMEARING_CONFIG[detector]
-    material = config["material"]
 
     filename = Path.home()/"software"/"snowglobes"/"smear"/f"{detector}"/f"smear_{channel}_{detector}.dat"
     with open(filename, "w") as f:

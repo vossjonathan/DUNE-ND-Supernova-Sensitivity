@@ -7,14 +7,19 @@ from pathlib import Path
 detectors = ["NDLAr", "ECAL_lead", "ECAL_scint", "TMS_iron", "TMS_scint", "GRAIN", "STT"]
 fluxes = ["garching", "livermore"]
 
+#creates main result of the DUNE ND Supernova Neutrino Sensitivity study
+#produces TMS smeared plot combining all smeared signals
 def main():
 
+    print("Updating all smearing matrices...")  
+    write_all_smearing_matrices()
+    print("Rerunning snowglobes for all detectors...")
+    run_all_detectors_snowglobes()
     print("Creating current TMS signal plot...")
-
     plot_all_TMS_iron_scint("garching")
-
     print("Finished.")
 
+#writes all smearing matrices to snowglobes with dataset defined in config.py
 def write_all_smearing_matrices():
     for detector in DETECTOR_SMEARING_CONFIG.keys():
 
@@ -43,7 +48,4 @@ def run_all_detectors_snowglobes():
             run_snowglobes(flux, detector, material)
 
 if __name__ == "__main__":
-    #main()
-    #run_all_detectors_snowglobes()
-    write_all_smearing_matrices()
-    #run_all_detectors_snowglobes()
+    main()
