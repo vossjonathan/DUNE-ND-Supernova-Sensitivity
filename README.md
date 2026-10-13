@@ -22,11 +22,12 @@ These results represent first-order estimates based on simplified detector and b
 
 ## Repository Structure
 
-- `Geant4/` — TMS detector simulation and event generation (C++)
-- `MARLEY/` — Neutrino interaction configurations and reaction files
-- `SNOwGLoBES/` — Detector configurations, cross sections, and smearing matrices
-- `analysis/` — Python analysis and visualization
-- `figures/` — Selected simulation results and plots
+- `Geant4/` TMS detector simulation and event generation (C++)
+- `MARLEY/` Neutrino interaction configurations and reaction files
+- `SNOwGLoBES/` Detector configurations, cross sections, and smearing matrices
+- `analysis/` Python analysis and visualization
+- `figures/` Selected simulation results and plots
+- `data/` Root data for smearing matrices etc.
 
 The repository contains the project-specific code, configurations, and results. The original simulations were performed using separate local installations of Geant4, MARLEY, and SNOwGLoBES. The corresponding directories in this repository contain the relevant project files, not complete installations of these software packages.
 
