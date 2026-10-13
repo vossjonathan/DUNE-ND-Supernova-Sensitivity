@@ -32,4 +32,4 @@ The repository contains the project-specific code, configurations, and results. 
 
 ## Compiling the Geant4 Simulation
 
-The Geant4 model requires an external installation of **Geant4
+The Geant4 model requires an external installation of Geant4
