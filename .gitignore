@@ -44,7 +44,7 @@ cmake_install.cmake
 *.a
 
 # ROOT output
-*.root
+#*.root
 
 # OS files
 .DS_Store

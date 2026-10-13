@@ -96,7 +96,7 @@ def printMacroMarley(n_events, n_jobs, detector, channel):
 
                 print(f"/run/beamOn {n_events}\n", file=f)
 
-    print("for i in $(seq 1 {n_jobs}); do\n"
+    print(f"for i in $(seq 1 {n_jobs}); do\n"
     f"./exampleB4c -m macros/{macro_dir}/marleyScan100k${{i}}.mac &\n"
     "done")
 

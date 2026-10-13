@@ -6,7 +6,7 @@ from matplotlib.colors import LogNorm, TwoSlopeNorm, SymLogNorm
 from analysis.config import DETECTOR_SMEARING_CONFIG, ALL_DETECTOR
 
 TMS = Path.home()/"software"/"geant4"/"geant4-work"/"TMS"
-ANALYSIS = Path.home()/"duke"/"analysis"
+ANALYSIS = REPO_ROOT = Path(__file__).resolve().parents[2]
 SNOWGLOBES = Path.home()/"software"/"snowglobes"
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
