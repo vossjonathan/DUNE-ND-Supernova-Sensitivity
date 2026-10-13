@@ -2,3 +2,4 @@
 2. https://arxiv.org/pdf/1507.06872
 3. Supernova neutrino induced reactions on iron isotopes J. Toivanen a, E. Kolbe b, K. Langanke a,∗, G. Martínez-Pinedo a, P. Vogel
 4. LAZAUSKAS: https://arxiv.org/pdf/0704.2724
+5. Suzuki: https://iopscience.iop.org/article/10.1088/1361-6471/ab1c11/ampdf

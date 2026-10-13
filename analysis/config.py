@@ -1,6 +1,3 @@
-
-
-
 import numpy as np
 
 ENERGY_GRID = np.linspace(0.5, 100, 201)

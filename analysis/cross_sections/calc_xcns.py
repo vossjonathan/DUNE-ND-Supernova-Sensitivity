@@ -227,7 +227,7 @@ def calc_CC_nue_C13():
 
 def calc_NC_nue_C13():
 
-    #Source 5, 8 (Table 4, Suzuki)
+    #Source: 5, 8 (Table 4, Suzuki)
     energies_paper = np.arange(6, 61)  # MeV
 
     cross_section_paper = np.array([
