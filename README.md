@@ -38,7 +38,7 @@ The Geant4 model requires external installations of Geant4, MARLEY, and HepMC3, 
 Running the simulations additionally requires selecting the appropriate event generator, MARLEY configuration, and simulation macros. The SNOwGLoBES calculations and Python analyses are performed separately.
 ## MARLEY Reaction Data
 
-The MARLEY reaction files for charged current and neutral current electron-neutrino interactions on 56Fe and were created by Sam Hedges. The corresponding file is not redistributed in this repository.
+The MARLEY reaction files for charged current and neutral current electron-neutrino interactions on 56Fe were created by Sam Hedges. The corresponding file is not redistributed in this repository.
 
 The charged-current electron-antineutrino reaction file (`vebar56FeCC_Scott2014.react`) was prepared as part of this project based on experimental data from Scott et al. (2014).
 ## Third-Party Software
