@@ -1,0 +1,9 @@
+/run/initialize
+/tracking/storeTrajectory 0
+/tracking/verbose 0
+/run/printProgress 1000
+
+/tms/channel CosmicMu
+/analysis/setFileName data_without_marley/Cosmic_data_theta_36/TMS_cosmic_mu.root
+/run/beamOn 100000 
+

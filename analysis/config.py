@@ -8,6 +8,7 @@ ENERGY_GRID = np.linspace(0.5, 100, 201)
 
 # Configuration for all channels where the smearing matrix is created
 # with MARLEY + Geant4 or Geant4-only.
+# threshold is minimum energy for Geant4 scan
 DETECTOR_SMEARING_CONFIG = {
 
 
@@ -97,6 +98,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "filename": "TMS_{E:.5f}_ES_Fe56_MeV.root",
                 "ES": True,
                 "weight": 26,
+                "G4_channel": "ESiron",
             },
 
             "nuebar_e": {
@@ -105,6 +107,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "filename": "TMS_{E:.5f}_ES_Fe56_MeV.root",
                 "ES": True,
                 "weight": 26,
+                "G4_channel": "ESiron",
             },
 
             "numu_e": {
@@ -113,6 +116,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "filename": "TMS_{E:.5f}_ES_Fe56_MeV.root",
                 "ES": True,
                 "weight": 26,
+                "G4_channel": "ESiron",
             },
 
             "numubar_e": {
@@ -121,6 +125,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "filename": "TMS_{E:.5f}_ES_Fe56_MeV.root",
                 "ES": True,
                 "weight": 26,
+                "G4_channel": "ESiron",
             },
 
             "nutau_e": {
@@ -129,6 +134,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "filename": "TMS_{E:.5f}_ES_Fe56_MeV.root",
                 "ES": True,
                 "weight": 26,
+                "G4_channel": "ESiron",
             },
 
             "nutaubar_e": {
@@ -137,6 +143,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "filename": "TMS_{E:.5f}_ES_Fe56_MeV.root",
                 "ES": True,
                 "weight": 26,
+                "G4_channel": "ESiron",
             },
         },
     },
@@ -154,6 +161,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "filename": "TMS_{E:.5f}_IBD_scint_MeV.root",
                 "ES": False,
                 "weight": 1,
+                "G4_channel": "IBD",
             },
 
 
@@ -163,6 +171,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "filename": "TMS_{E:.5f}_ES_scint_MeV.root",
                 "ES": True,
                 "weight": 4,
+                "G4_channel": "ESscint",
             },
 
             "nuebar_e": {
@@ -171,6 +180,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "filename": "TMS_{E:.5f}_ES_scint_MeV.root",
                 "ES": True,
                 "weight": 4,
+                "G4_channel": "ESscint",
             },
 
             "numu_e": {
@@ -179,6 +189,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "filename": "TMS_{E:.5f}_ES_scint_MeV.root",
                 "ES": True,
                 "weight": 4,
+                "G4_channel": "ESscint",
             },
 
             "numubar_e": {
@@ -187,6 +198,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "filename": "TMS_{E:.5f}_ES_scint_MeV.root",
                 "ES": True,
                 "weight": 4,
+                "G4_channel": "ESscint",
             },
 
             "nutau_e": {
@@ -195,6 +207,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "filename": "TMS_{E:.5f}_ES_scint_MeV.root",
                 "ES": True,
                 "weight": 4,
+                "G4_channel": "ESscint",
             },
 
             "nutaubar_e": {
@@ -203,6 +216,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "filename": "TMS_{E:.5f}_ES_scint_MeV.root",
                 "ES": True,
                 "weight": 4,
+                "G4_channel": "ESscint",
             },
 
 
@@ -212,6 +226,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "filename": "TMS_{E:.5f}_Scint_MeV.root",
                 "ES": False,
                 "weight": 0.4945,
+                "G4_channel": "ScintNC",
             },
 
             "nc_nuebar_C12": {
@@ -220,6 +235,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "filename": "TMS_{E:.5f}_Scint_MeV.root",
                 "ES": False,
                 "weight": 0.4945,
+                "G4_channel": "ScintNC",
             },
 
             "nc_numu_C12": {
@@ -228,6 +244,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "filename": "TMS_{E:.5f}_Scint_MeV.root",
                 "ES": False,
                 "weight": 0.4945,
+                "G4_channel": "ScintNC",
             },
 
             "nc_numubar_C12": {
@@ -236,6 +253,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "filename": "TMS_{E:.5f}_Scint_MeV.root",
                 "ES": False,
                 "weight": 0.4945,
+                "G4_channel": "ScintNC",
             },
 
             "nc_nutau_C12": {
@@ -244,6 +262,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "filename": "TMS_{E:.5f}_Scint_MeV.root",
                 "ES": False,
                 "weight": 0.4945,
+                "G4_channel": "ScintNC",
             },
 
             "nc_nutaubar_C12": {
@@ -252,6 +271,7 @@ DETECTOR_SMEARING_CONFIG = {
                 "filename": "TMS_{E:.5f}_Scint_MeV.root",
                 "ES": False,
                 "weight": 0.4945,
+                "G4_channel": "ScintNC",
             },
         },
     },
