@@ -3,11 +3,17 @@ from pathlib import Path
 import numpy as np
 import matplotlib.pyplot as plt
 import awkward as ak
-from matplotlib.colors import LogNorm, SymLogNorm
+from matplotlib.colors import SymLogNorm
 
+REPO_ROOT = Path(__file__).resolve().parents[2]
 
+PLOT_DIR = REPO_ROOT /"analysis"/"debug_plots"
+
+#local MARLEY path
 MARLEY = Path.home()/"software"/"marley"
-OUT = MARLEY/"out"
+OUT = MARLEY/"out_my"
+
+#mostly functions for debugging marley settings
 
 def plot_electron_kinetic_energy():
     energies = [10, 20, 30, 40]
@@ -19,7 +25,7 @@ def plot_electron_kinetic_energy():
         tree = file["mst"]
 
         T_e = tree["KEl"].array(library = "np")
-        print(T_e)
+
         bins = np.linspace(0, 40, 81)
         plt.axvline(x = i - Q,  linestyle='--', color= color , label=r"$T_e = E_\nu-Q$" if j == 0 else "_nolegend_")
         plt.hist(T_e, bins=bins, label = r"$E_\nu$ = " + str(i) + " MeV", color = color)
@@ -28,7 +34,7 @@ def plot_electron_kinetic_energy():
         plt.legend(loc="upper left", bbox_to_anchor=(1.02, 1))
         plt.title(r"Electron Kinetic Energy Distribution for MARLEY 56Fe, SAM .react file")
 
-    plt.savefig("debug_plots/electron_energy_comparison_SAM.png",bbox_inches="tight")
+    plt.savefig(PLOT_DIR/"electron_energy_comparison_SAM.svg",bbox_inches="tight")
     plt.close()
 
 def plot_excited_energy():
@@ -60,7 +66,7 @@ def plot_excited_energy():
     plt.legend()
     plt.grid(True, alpha = 0.3)
     plt.title(r"MARLEY $^{56}$Fe Excitation Energy Distribution SAM .react file")
-    plt.savefig("debug_plots/Ex_comparison_SAM.png")
+    plt.savefig(PLOT_DIR/"Ex_comparison_SAM.svg")
     plt.close()
 
 def plot_xsection():
@@ -90,47 +96,30 @@ def plot_xsection():
     plt.grid(True, alpha = 0.3)
     plt.title(r"56Fe CC cross sections, only discrete vs. using 40Ar continuum files")
 
-    plt.savefig("debug_plots/Fe_Ar_xsec_comparison.png")
+    plt.savefig(PLOT_DIR/"Fe_Ar_xsec_comparison.svg")
     plt.close()
 
     
 def compare_xsection():
 
-    
-    file1 = MARLEY/f"Pb_NONE.txt"
-    file2 = MARLEY/f"Pb_FERMI.txt"
-    file3 = MARLEY/f"Pb_MEMA.txt"
-    file4 = MARLEY/f"Pb_Fermi-MEMA.txt"
+    files = ["Pb_NONE.txt", "Pb_FERMI.txt", "Pb_MEMA.txt", "Pb_Fermi-MEMA.txt"]
 
-    data1 = np.loadtxt(file1)
-    data2 = np.loadtxt(file2)
-    data3 = np.loadtxt(file3)
-    data4 = np.loadtxt(file4)
-
-    energy = data1[:, 0]
-
-    xsec1 = data1[:, 1]
-    xsec2 = data2[:, 1]
-    xsec3 = data3[:, 1]
-    xsec4 = data4[:, 1]
-
-
-  
-
-    #plt.axvline(x = i - Q,  linestyle='--', color= color , label=r"$T_e = E_\nu-Q$" if j == 0 else "_nolegend_")
-    plt.plot(energy, xsec1, label = "NONE")
-    plt.plot(energy, xsec2, label = "FERMI")
-    plt.plot(energy, xsec3, label = "MEMA")
-    plt.plot(energy, xsec4, label = "FERMI-MEMA")
+    for file in files:
+        filepath = MARLEY/"data_xsec"/file
+        data = np.loadtxt(filepath)
+        energy = data[:, 0]
+        xsec = data[:, 1]
+        label = file.split("_")[1].split(".")[0]
+        plt.plot(energy, xsec, label = label)
 
     plt.xlim(0, 100)
     plt.xlabel(r"Neutrino energy $E_\nu$ [MeV]")
     plt.ylabel(r"cross section $10^{-42}$ cm$^2$")
     
     plt.grid(True, alpha = 0.3)
-    plt.title(r"NC Fe cross section, Shizuma 2013")
+    plt.title(r"Cross section comparison")
     plt.legend()
-    plt.savefig("debug_plots/comparexsec.png")
+    plt.savefig(PLOT_DIR/"comparexsec.svg", bbox_inches = "tight", dpi = 900)
     plt.close()
 
 
@@ -153,7 +142,7 @@ def plot_other_primaries():
         gamma_fraction.append(float(ak.mean(has_gamma)) * 100)
         neutron_fraction.append(float(ak.mean(has_neutron)) * 100)
         proton_fraction.append(float(ak.mean(has_proton)) * 100)
-        print(proton_fraction)
+
 
     plt.plot(energies, gamma_fraction, marker="o", label=r"$\gamma$")
     plt.plot(energies, neutron_fraction, marker="o", label=r"$n$")
@@ -167,8 +156,7 @@ def plot_other_primaries():
     plt.legend()
     plt.title(r"MARLEY $^{56}$Fe Particle Emission Probability")
     plt.tight_layout()
-    plt.savefig("debug_plots/particle_emission_probability_incltheo.png", dpi=300, bbox_inches="tight")
-    plt.show()
+    plt.savefig(PLOT_DIR/"particle_emission_probability_incltheo.svg", dpi=900, bbox_inches="tight")
     plt.close()
 
 
@@ -204,7 +192,6 @@ def compare_xsec_effect_on_response():
     matrix_continuum = np.column_stack(columns_continuum)
     diff_matrix = matrix_discrete - matrix_continuum
 
-    energy_edges = [5, 15, 25, 35, 45]
     max_abs = np.max(np.abs(diff_matrix))
     norm = SymLogNorm(linthresh=1e-5,linscale=1,vmin=-max_abs,vmax=max_abs,base=10)
     masked_diff = np.ma.masked_where(diff_matrix == 0, diff_matrix)
@@ -228,13 +215,13 @@ def compare_xsec_effect_on_response():
     plt.ylabel("Scintillator energy")
     plt.colorbar(label = "Probability")
     plt.title("Difference Matrix (discrete - continuum) for CC Fe")
-    plt.savefig("debug_plots/test_smear.png")
-
+    plt.savefig(PLOT_DIR/"test_smear.svg", bbox_inches = "tight",  dpi = 900)
+    plt.close()
 
 if __name__ == "__main__":
     plot_electron_kinetic_energy()
-    #plot_excited_energy()
-    #plot_xsection()
-    #plot_other_primaries()
-    #compare_xsection()
-    #compare_xsec_effect_on_response()
+    plot_excited_energy()
+    plot_xsection()
+    plot_other_primaries()
+    compare_xsection()
+    compare_xsec_effect_on_response()

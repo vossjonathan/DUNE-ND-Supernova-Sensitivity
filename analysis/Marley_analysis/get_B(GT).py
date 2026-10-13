@@ -1,8 +1,16 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+MARLEY_ANALYIS = REPO_ROOT / "analysis" /"Marley_analysis"
+PLOT_DIR = REPO_ROOT / "analysis" / "debug_plots"
+
+#helper function do create and manage .react MARLEY files
+#for the actual study .react files created by Sam Hedges were used
 
 def print_experimental(filename):
-    file = f"Marley_helper/{filename}"
+    file = MARLEY_ANALYIS/ filename
 
     data = np.loadtxt(file, delimiter = ",")
 
@@ -16,7 +24,7 @@ def print_experimental(filename):
         print(f"{E:.2f}   {(E - 0.125):.2f}   {(E + 0.125):.2f}  {B:.2f}   1")
 
 def get_theoretical():
-    file = "Marley_helper/56Fe_theo_B(GT).csv"
+    file = MARLEY_ANALYIS/"56Fe_theo_B(GT).csv"
     data = np.loadtxt(file, delimiter=",")
 
     data = data[data[:, 0] >= 16]
@@ -76,8 +84,9 @@ def get_theoretical():
     plt.bar(Ex_bins, BGT_bins, width=0.8)
     plt.xlabel(r"Excitation Energy $E_x$ [MeV]")
     plt.ylabel(r"Integrated $B(GT)$ per 1 MeV bin")
-    plt.savefig("Marley_helper/theoretical_BGT_binnedfff.png", dpi=300)
+    plt.savefig(PLOT_DIR/"theoretical_BGT_binned.svg", dpi=900)
+    plt.close()
   
 if __name__ == "__main__":
     print_experimental("CCnuebarAnantaraman1991.csv")
-    #get_theoretical()
+    get_theoretical()
