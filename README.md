@@ -34,17 +34,4 @@ The repository contains the project-specific code, configurations, and results. 
 
 The Geant4 model requires external installations of Geant4, MARLEY, and HepMC3, along with CMake and a C++17-compatible compiler.
 
-From the repository root:
-
-```bash
-cmake -S Geant4 -B Geant4/build \
-  -DMARLEY_ROOT="$HOME/software/marley"
-
-cmake --build Geant4/build -j 4
-```
-
-Adjust `MARLEY_ROOT` to the location of your MARLEY installation. The current CMake configuration expects the MARLEY and HepMC3 shared libraries in `MARLEY_ROOT/build/lib/`.
-
-The resulting executable is located at `Geant4/build/exampleB4c`.
-
 Running the simulations additionally requires selecting the appropriate event generator, MARLEY configuration, and simulation macros. The SNOwGLoBES calculations and Python analyses are performed separately.
