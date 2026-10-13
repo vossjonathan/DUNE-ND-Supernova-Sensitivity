@@ -1,7 +1,7 @@
-from scripts.plotting.detectors_plots import plot_all_TMS_iron_scint
+from analysis.plotting.detectors_plots import plot_all_TMS_iron_scint
 import subprocess
-from scripts.smearing_matrices.tms_smear import build_smearing_matrix, write_snowglobes_matrix
-from scripts.config import DETECTOR_SMEARING_CONFIG, ALL_DETECTOR
+from analysis.smearing_matrices.tms_smear import build_smearing_matrix, write_snowglobes_matrix
+from analysis.config import DETECTOR_SMEARING_CONFIG, ALL_DETECTOR
 from pathlib import Path
 
 detectors = ["NDLAr", "ECAL_lead", "ECAL_scint", "TMS_iron", "TMS_scint", "GRAIN", "STT"]

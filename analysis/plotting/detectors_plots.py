@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from pathlib  import Path
 import uproot
-from scripts.config import DETECTOR_SMEARING_CONFIG, ENERGY_GRID, ALL_DETECTOR, iron_channels, argon_channels, lead_channels, scint_channels
-from scripts.helper import load_events_weighted
+from analysis.config import DETECTOR_SMEARING_CONFIG, ENERGY_GRID, ALL_DETECTOR, iron_channels, argon_channels, lead_channels, scint_channels
+from analysis.helper import load_events_weighted
 
 SNOWGLOBES = Path.home()/"software"/"snowglobes"
 OUT = Path.home()/"software"/"snowglobes"/"out"

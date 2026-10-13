@@ -2,8 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from pathlib import Path
-from scripts.config import ENERGY_GRID
-from scripts.helper import load_events_weighted
+from analysis.config import ENERGY_GRID
+from analysis.helper import load_events_weighted
 
 
 SNOWGLOBES = Path.home()/"software"/"snowglobes"
