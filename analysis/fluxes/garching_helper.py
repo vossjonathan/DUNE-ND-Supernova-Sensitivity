@@ -2,9 +2,13 @@ import numpy as np
 from pathlib import Path
 import matplotlib.pyplot as plt
 
-
+#local SNOwGLoBES installation
 FLUXES = Path.home()/"software"/"snowglobes"/"fluxes"
 
+REPO_ROOT = Path(__file__).resolve().parents[2]
+PLOT_DIR = REPO_ROOT /"analysis"/"debug_plots"
+
+#creates garching.dat 
 def create_garching_fluence():
 
     file_pinched_0 = FLUXES/"garching_fluxes"/"pinched_0.dat"
@@ -46,8 +50,12 @@ def create_garching_fluence():
 
 
 
+#fluence comparison of livermore and garching model
+#right column must be chosen for corresponding channel
+def plot_livermore_garching(channel):
 
-def plot_livermore_garching():
+    print("Plotting Graching vs Livermore flux comparison for: ", channel)
+    channels = {"nue": 1, "numu": 2, "nutau": 3, "nuebar": 4, "numubar": 5, "nutaubar": 6}
     
     file_livermore = FLUXES/"livermore.dat"
     file_garching = FLUXES/"garching.dat"
@@ -55,21 +63,25 @@ def plot_livermore_garching():
     livermore = np.loadtxt(file_livermore)
     garching = np.loadtxt(file_garching)
 
-    energies = livermore[:, 0]*1000 #in MeV
+    energies_livermore = livermore[:, 0] * 1000
+    energies_garching = garching[:, 0] * 1000
 
-    nue_livermore = livermore[:, 4]
-    nue_garching = garching[:, 4]
+    column = channels[channel]
+    fluence_livermore = livermore[:, column]
+    fluence_garching = garching[:, column]
 
-    print(len(energies))
-    plt.plot(energies, nue_livermore, label = "livermore")
-    plt.plot(energies, nue_garching, label = "garching")
+
+    plt.plot(energies_livermore, fluence_livermore, label = "livermore")
+    plt.plot(energies_garching, fluence_garching, label = "garching")
     plt.legend()
     plt.xlabel("E [MeV]")
     plt.ylabel(r"Fluence [cm$^{-2}$] per 0.2 MeV bin")
-    plt.title(r"livermore/garching $\nu_e$ fluence comparison")
+    plt.title(f"livermore/garching {channel} fluence comparison")
     plt.grid(alpha = 0.3)
-    plt.savefig("debug_plot/livermore_garching_comparison.png")
-
+    plt.savefig(PLOT_DIR/f"livermore_garching_comparison_{channel}.png")
+    plt.close()
 
 if __name__ == "__main__":
-    plot_livermore_garching()
+    channels = ["nue", "nuebar", "numu", "numubar", "nutau", "nutaubar"]
+    for channel in channels:
+        plot_livermore_garching(channel)
