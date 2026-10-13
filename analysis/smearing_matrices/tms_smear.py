@@ -9,6 +9,9 @@ TMS = Path.home()/"software"/"geant4"/"geant4-work"/"TMS"
 ANALYSIS = Path.home()/"duke"/"analysis"
 SNOWGLOBES = Path.home()/"software"/"snowglobes"
 
+REPO_ROOT = Path(__file__).resolve().parents[2]
+
+PLOT_DIR = REPO_ROOT /"analysis"/"debug_plots"
 
 
 def get_smearing_column(file):
@@ -118,8 +121,8 @@ def plot_smearing_matrix(matrix, detector, channel):
     plt.ylabel(r"Scintillator energy $E_{Sc}$ [MeV]")
     plt.colorbar(label = "Probability")
     #plt.title(f"Smearing matrix for {detector}, {channel}")
-    plt.savefig(f"debug_plots/{detector}_{channel}_smearing_matrix.svg", bbox_inches="tight", dpi = 900)
-
+    plt.savefig(PLOT_DIR/f"{detector}_{channel}_smearing_matrix.svg", bbox_inches="tight", dpi = 900)
+    plt.close()
 
 
 
@@ -134,8 +137,8 @@ def plot_effiency(matrix, detector, channel):
     plt.ylabel("Detection efficiency")
     plt.title(f"Effiency plot for {detector}, channel: {channel}")
     plt.ylim(0, 1)
-    plt.savefig(f"debug_plots/{detector}_{channel}_efficiency.png")
-
+    plt.savefig(PLOT_DIR/f"{detector}_{channel}_efficiency.png")
+    plt.close()
 
 
 def plot_difference_matrix():
@@ -188,7 +191,7 @@ def plot_difference_matrix():
     plt.colorbar(label="Difference")
 
     plt.title(r"M$_{marley}$ - M$_{g4}$, marley allowed CC $\nu_e$ on $^{56}$Fe")
-    plt.savefig("debug_plots/diff_matrix_MARLEY_ALLOWED_G4_CC_nue.png",dpi=200,bbox_inches="tight")
+    plt.savefig(PLOT_DIR/"diff_matrix_MARLEY_ALLOWED_G4_CC_nue.png",dpi=200,bbox_inches="tight")
     plt.close()
 
 
