@@ -20,6 +20,7 @@ Applying simplified energy-deposition and track-length cuts yields approximately
 
 These results represent first-order estimates based on simplified detector and background models.
 
+For more details, see the [Technical Note (PDF)](Duke_DUNE_ND_SN_Sensitivity_Study_Tech_Note_Jonathan_Voss.pdf)
 ## Repository Structure
 
 - `Geant4/` TMS detector simulation and event generation (C++)
