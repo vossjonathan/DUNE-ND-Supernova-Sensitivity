@@ -27,7 +27,7 @@ These results represent first-order estimates based on simplified detector and b
 - `SNOwGLoBES/` Detector configurations, cross sections, and smearing matrices
 - `analysis/` Python analysis and visualization
 - `figures/` Selected simulation results and plots
-- `data/` Local Root data (not included)
+- `data/` Local ROOT data (not included)
 
 The repository contains the project-specific code, configurations, and results. The original simulations were performed using separate local installations of Geant4, MARLEY, and SNOwGLoBES. The corresponding directories in this repository contain the relevant project files, not complete installations of these software packages.
 
